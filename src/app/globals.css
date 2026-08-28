@@ -1,26 +1,165 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------
+   devByKyle — design tokens
+   Locked in design-system/devbykyle/MASTER.md
+   Type:  Bricolage Grotesque (display) / Instrument Sans (body) / DM Mono (labels)
+   Color: warm-neutral monochrome + a single Swiss red
+   ------------------------------------------------------------------ */
+
+@theme {
+  --font-display: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-instrument), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-paper: #f4f3f1;
+  --color-surface: #fbfaf9;
+  --color-sunk: #eae8e4;
+  --color-ink: #14130f;
+  --color-ink-2: #54514a;
+  --color-ink-3: #6b6760;
+  --color-rule: #dfdcd6;
+  --color-rule-2: #c9c4bb;
+  --color-accent: #a83226;
+  --color-accent-wash: #f6e7e4;
+  --color-live: #1d6a4c;
+  --color-live-wash: #e1efe8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark is a genuine re-theme, not an inversion.
+   Three states matter: explicit dark, explicit light, and unset (system). */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --color-paper: #100f0d;
+    --color-surface: #191713;
+    --color-sunk: #211e19;
+    --color-ink: #f3f1ed;
+    --color-ink-2: #a6a199;
+    --color-ink-3: #8a857b;
+    --color-rule: #2a2620;
+    --color-rule-2: #3a352d;
+    --color-accent: #ef7b6c;
+    --color-accent-wash: #2c1613;
+    --color-live: #5bc495;
+    --color-live-wash: #132a21;
   }
 }
 
+:root[data-theme="dark"] {
+  --color-paper: #100f0d;
+  --color-surface: #191713;
+  --color-sunk: #211e19;
+  --color-ink: #f3f1ed;
+  --color-ink-2: #a6a199;
+  --color-ink-3: #8a857b;
+  --color-rule: #2a2620;
+  --color-rule-2: #3a352d;
+  --color-accent: #ef7b6c;
+  --color-accent-wash: #2c1613;
+  --color-live: #5bc495;
+  --color-live-wash: #132a21;
+}
+
+:root {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html {
+  scroll-padding-top: 6rem;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgb(168 50 38 / 0.14);
+}
+
+/* Fine paper grain. Flat surfaces are the tell of generated design. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before {
+    opacity: 0.055;
+  }
+}
+:root[data-theme="dark"] body::before {
+  opacity: 0.055;
+}
+
+/* Everything real sits above the grain */
+body > * {
+  position: relative;
+  z-index: 2;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-paper);
+}
+
+/* Scroll reveal — fires once, never loops */
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  opacity: 0;
+  transform: translateY(13px);
+  animation: rise 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Brand icon colour. Tailwind's dark: variant only tracks prefers-color-scheme,
+   so the explicit [data-theme] toggle needs its own rules. */
+.brand-ic {
+  color: var(--bc, currentColor);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand-ic {
+    color: var(--bc-d, var(--bc, currentColor));
+  }
+}
+:root[data-theme="dark"] .brand-ic {
+  color: var(--bc-d, var(--bc, currentColor));
 }

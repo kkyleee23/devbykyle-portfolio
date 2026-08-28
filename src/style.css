@@ -255,6 +255,11 @@ img {
   border-color: var(--line-3);
   background: var(--surface-2);
 }
+.btn svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
 
 /* ---------- hero ---------- */
 
@@ -456,32 +461,48 @@ img {
 .proj-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.1rem;
+  gap: 0.45rem;
   margin-top: 1rem;
 }
-.proj-links a {
-  font-size: 13px;
+
+/* One control, two emphases. Style follows the link's kind, never its position,
+   so "Source" can never render two different ways across projects. */
+.plink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 12.5px;
   font-weight: 600;
-  padding-block: 0.35rem;
-  border-bottom: 1px solid var(--line-3);
-  transition: border-color 0.16s ease;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
-.proj-links a:hover {
-  border-bottom-color: var(--ink);
-}
-.proj-links a.sub {
-  color: var(--ink-3);
-  border-bottom-color: var(--line);
-}
-.proj-links a.sub:hover {
+.plink:hover {
+  border-color: var(--line-3);
+  background: var(--surface-2);
   color: var(--ink);
 }
-.arw {
-  display: inline-block;
-  transition: transform 0.18s ease;
+.plink svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
 }
-.proj-links a:hover .arw {
-  transform: translateX(3px);
+.plink-strong {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+  box-shadow: var(--lift);
+}
+.plink-strong:hover {
+  background: var(--ink-2);
+  border-color: var(--ink-2);
+  color: var(--bg);
 }
 
 /* shots */

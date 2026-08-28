@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { site, about, timeline } from "../src/data/site.js";
 import { projects, nowCards } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
+import { icons, linkKinds } from "../src/data/icons.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -30,6 +31,11 @@ const spec = (items) =>
 const badge = (label, status) =>
   `<span class="badge${status === "live" ? " badge-live" : ""}">${esc(label)}</span>`;
 
+const plink = (l) => {
+  const k = linkKinds[l.kind];
+  return `<a class="plink${k.strong ? " plink-strong" : ""}" href="${esc(l.href)}">${icons[k.icon]}${esc(k.label)}</a>`;
+};
+
 /* ---------------- sections ---------------- */
 
 const nav = `
@@ -44,7 +50,7 @@ const nav = `
       <a href="#about">About</a>
     </div>
     ${site.openToWork ? `<p class="status"><i></i> Open to work</p>` : ""}
-    <a class="btn btn-solid" href="mailto:${esc(site.email)}">Get in touch</a>
+    <a class="btn btn-solid" href="mailto:${esc(site.email)}">${icons.mail}Get in touch</a>
   </div>
 </nav>`;
 
@@ -61,8 +67,8 @@ const hero = `
         <span>${esc(site.availability)}</span>
       </div>
       <div class="hero-cta rise">
-        <a class="btn btn-solid" href="mailto:${esc(site.email)}">Email me</a>
-        <a class="btn btn-ghost" href="${esc(site.github)}">GitHub</a>
+        <a class="btn btn-solid" href="mailto:${esc(site.email)}">${icons.mail}Email me</a>
+        <a class="btn btn-ghost" href="${esc(site.github)}">${icons.github}GitHub</a>
         ${site.linkedin ? `<a class="btn btn-ghost" href="${esc(site.linkedin)}">LinkedIn</a>` : ""}
       </div>
     </div>
@@ -131,12 +137,7 @@ const work = `
             ${spec(p.spec)}
             ${tags(p.tags)}
             <div class="proj-links">
-              ${p.links
-                .map(
-                  (l) =>
-                    `<a href="${esc(l.href)}"${l.primary ? "" : ' class="sub"'}>${esc(l.label)}${l.primary ? ' <span class="arw" aria-hidden="true">→</span>' : ""}</a>`,
-                )
-                .join("")}
+              ${p.links.map(plink).join("")}
             </div>
           </div>`;
           return `<article class="proj rise${p.feature ? " feature" : ""}">

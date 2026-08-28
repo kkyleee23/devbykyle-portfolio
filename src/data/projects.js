@@ -11,8 +11,8 @@ export const projects = [
     spec: ["Under 5 MB", "Works offline", "No account", "Android + Web"],
     tags: ["HTML", "CSS", "JavaScript", "Vercel"],
     links: [
-      { label: "Visit the site", href: "https://planora-official.vercel.app", primary: true },
-      { label: "Source", href: "https://github.com/kkyleee23/Planora-Official" },
+      { kind: "live", href: "https://planora-official.vercel.app" },
+      { kind: "source", href: "https://github.com/kkyleee23/Planora-Official" },
     ],
     kind: "phone",
     feature: true,
@@ -32,8 +32,8 @@ export const projects = [
     spec: ["5 file types", "Express API", "Groq + Gemini"],
     tags: ["Node.js", "Express", "Groq", "Gemini", "Render"],
     links: [
-      { label: "Source", href: "https://github.com/kkyleee23/PrintScreen", primary: true },
-      { label: "Preview on Render", href: "https://printscreen.onrender.com" },
+      { kind: "source", href: "https://github.com/kkyleee23/PrintScreen" },
+      { kind: "preview", href: "https://printscreen.onrender.com" },
     ],
     kind: "web",
     shots: [
@@ -49,7 +49,7 @@ export const projects = [
       "Student–teacher management that runs outside the LMS your school already has. Teachers get attendance, activities and scores in one place without waiting on IT to provision anything.",
     spec: ["8 screens", "Repo-per-entity data layer", "No framework"],
     tags: ["Vite", "JavaScript", "Supabase", "PostgreSQL"],
-    links: [{ label: "Source", href: "https://github.com/kkyleee23/Studs", primary: true }],
+    links: [{ kind: "source", href: "https://github.com/kkyleee23/Studs" }],
     kind: "none",
     shots: [],
   },

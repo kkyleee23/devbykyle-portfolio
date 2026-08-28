@@ -20,10 +20,15 @@ function reveal() {
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
   );
-  items.forEach((el, i) => {
-    el.style.transitionDelay = `${Math.min(i, 4) * 50}ms`;
+  // Stagger within each group, not across the whole page — a global index
+  // gave everything below the hero a flat delay.
+  for (const el of items) {
+    const peers = [...(el.parentElement?.children ?? [])].filter((c) =>
+      c.classList.contains("rise"),
+    );
+    el.style.transitionDelay = `${Math.min(peers.indexOf(el), 4) * 50}ms`;
     io.observe(el);
-  });
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -106,7 +111,7 @@ async function repos() {
         (r) => `<article class="repo">
   <a class="repo-name" href="${esc(r.html_url)}">${esc(r.name)}</a>${
     r.homepage
-      ? ` <a class="repo-meta" style="display:inline" href="${esc(r.homepage)}">live &#8599;</a>`
+      ? ` <a class="repo-live" href="${esc(r.homepage)}">live &#8599;</a>`
       : ""
   }
   ${r.description ? `<p>${esc(r.description)}</p>` : ""}
@@ -115,9 +120,7 @@ async function repos() {
       )
       .join("");
   } catch {
-    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now — <a href="https://github.com/${esc(
-      handle,
-    )}" style="border-bottom:1px solid var(--line-3)">browse the repos directly</a>.</p>`;
+    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now — <a class="repo-live" href="https://github.com/${esc(handle)}">browse the repos directly</a>.</p>`;
   }
 }
 

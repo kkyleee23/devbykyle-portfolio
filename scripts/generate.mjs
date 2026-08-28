@@ -13,6 +13,9 @@ import { icons, linkKinds } from "../src/data/icons.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+/** Keep in step with --bg in style.css. */
+const BG = "#0a0a0b";
+
 const esc = (s) =>
   String(s)
     .replace(/&/g, "&amp;")
@@ -21,19 +24,19 @@ const esc = (s) =>
     .replace(/"/g, "&quot;");
 
 const tags = (items) =>
-  `<ul class="tags">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
+  `<ul class="tags" role="list">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
 
 const spec = (items) =>
   items.length
-    ? `<ul class="spec">${items.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`
+    ? `<ul class="spec" role="list">${items.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`
     : "";
 
 const badge = (label, status) =>
   `<span class="badge${status === "live" ? " badge-live" : ""}">${esc(label)}</span>`;
 
-const plink = (l) => {
+const plink = (l, project) => {
   const k = linkKinds[l.kind];
-  return `<a class="plink${k.strong ? " plink-strong" : ""}" href="${esc(l.href)}">${icons[k.icon]}${esc(k.label)}</a>`;
+  return `<a class="btn ${k.strong ? "btn-solid" : "btn-ghost"}" href="${esc(l.href)}">${icons[k.icon]}${esc(k.label)}<span class="sr-only"> — ${esc(project)}</span></a>`;
 };
 
 /* ---------------- sections ---------------- */
@@ -49,8 +52,8 @@ const nav = `
       <a href="#github">GitHub</a>
       <a href="#about">About</a>
     </div>
-    ${site.openToWork ? `<p class="status"><i></i> Open to work</p>` : ""}
-    <a class="btn btn-solid" href="mailto:${esc(site.email)}">${icons.mail}Get in touch</a>
+    ${site.openToWork ? `<p class="status"><span class="dot" aria-hidden="true"></span> Open to work</p>` : ""}
+    <a class="btn btn-ghost" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
   </div>
 </nav>`;
 
@@ -90,7 +93,7 @@ const now = `
         <div class="card-top"><h3>${esc(c.title)}</h3>${badge(c.badge, c.status)}</div>
         <p>${esc(c.body)}</p>
         ${tags(c.tags)}
-        <p class="foot">${esc(c.foot)}</p>
+        <p class="card-foot">${esc(c.foot)}</p>
       </article>`,
         )
         .join("")}
@@ -110,7 +113,7 @@ function media(p) {
   }
   if (p.kind === "web" && p.shots.length) {
     const s = p.shots[0];
-    return `<div class="web"><div class="chrome"><i></i><i></i><i></i></div>
+    return `<div class="web"><div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
       <img src="${esc(s.src)}" width="${s.width}" height="${s.height}" alt="${esc(s.alt)}" loading="lazy" decoding="async"></div>`;
   }
   return `<div class="noshot">${esc(p.name)} — screenshot to come</div>`;
@@ -137,7 +140,7 @@ const work = `
             ${spec(p.spec)}
             ${tags(p.tags)}
             <div class="proj-links">
-              ${p.links.map(plink).join("")}
+              ${p.links.map((l) => plink(l, p.name)).join("")}
             </div>
           </div>`;
           return `<article class="proj rise${p.feature ? " feature" : ""}">
@@ -162,15 +165,12 @@ const stackSection = `
         .map(
           (g) => `<div class="cat">
         <div class="cat-head"><h3>${esc(g.label)}</h3><span>${g.tools.length}</span></div>
-        <ul class="chips">
+        <ul class="chips" role="list">
           ${g.tools
-            .map((t) => {
-              const style = t.color
-                ? ` style="--bc:${t.darkColor ?? t.color}"`
-                : "";
-              const box = t.color ? "0 0 24 24" : "0 0 128 128";
-              return `<li class="chip${t.shipped ? " shipped" : ""}"${style}><svg viewBox="${box}" aria-hidden="true">${t.svg}</svg>${esc(t.name)}${t.shipped ? '<span class="dot"></span>' : ""}</li>`;
-            })
+            .map(
+              (t) =>
+                `<li class="chip${t.shipped ? " shipped" : ""}" style="--bc:${t.darkColor ?? t.color}"><svg viewBox="${t.box}" aria-hidden="true">${t.svg}</svg>${esc(t.name)}${t.shipped ? '<span class="dot" role="img" aria-label="used in shipped public code"></span>' : ""}</li>`,
+            )
             .join("")}
         </ul>
       </div>`,
@@ -243,10 +243,11 @@ const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(site.name)} — ${esc(site.role)}</title>
 <meta name="description" content="${esc(site.headline + " " + site.lede)}">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="${BG}">
 <link rel="canonical" href="${esc(site.url)}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(site.name)} — ${esc(site.role)}">

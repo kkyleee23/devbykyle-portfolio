@@ -1,71 +1,83 @@
 # devByKyle — portfolio
 
-Personal site for Juniz Kyle Sarmiento. Next.js 16 App Router, React 19, Tailwind v4, TypeScript.
+Personal site for Juniz Kyle Sarmiento. Hand-written HTML and CSS, a small build
+step, and 1.4 kB of JavaScript.
+
+No framework. That is the point: the site argues that I reach for a framework
+only when a project earns it, so it would be a poor argument if the site itself
+shipped 150 kB of runtime to render seven static sections.
+
+```
+index.html   69.8 kB   gzip 28.0 kB   ← mostly the 40 inline brand SVGs
+index.css    11.6 kB   gzip  3.1 kB
+index.js      2.8 kB   gzip  1.4 kB
+```
 
 ## Running it
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
-npm start        # serve the build
+npm run dev       # vite dev server
+npm run gen       # regenerate index.html from src/data
+npm run build     # gen + production build into dist/
+npm run preview   # serve the build
+npm run check     # tsc --noEmit
 ```
 
-## How it is put together
+`index.html` is **generated** — edit the data, not the markup.
+
+## Layout
 
 ```
+scripts/generate.mjs   builds index.html from src/data
+index.html             generated output (committed so the repo is servable as-is)
 src/
-  app/
-    layout.tsx      fonts, metadata, the no-flash theme script
-    globals.css     design tokens (Tailwind v4 @theme) + grain + motion
-    page.tsx        section order
-  components/
-    Band.tsx        the section shell — sticky index rail + content
-    Nav.tsx  Hero.tsx  Now.tsx  Work.tsx  Stack.tsx
-    GithubPanel.tsx live repo data from the GitHub API
-    About.tsx  Contact.tsx  Footer.tsx
-    ThemeToggle.tsx light / dark / system
-    ui.tsx          Badge, Tag, Spec strip
+  main.ts              scroll reveal, active nav link, live GitHub fetch
+  style.css            tokens and every rule
   data/
-    site.ts         name, contact, about copy, education timeline
-    projects.ts     projects and the "right now" cards
-    stack.ts        generated — 40 tools with inline brand SVGs
-public/img/         screenshots and portrait
-design-system/      the locked design decisions
+    site.js            name, contact, about copy, education timeline
+    projects.js        projects and the "right now" cards
+    stack.js           generated — 40 tools with inline brand SVGs
+public/img/            screenshots and portrait
+design-system/         the locked design decisions
 ```
 
-Content lives in `src/data`. Editing those three files changes the whole site; the
-components never hardcode copy.
+Change your bio, add a project, or reorder the stack by editing `src/data/*.js`
+and running `npm run gen`. No component touches copy.
 
-## Design decisions
+## Design
 
-Locked in [`design-system/devbykyle/MASTER.md`](design-system/devbykyle/MASTER.md).
+Full record in [`design-system/devbykyle/MASTER.md`](design-system/devbykyle/MASTER.md).
 
-- **Type** — Bricolage Grotesque (display, using its `wdth` axis at 84), Instrument
-  Sans (body), DM Mono (labels only, never negative tracking, 11px floor).
-- **Colour** — warm-neutral monochrome with one Swiss red. Red means exactly one
-  thing: live or clickable.
-- **Structure** — every section shares a sticky left index rail. Padding varies by
-  importance: Work is the loudest band, Stack the quietest.
-- **Spec strips** — each project states its real constraints. Verifiable numbers
-  beat adjectives.
-- **Grain** — a fine SVG noise overlay. Flat surfaces read as generated.
+**Dark, monochrome, dense — on purpose.**
 
-The file also carries a hard-ban list: no neon accents, no gradient heroes, no
-glassmorphism, no looping animation, no percentage skill bars, no emoji icons.
+- **No colour accent.** Page is near-black, surfaces are zinc, borders are
+  hairline `rgb(255 255 255 / 0.07)`. The only colour on the page comes from the
+  brand icons in the stack section, which is exactly why that section reads.
+- **Dense.** 1080 px shell, 3.5 rem section padding, tight cards. An earlier
+  draft used a 1200 px shell with 6 rem padding and read as empty.
+- **Type.** Bricolage Grotesque for display, driven at `wdth 84` / `wght 800` so
+  it stops looking like a default grotesque. Instrument Sans for body. DM Mono
+  for labels only — never negative tracking, 11 px floor.
+- **Spec strips.** Each project states real constraints. `Under 5 MB · Works
+  offline · No account` is checkable; adjectives are not.
+- **Shipped markers.** A dot marks every tool that appears in a public repo.
+  11 of 40. Claiming 40 without evidence reads as padding.
 
-## Data notes
+Banned outright: neon accents, gradient heroes, glassmorphism, looping
+animation, percentage skill bars, emoji icons, typewriter effects.
 
-- The GitHub panel fetches `api.github.com` on the server and revalidates hourly,
-  so the page cannot drift out of date with the repos.
+## Notes
+
+- The GitHub panel fetches `api.github.com` in the browser and degrades to a
+  direct link if the request fails.
 - Stack icons come from `simple-icons`, with `devicon` covering Java, C# and
-  VS Code — those were removed upstream for trademark reasons.
-- Tools marked with a red dot appear in a public repo. That claim is checkable,
-  which is the point.
+  VS Code — removed upstream for trademark reasons.
+- Motion is one scroll reveal per element, then the observer disconnects.
+  `prefers-reduced-motion` disables it.
 
 ## Still to do
 
-- LinkedIn URL and a résumé PDF (`src/data/site.ts`)
+- LinkedIn URL and résumé PDF — `src/data/site.js`
 - Screenshots for Studs and Agos
-- Agos project row, once the repo is public
-- Contact form (route handler + Resend) if the mailto link is not enough
+- Agos project row once the repo is public

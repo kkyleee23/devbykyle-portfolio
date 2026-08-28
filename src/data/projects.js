@@ -1,29 +1,6 @@
-export type Status = "live" | "building" | "redeploying";
 
-export type Shot = {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-};
 
-export type Project = {
-  slug: string;
-  name: string;
-  status: Status;
-  statusLabel: string;
-  summary: string;
-  /** Hard constraints. These are the differentiator — real numbers only. */
-  spec: string[];
-  tags: string[];
-  links: { label: string; href: string; primary?: boolean }[];
-  kind: "phone" | "web" | "none";
-  shots: Shot[];
-  /** The lead project gets a full-bleed row. */
-  feature?: boolean;
-};
-
-export const projects: Project[] = [
+export const projects = [
   {
     slug: "planora",
     name: "Planora",
@@ -78,16 +55,8 @@ export const projects: Project[] = [
   },
 ];
 
-export type NowCard = {
-  title: string;
-  badge: string;
-  status: Status;
-  body: string;
-  tags: string[];
-  foot: string;
-};
 
-export const nowCards: NowCard[] = [
+export const nowCards = [
   {
     title: "Agos",
     badge: "Building",

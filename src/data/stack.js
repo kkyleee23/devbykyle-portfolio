@@ -1,8 +1,5 @@
 // Generated from simple-icons + devicon. Do not edit by hand.
-export type Tool = { name: string; svg: string; color?: string; darkColor?: string; shipped: boolean };
-export type Group = { label: string; tools: Tool[] };
-
-export const stack: Group[] = [
+export const stack = [
   {
     label: "Frontend",
     tools: [

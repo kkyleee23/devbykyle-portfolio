@@ -16,7 +16,7 @@ export const site = {
   resume: "",
   openToWork: true,
   url: "https://devbykyle.vercel.app",
-} as const;
+};
 
 export const about = [
   "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.",
@@ -24,9 +24,8 @@ export const about = [
   "I pick up design from wherever it turns up, mostly screenshots and whatever scrolls past me, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.",
 ];
 
-export type TimelineEntry = { when: string; title: string; body: string };
 
-export const timeline: TimelineEntry[] = [
+export const timeline = [
   {
     when: "2026 — Now",
     title: "Shipping student tools",

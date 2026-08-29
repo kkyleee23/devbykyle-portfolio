@@ -1,8 +1,3 @@
-// Vercel serverless function. Proxies to Groq so the API key stays on the
-// server — PrintScreen asks visitors for their own key and that is exactly the
-// mistake this avoids.
-//
-// Requires env var GROQ_API_KEY (Vercel → Settings → Environment Variables).
 
 import { aiContext, site } from "../src/data/site.js";
 
@@ -57,7 +52,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "No question given." });
   }
 
-  // Trust nothing from the client beyond role and trimmed content.
   const messages = incoming
     .slice(-MAX_TURNS)
     .filter((m) => m && (m.role === "user" || m.role === "assistant"))

@@ -1,7 +1,3 @@
-// Builds index.html from src/data. Run via `npm run gen` (or automatically on build).
-// Section order follows the reference layout: a dense hero info-panel, then
-// labelled bands. The page is static HTML; the shipped JS only handles the
-// clock, the reveal, the live GitHub fetch and the assistant.
 
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -10,20 +6,18 @@ import { dirname, join } from "node:path";
 import {
   site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
-import { projects, nowCards } from "../src/data/projects.js";
+import { projects, nowCards, services } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
 import { icons, linkKinds } from "../src/data/icons.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-/** Keep in step with --bg in style.css. */
 const BG = "#0a0a0b";
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-/** The section marker motif: TECH-STACK rendered inside angle brackets. */
 const marker = (label) =>
   `<h2 class="marker"><span aria-hidden="true">&lt;</span>${esc(label)}<span aria-hidden="true">/&gt;</span></h2>`;
 
@@ -45,8 +39,6 @@ const plink = (l, project) => {
   return `<a class="btn ${k.strong ? "btn-solid" : "btn-ghost"}" href="${esc(l.href)}">${icons[k.icon]}${esc(k.label)}<span class="sr-only"> &mdash; ${esc(project)}</span></a>`;
 };
 
-/* ---------------- nav ---------------- */
-
 const nav = `
 <nav class="nav" aria-label="Primary">
   <div class="dock">
@@ -57,14 +49,13 @@ const nav = `
       <a href="#work">Projects</a>
       <a href="#stack">Tech</a>
       <a href="#github">GitHub</a>
-      <a href="#ask">Ask AI</a>
+      <a href="#services">Hire</a>
+      <a href="#ask">Ask Kit</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
   </div>
 </nav>`;
-
-/* ---------------- hero ---------------- */
 
 const hero = `
 <header class="hero" id="top">
@@ -73,7 +64,7 @@ const hero = `
 
     <div class="id-row">
       <div class="avatar" data-avatar tabindex="0">
-        <img src="/img/kyle-portrait.webp" width="640" height="640" alt="${esc(site.name)}" fetchpriority="high">
+        <img src="/img/kyle-portrait.webp" width="480" height="480" alt="${esc(site.name)}" fetchpriority="high">
         <span class="av-ring" aria-hidden="true"></span>
       </div>
       <div class="id-text">
@@ -142,19 +133,24 @@ const hero = `
   </div>
 </header>`;
 
-/* ---------------- about ---------------- */
-
 const aboutSection = `
 <section class="band" id="about">
   <div class="shell">
     ${marker("ABOUT")}
-    <div class="about-prose">
-      ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
+    <div class="about-grid">
+      <div class="about-prose">
+        ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
+      </div>
+      <aside class="activity" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
+        <p class="act-head"><span>Recent commits</span><a href="${esc(site.github)}">on GitHub</a></p>
+        <div class="act-grid" data-act-grid aria-hidden="true"></div>
+        <ol class="act-list" data-act-list>
+          <li class="act-load">Loading activity</li>
+        </ol>
+      </aside>
     </div>
   </div>
 </section>`;
-
-/* ---------------- currently building ---------------- */
 
 const building = `
 <section class="band" id="now">
@@ -177,8 +173,6 @@ const building = `
     </div>
   </div>
 </section>`;
-
-/* ---------------- projects ---------------- */
 
 function media(p) {
   if (p.kind === "web" && p.shots.length) {
@@ -207,7 +201,23 @@ const work = `
           <p class="desc">${esc(p.summary)}</p>
           ${spec(p.spec)}
           ${tags(p.tags)}
-          <div class="proj-links">${p.links.map((l) => plink(l, p.name)).join("")}</div>
+          <div class="proj-links">${p.links.map((l) => plink(l, p.name)).join("")}${
+            p.study
+              ? `<button type="button" class="btn btn-ghost" data-study="${esc(p.slug)}" aria-expanded="false" aria-controls="study-${esc(p.slug)}">${icons.spark}<span data-study-label>Read the write-up</span></button>`
+              : ""
+          }</div>
+          ${
+            p.study
+              ? `<div class="study" id="study-${esc(p.slug)}" hidden>
+            <dl>
+              <div><dt>The problem</dt><dd>${esc(p.study.problem)}</dd></div>
+              <div><dt>What I did</dt><dd>${esc(p.study.approach)}</dd></div>
+              <div><dt>What broke</dt><dd>${esc(p.study.broke)}</dd></div>
+              <div><dt>What is next</dt><dd>${esc(p.study.next)}</dd></div>
+            </dl>
+          </div>`
+              : ""
+          }
         </div>
       </article>`,
         )
@@ -216,13 +226,11 @@ const work = `
   </div>
 </section>`;
 
-/* ---------------- tech stack ---------------- */
-
 const stackSection = `
 <section class="band" id="stack">
   <div class="shell">
     ${marker("TECH-STACK")}
-    <p class="legend"><span class="dot"></span> Used in shipped, public code &mdash; the rest I am still building fluency in</p>
+    <p class="legend"><span class="dot"></span> Used in shipped, public code. The rest I am still building fluency in</p>
     <div class="tool-detail" id="tool-detail" data-detail hidden>
       <span class="td-icon" data-td-icon aria-hidden="true"></span>
       <div class="td-in">
@@ -256,7 +264,26 @@ const stackSection = `
   </div>
 </section>`;
 
-/* ---------------- github ---------------- */
+const servicesSection = `
+<section class="band" id="services">
+  <div class="shell">
+    ${marker("WHAT-I-CAN-BUILD")}
+    <p class="sub">Three shapes of work I have already done end to end. If yours looks like
+      one of these, the fastest thing is to send a paragraph about it.</p>
+    <div class="svc">
+      ${services
+        .map(
+          (s, i) => `<article class="svc-card rise">
+        <span class="svc-n">${String(i + 1).padStart(2, "0")}</span>
+        <h3>${esc(s.title)}</h3>
+        <p>${esc(s.body)}</p>
+        <p class="svc-fit">${esc(s.fit)}</p>
+      </article>`,
+        )
+        .join("")}
+    </div>
+  </div>
+</section>`;
 
 const github = `
 <section class="band" id="github">
@@ -274,8 +301,6 @@ const github = `
   </div>
 </section>`;
 
-/* ---------------- ask AI ---------------- */
-
 const askChips = [
   "What has he actually shipped?",
   "Is he free for an internship?",
@@ -286,11 +311,11 @@ const ask = `
 <section class="band" id="ask">
   <div class="shell">
     ${marker("ASK-AI")}
-    <p class="sub">Meet <strong>Kit</strong> &mdash; it answers from the same facts on this page,
-      so it cannot invent experience I do not have.</p>
+    <p class="sub">Meet <strong>Kit</strong>. It answers from the same facts on this page, so it cannot
+      invent experience I do not have.</p>
     <div class="chat" data-chat>
       <div class="chat-log" data-log role="log" aria-live="polite" aria-label="Conversation">
-        <div class="msg msg-bot"><p>I&rsquo;m Kit. I can answer questions about Kyle&rsquo;s work &mdash; what he has shipped, what he uses, when he is free. Try one of these, or ask your own.</p></div>
+        <div class="msg msg-bot"><p>I&rsquo;m Kit. I can answer questions about what Kyle has shipped, what he uses, and when he is free. Try one of these, or ask your own.</p></div>
       </div>
       <div class="chat-chips">
         ${askChips.map((q) => `<button type="button" class="ask-chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
@@ -304,8 +329,6 @@ const ask = `
     </div>
   </div>
 </section>`;
-
-/* ---------------- timeline ---------------- */
 
 const timelineSection = `
 <section class="band" id="timeline">
@@ -327,8 +350,6 @@ const timelineSection = `
     </div>
   </div>
 </section>`;
-
-/* ---------------- footer ---------------- */
 
 const footer = `
 <footer class="foot-band">
@@ -365,8 +386,6 @@ const footer = `
   </div>
 </footer>`;
 
-/* ---------------- document ---------------- */
-
 const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -394,12 +413,21 @@ ${hero}
 ${aboutSection}
 ${building}
 ${work}
+${servicesSection}
 ${stackSection}
 ${github}
 ${ask}
 ${timelineSection}
 </main>
 ${footer}
+
+<div class="pal" data-pal hidden>
+  <div class="pal-box" role="dialog" aria-modal="true" aria-label="Jump to a section">
+    <input type="text" data-pal-input placeholder="Jump to a section, or type a question for Kit" autocomplete="off">
+    <ul class="pal-list" data-pal-list role="listbox"></ul>
+    <p class="pal-foot"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move <kbd>&crarr;</kbd> open <kbd>esc</kbd> close</p>
+  </div>
+</div>
 <div class="page-fade" aria-hidden="true"></div>
 </body>
 </html>

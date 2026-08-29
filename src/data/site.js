@@ -6,7 +6,7 @@ export const site = {
   kicker: "// grade 12 student & developer",
   headline: "I build the parts that keep an app running.",
   lede:
-    "Backend is where I am strongest — data, APIs, the pipeline behind the screen. I learned the front end so I could ship the whole thing myself instead of handing half of it off.",
+    "Backend is where I am strongest: data, APIs, and the pipeline behind the screen. I learned the front end so I could ship a whole thing myself instead of handing half of it off.",
   location: "Apalit, Pampanga, Philippines",
   timezone: "GMT+8",
   tz: "Asia/Manila",
@@ -22,13 +22,11 @@ export const site = {
   url: "https://devbykyle.vercel.app",
 };
 
-/** Hero: one sentence on where my attention is. */
 export const currentFocus = {
-  body: "Shipping small tools that solve a real problem, then writing down what broke so the next one goes faster. Started with tools for students; building for anyone who needs one now.",
+  body: "Shipping small tools that solve a real problem, then writing down what broke so the next one goes faster. It started with tools for students. Now it is for anyone who needs one.",
   motto: "> learn · build · ship · write it down",
 };
 
-/** Hero: rotates. Each is something with a repo behind it. */
 export const whatIBuild = [
   { title: "Backends & APIs", note: "Express, Supabase, PostgreSQL" },
   { title: "AI Pipelines", note: "Groq, Gemini, OpenAI, Claude, Ollama" },
@@ -52,8 +50,8 @@ export const quickFacts = [
 
 export const about = [
   "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.",
-  "Backend is the half I care about most — the data model, the API, the pipeline that turns an upload into something useful. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",
-  "The first things I made were for school, since that was the problem in front of me. The work is not limited to that. A capstone team that needs a backend, a small company that needs an internal tool, or one person who needs something that does a single job properly — those are all the same problem shaped differently.",
+  "Backend is the half I care about most: the data model, the API, the pipeline that turns an upload into something useful. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",
+  "The first things I made were for school, since that was the problem in front of me. The work is not limited to that. A capstone team that needs a backend, a small company that needs an internal tool, or one person who needs something that does a single job properly. Those are all the same problem shaped differently.",
   "I pick up design from wherever it turns up, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.",
 ];
 
@@ -62,14 +60,14 @@ export const timeline = [
     when: "2026 — Now",
     tag: "Building",
     title: "Shipping tools end to end",
-    body: "PrintScreen in March, Studs from April, Planora in May, and Agos now. Four builds in one year, each one taking a problem from the data model through to something you can open.",
+    body: "PrintScreen in March, Studs from April, Planora in May, and Agos now. Four builds in one year. Each one took a problem from the data model through to something you can open.",
     tags: ["JavaScript", "Supabase", "Flutter", "Groq"],
   },
   {
     when: "2025 — Now",
     tag: "Education",
     title: "STI College Malolos",
-    body: "Senior high, ITMAWD strand — Information Technology in Mobile App and Web Development. Grade 12.",
+    body: "Senior high, ITMAWD strand. Information Technology in Mobile App and Web Development, Grade 12.",
     tags: ["ITMAWD"],
   },
   {
@@ -88,7 +86,6 @@ export const timeline = [
   },
 ];
 
-/** Footer colophon — how this site is put together. */
 export const colophon = [
   { k: "Built with", v: "Hand-written HTML & CSS, a small Vite build" },
   { k: "Framework", v: "None. It has not earned a place here yet" },
@@ -96,7 +93,6 @@ export const colophon = [
   { k: "Data", v: "Repositories pulled live from the GitHub API" },
 ];
 
-/** Seeds the assistant. Everything here is verifiable from the page or the repos. */
 export const aiContext = `
 Juniz Kyle Sarmiento — Grade 12 senior high student, ITMAWD strand (Information
 Technology in Mobile App and Web Development) at STI College Malolos. Lives in

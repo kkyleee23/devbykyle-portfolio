@@ -1,9 +1,3 @@
-/* ------------------------------------------------------------------
-   Self-hosted. Going to fonts.googleapis.com meant a DNS lookup, a TLS
-   handshake and a CSS round trip before any text could render in the real
-   face — that is the flash on refresh. Same-origin + preload removes it.
-   ------------------------------------------------------------------ */
-
 @font-face {
   font-family: "Bricolage Grotesque";
   src: url("/fonts/bricolage-latin.woff2") format("woff2-variations");
@@ -39,12 +33,6 @@
   font-display: swap;
 }
 
-/* ============================================================
-   devByKyle
-   Dark, monochrome, dense. The only colour on this page comes
-   from the brand icons in the stack section — that is deliberate.
-   ============================================================ */
-
 :root {
   color-scheme: dark;
 
@@ -69,7 +57,6 @@
   --f-sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
   --f-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Multi-layer inset shadow. Gives controls a physical edge instead of a flat fill. */
   --lift:
     0 1px 0 0 rgb(255 255 255 / 0.06) inset,
     0 8px 20px -12px rgb(0 0 0 / 0.9),
@@ -172,9 +159,6 @@ img {
   border: 0;
 }
 
-/* ---------- shared type ---------- */
-
-
 .eyebrow {
   display: flex;
   align-items: center;
@@ -204,8 +188,6 @@ img {
   color: var(--ink-2);
   font-size: 14px;
 }
-
-/* ---------- nav ---------- */
 
 .nav {
   position: sticky;
@@ -271,8 +253,6 @@ img {
   background: var(--ink);
 }
 
-/* ---------- buttons ---------- */
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -310,8 +290,6 @@ img {
   height: 13px;
   flex: none;
 }
-
-/* ---------- hero ---------- */
 
 .hero {
   padding-block: 3.25rem 2.75rem;
@@ -378,8 +356,6 @@ img {
   margin-top: 1.4rem;
 }
 
-/* ---------- band ---------- */
-
 .band {
   padding-block: var(--band);
   border-bottom: 1px solid var(--line);
@@ -390,8 +366,6 @@ img {
 .band-quiet {
   --band: 2.75rem;
 }
-
-/* ---------- cards (right now) ---------- */
 
 .cards {
   display: grid;
@@ -428,8 +402,6 @@ img {
   color: var(--ink-3);
 }
 
-/* ---------- badges + tags ---------- */
-
 .badge {
   font-family: var(--f-mono);
   font-size: 11px;
@@ -462,8 +434,6 @@ img {
   padding: 0.15rem 0.4rem;
 }
 
-/* ---------- spec strip ---------- */
-
 .spec {
   display: flex;
   flex-wrap: wrap;
@@ -484,15 +454,13 @@ img {
   border-right: 0;
   margin-right: 0;
 }
-/* A wrapped row would otherwise end on a divider pointing at empty space. */
+
 @supports not (selector(li:has(+ li))) {
   .spec li {
     border-right: 0;
     margin-right: 0.9rem;
   }
 }
-
-/* ---------- projects ---------- */
 
 .work {
   margin-top: 1.5rem;
@@ -536,8 +504,6 @@ img {
   margin-top: 1rem;
 }
 
-
-/* shots */
 .phones {
   display: flex;
   gap: 0.75rem;
@@ -586,8 +552,6 @@ img {
   text-align: center;
   padding: 1rem;
 }
-
-/* ---------- stack ---------- */
 
 .legend {
   display: flex;
@@ -663,8 +627,6 @@ img {
   height: 4px;
 }
 
-/* ---------- github ---------- */
-
 .gh {
   margin-top: 1.4rem;
   border: 1px solid var(--line);
@@ -736,8 +698,6 @@ img {
   color: var(--ink-3);
 }
 
-/* ---------- timeline ---------- */
-
 .about-grid {
   display: grid;
   gap: 1.5rem;
@@ -751,8 +711,7 @@ img {
   width: 100%;
   border: 1px solid var(--line-2);
   border-radius: 6px;
-  /* Full colour would be the only unmanaged colour on the page. It resolves
-     on hover, which is a small reward for anyone who bothers. */
+  
   filter: grayscale(1) contrast(1.05);
   transition: filter 0.4s ease;
 }
@@ -811,8 +770,6 @@ img {
   color: var(--ink-2);
   font-size: 14px;
 }
-
-/* ---------- contact ---------- */
 
 .contact {
   padding-block: 4rem;
@@ -885,10 +842,6 @@ img {
   color: var(--ink);
 }
 
-/* ---------- motion: fires once, never loops ---------- */
-
-/* Only hide when JS is present to un-hide it. Without the .js class the page
-   renders fully — a static site must not depend on a script to be readable. */
 .js .rise {
   opacity: 0;
   transform: translateY(10px);
@@ -915,10 +868,6 @@ img {
   }
 }
 
-/* ---------- responsive ---------- */
-
-/* Below 600px the nav CTA's label was eating ~130px, leaving the five links
-   about 68px of a scroller with no visible affordance. Icon only down here. */
 @media (max-width: 599px) {
   .nav-in .btn-label {
     display: none;
@@ -975,10 +924,6 @@ img {
     grid-template-columns: 1fr;
   }
 }
-
-/* ============================================================
-   Hero info-panel
-   ============================================================ */
 
 .kicker {
   font-family: var(--f-mono);
@@ -1046,8 +991,6 @@ img {
   margin-top: 1.4rem;
 }
 
-/* ---------- section marker ---------- */
-
 .marker {
   font-family: var(--f-mono);
   font-size: 12.5px;
@@ -1064,8 +1007,6 @@ img {
   margin-bottom: 1.4rem;
   border-bottom: 1px solid var(--line);
 }
-
-/* ---------- panels ---------- */
 
 .panels {
   display: grid;
@@ -1135,7 +1076,6 @@ img {
   color: var(--ink-3);
 }
 
-/* Without JS the absolute stacking collapses, so list them instead. */
 html:not(.js) .rotator {
   min-height: 0;
 }
@@ -1180,8 +1120,6 @@ html:not(.js) .rot-item {
   color: var(--ink-2);
 }
 
-/* ---------- currently-building cards ---------- */
-
 .card-when {
   font-family: var(--f-mono);
   font-size: 11px;
@@ -1191,8 +1129,6 @@ html:not(.js) .rot-item {
   margin-top: 0.5rem;
   font-size: 17.5px;
 }
-
-/* ---------- timeline ---------- */
 
 .tl-when {
   display: flex;
@@ -1216,10 +1152,6 @@ html:not(.js) .rot-item {
   font-size: 11px;
   color: var(--line-3);
 }
-
-/* ============================================================
-   Ask AI
-   ============================================================ */
 
 .chat {
   margin-top: 1.4rem;
@@ -1345,10 +1277,6 @@ html:not(.js) .rot-item {
   color: var(--ink-3);
 }
 
-/* ============================================================
-   Footer
-   ============================================================ */
-
 .foot-band {
   border-top: 1px solid var(--line);
 }
@@ -1399,10 +1327,6 @@ html:not(.js) .rot-item {
   color: var(--ink-3);
 }
 
-/* ============================================================
-   Responsive
-   ============================================================ */
-
 @media (min-width: 640px) {
   .panels {
     grid-template-columns: repeat(2, 1fr);
@@ -1435,10 +1359,6 @@ html:not(.js) .rot-item {
     order: 2;
   }
 }
-
-/* ============================================================
-   Floating nav dock
-   ============================================================ */
 
 .nav {
   position: sticky;
@@ -1550,7 +1470,6 @@ html:not(.js) .rot-item {
   display: none;
 }
 
-/* The hero has to clear the floating dock. */
 .hero {
   padding-top: 5.5rem;
 }
@@ -1563,10 +1482,6 @@ html:not(.js) .rot-item {
     gap: 0.15rem;
   }
 }
-
-/* ============================================================
-   Interactive stack chips
-   ============================================================ */
 
 .chip {
   font: inherit;
@@ -1632,11 +1547,6 @@ html:not(.js) .rot-item {
   border-color: var(--line-3);
 }
 
-/* ============================================================
-   Bottom fade — content resolves into the page rather than
-   stopping against a hard edge.
-   ============================================================ */
-
 .page-fade {
   position: fixed;
   inset: auto 0 0 0;
@@ -1654,15 +1564,10 @@ html:not(.js) .rot-item {
   }
 }
 
-
 :root {
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
-/* ============================================================
-   Identity row — the face is the first thing on the page
-   ============================================================ */
 
 .id-row {
   display: flex;
@@ -1695,10 +1600,6 @@ html:not(.js) .rot-item {
     transform 0.6s var(--ease);
 }
 
-/* The easter egg: the formal photo dissolves into the real one.
-   Suit for the recruiter, hoodie for the person who writes the code. */
-
-/* A sweep that reads as the image resolving rather than just fading */
 .av-ring {
   position: absolute;
   inset: 0;
@@ -1727,8 +1628,6 @@ html:not(.js) .rot-item {
   min-width: 0;
 }
 
-/* ---------- the name ---------- */
-
 .hero h1 {
   font-family: var(--f-name);
   font-size: clamp(1.9rem, 5.4vw, 3.2rem);
@@ -1738,8 +1637,6 @@ html:not(.js) .rot-item {
   line-height: 1.02;
   margin-top: 0.5rem;
 }
-
-/* ---------- availability pill ---------- */
 
 .status {
   gap: 0.5rem;
@@ -1777,10 +1674,6 @@ html:not(.js) .rot-item {
     opacity: 0;
   }
 }
-
-/* ============================================================
-   Buttons — a sheen that crosses on hover
-   ============================================================ */
 
 .btn {
   position: relative;
@@ -1830,10 +1723,6 @@ html:not(.js) .rot-item {
   );
 }
 
-/* ============================================================
-   Nav — the active pill slides between items
-   ============================================================ */
-
 .dock .nav-links {
   position: relative;
 }
@@ -1867,7 +1756,6 @@ html:not(.js) .rot-item {
   color: var(--ink);
 }
 
-/* the tap ripple */
 .ink {
   position: absolute;
   border-radius: 50%;
@@ -1883,10 +1771,6 @@ html:not(.js) .rot-item {
     opacity: 0;
   }
 }
-
-/* ============================================================
-   Tool detail — now carries the tool's own mark
-   ============================================================ */
 
 .tool-detail {
   align-items: center;
@@ -1957,12 +1841,6 @@ html:not(.js) .rot-item {
   }
 }
 
-/* ============================================================
-   The name — calm, not a logo.
-   Syne was doing too much; this is the body face at a heavier
-   cut, so the name reads as part of the system.
-   ============================================================ */
-
 .hero h1 {
   font-family: var(--f-sans);
   font-size: clamp(1.75rem, 4.4vw, 2.6rem);
@@ -1971,8 +1849,6 @@ html:not(.js) .rot-item {
   line-height: 1.06;
   margin-top: 0.45rem;
 }
-
-/* ---------- one portrait ---------- */
 
 .avatar img {
   position: static;
@@ -1990,10 +1866,6 @@ html:not(.js) .rot-item {
   filter: grayscale(0) contrast(1);
   transform: scale(1.04);
 }
-
-/* ============================================================
-   Tool detail — a compact inline strip, not a block
-   ============================================================ */
 
 .tool-detail {
   display: flex;
@@ -2052,7 +1924,6 @@ html:not(.js) .rot-item {
   font-size: 15px;
 }
 
-/* On narrow screens the note wraps under rather than squeezing */
 @media (max-width: 720px) {
   .tool-detail {
     border-radius: 8px;
@@ -2063,10 +1934,6 @@ html:not(.js) .rot-item {
     gap: 0.2rem;
   }
 }
-
-/* ============================================================
-   Footer
-   ============================================================ */
 
 .colophon {
   display: grid;
@@ -2107,5 +1974,278 @@ html:not(.js) .rot-item {
   .avatar:hover img,
   .avatar:focus-visible img {
     transform: none;
+  }
+}
+
+.hero h1 {
+  font-size: clamp(1.5rem, 3.6vw, 2.15rem);
+  white-space: nowrap;
+}
+
+.about-grid {
+  display: grid;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.activity {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 1rem;
+}
+.act-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.act-head a {
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line-2);
+  transition: color 0.16s var(--ease);
+}
+.act-head a:hover {
+  color: var(--ink);
+}
+
+.act-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  grid-auto-flow: column;
+  gap: 3px;
+  margin-top: 0.9rem;
+  overflow: hidden;
+}
+.act-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 7px;
+  border-radius: 2px;
+  background: var(--surface-3);
+}
+.act-cell.l1 {
+  background: rgb(250 250 250 / 0.22);
+}
+.act-cell.l2 {
+  background: rgb(250 250 250 / 0.45);
+}
+.act-cell.l3 {
+  background: rgb(250 250 250 / 0.72);
+}
+.act-cell.l4 {
+  background: var(--ink);
+}
+
+.act-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.act-list li {
+  display: grid;
+  gap: 0.15rem;
+}
+.act-msg {
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.act-meta {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.act-meta a {
+  color: var(--ink-3);
+}
+.act-meta a:hover {
+  color: var(--ink);
+}
+.act-load {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.study {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--surface-2);
+  animation: pop 0.28s var(--spring);
+}
+.study[hidden] {
+  display: none;
+}
+.study dl {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+.study dt {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.2rem;
+}
+.study dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.svc {
+  display: grid;
+  gap: 0.75rem;
+}
+.svc-card {
+  position: relative;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  transition:
+    border-color 0.2s var(--ease),
+    transform 0.2s var(--spring);
+}
+.svc-card:hover {
+  border-color: var(--line-2);
+  transform: translateY(-2px);
+}
+.svc-n {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--line-3);
+}
+.svc-card h3 {
+  margin-top: 0.35rem;
+  font-size: 17.5px;
+}
+.svc-card p {
+  margin-top: 0.5rem;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.svc-fit {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.pal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: start center;
+  padding-top: 12vh;
+  background: rgb(6 6 7 / 0.72);
+  backdrop-filter: blur(4px);
+}
+.pal[hidden] {
+  display: none;
+}
+.pal-box {
+  width: min(92vw, 34rem);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.8);
+  overflow: hidden;
+  animation: pop 0.2s var(--spring);
+}
+.pal-box input {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 0.95rem 1.1rem;
+}
+.pal-box input::placeholder {
+  color: var(--ink-3);
+}
+.pal-box input:focus {
+  outline: none;
+}
+.pal-list {
+  max-height: 17rem;
+  overflow-y: auto;
+  padding: 0.35rem;
+}
+.pal-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.pal-list li[aria-selected="true"] {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.pal-kind {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.pal-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.pal-foot kbd {
+  font: inherit;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+}
+
+@media (min-width: 820px) {
+  .about-grid {
+    grid-template-columns: 1fr 20rem;
+    gap: 2.5rem;
+  }
+  .svc {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-card:hover {
+    transform: none;
+  }
+  .study,
+  .pal-box {
+    animation: none;
   }
 }

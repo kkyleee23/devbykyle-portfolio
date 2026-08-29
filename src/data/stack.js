@@ -1,4 +1,3 @@
-// Generated from simple-icons + devicon. Do not edit by hand.
 export const stack = [
   {
     label: "Frontend",

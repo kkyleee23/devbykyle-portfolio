@@ -4,11 +4,6 @@ import { link as linkIcon } from "./data/icons.js";
 const esc = (s: string) =>
   s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
-/* ------------------------------------------------------------------
-   Local clock. Shows what time it actually is where Kyle is, so a
-   recruiter in another timezone knows whether they are messaging at 3am.
-   ------------------------------------------------------------------ */
-
 function clock() {
   const el = document.querySelector<HTMLElement>(".clock");
   const tz = el?.dataset.tz;
@@ -24,10 +19,6 @@ function clock() {
   tick();
   setInterval(tick, 30_000);
 }
-
-/* ------------------------------------------------------------------
-   Capability rotator. Pauses when off-screen or when the tab is hidden.
-   ------------------------------------------------------------------ */
 
 function rotator() {
   const host = document.querySelector<HTMLElement>("[data-rotate]");
@@ -64,19 +55,9 @@ function rotator() {
   );
 }
 
-
-/* ------------------------------------------------------------------
-   Sound. Synthesised with Web Audio rather than shipping audio files —
-   a click is a short filtered blip, which costs nothing to download.
-   Off until asked for, and the choice persists.
-   ------------------------------------------------------------------ */
-
 let ctx: AudioContext | null = null;
 let sfxOn = false;
 
-/* A click is two things: a short noise transient for the "tick", and a low
-   sine body for weight. One oscillator alone reads as a beep, which is what
-   the first version sounded like. */
 function click(base: number, gain: number) {
   if (!sfxOn) return;
   try {
@@ -87,7 +68,6 @@ function click(base: number, gain: number) {
     out.gain.value = gain;
     out.connect(ctx.destination);
 
-    // transient: filtered noise burst, ~14ms
     const n = Math.floor(ctx.sampleRate * 0.014);
     const buf = ctx.createBuffer(1, n, ctx.sampleRate);
     const d = buf.getChannelData(0);
@@ -103,7 +83,6 @@ function click(base: number, gain: number) {
     noise.connect(bp).connect(ng).connect(out);
     noise.start(t);
 
-    // body: quick sine thump
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.setValueAtTime(base, t);
@@ -116,7 +95,6 @@ function click(base: number, gain: number) {
     osc.start(t);
     osc.stop(t + 0.09);
   } catch {
-    /* audio unavailable */
   }
 }
 
@@ -143,21 +121,15 @@ function soundToggle() {
     try {
       localStorage.setItem("sfx", sfxOn ? "on" : "off");
     } catch {
-      /* private mode */
     }
     if (sfxOn) sfx.open();
   });
 
-  // every control on the page shares one click sound
   document.addEventListener("pointerdown", (e) => {
     const t = e.target as HTMLElement;
     if (t.closest("a, button") && !t.closest("[data-sfx]")) sfx.tap();
   });
 }
-
-/* ------------------------------------------------------------------
-   Stack chips. Clicking one shows where that tool is actually used.
-   ------------------------------------------------------------------ */
 
 function toolDetail() {
   const panel = document.querySelector<HTMLElement>("[data-detail]");
@@ -198,7 +170,7 @@ function toolDetail() {
       nameEl.textContent = chip.dataset.tool ?? "";
       noteEl.textContent =
         chip.dataset.note ||
-        "Not in a public repo yet — this one is still on the learning pile.";
+        "Not in a public repo yet. This one is still on the learning pile.";
       usedEl.innerHTML = used.length
         ? `Used in ${used.map((u) => `<span class="td-proj">${esc(u)}</span>`).join("")}`
         : "No shipped project uses it yet";
@@ -219,10 +191,6 @@ function toolDetail() {
     }
   });
 }
-
-/* ------------------------------------------------------------------
-   Scroll reveal. Fires once per element, then stops observing.
-   ------------------------------------------------------------------ */
 
 function reveal() {
   const items = document.querySelectorAll<HTMLElement>(".rise");
@@ -249,10 +217,6 @@ function reveal() {
   }
 }
 
-/* ------------------------------------------------------------------
-   Active nav link.
-   ------------------------------------------------------------------ */
-
 function activeNav() {
   const links = [...document.querySelectorAll<HTMLAnchorElement>(".nav-links a")];
   const map = new Map<Element, HTMLAnchorElement>();
@@ -277,12 +241,6 @@ function activeNav() {
   map.forEach((_, el) => io.observe(el));
 }
 
-
-/* ------------------------------------------------------------------
-   Nav: a pill that slides to whichever section you are in, plus a tap
-   ripple on press. Both are decoration, so both sit behind a guard.
-   ------------------------------------------------------------------ */
-
 function navGlide() {
   const wrap = document.querySelector<HTMLElement>(".dock .nav-links");
   if (!wrap) return;
@@ -305,7 +263,6 @@ function navGlide() {
   const current = () => wrap.querySelector<HTMLElement>("a[aria-current]");
   const sync = () => move(current());
 
-  // follow the pointer, snap back to the active section on leave
   wrap.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
     a.addEventListener("pointerenter", () => !reduce && move(a));
   });
@@ -339,10 +296,6 @@ function ripple() {
     el.addEventListener("animationend", () => el.remove());
   });
 }
-
-/* ------------------------------------------------------------------
-   Live repositories.
-   ------------------------------------------------------------------ */
 
 type Repo = {
   name: string;
@@ -392,13 +345,214 @@ async function repos() {
       )
       .join("");
   } catch {
-    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now — <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">browse the repos directly</a>.</p>`;
+    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">browse the repos directly</a>.</p>`;
   }
 }
 
-/* ------------------------------------------------------------------
-   Ask AI. Posts to /api/chat, which holds the key server-side.
-   ------------------------------------------------------------------ */
+type Commit = { repo: string; msg: string; date: string; url: string };
+
+async function activity() {
+  const host = document.querySelector<HTMLElement>("[data-activity]");
+  const grid = document.querySelector<HTMLElement>("[data-act-grid]");
+  const list = document.querySelector<HTMLElement>("[data-act-list]");
+  if (!host || !grid || !list) return;
+
+  const user = host.dataset.user ?? "";
+  const repos = (host.dataset.repos ?? "").split(",").filter(Boolean);
+  if (!user || !repos.length) return;
+
+  const results = await Promise.all(
+    repos.map(async (r) => {
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${user}/${r}/commits?per_page=20`,
+          { headers: { Accept: "application/vnd.github+json" } },
+        );
+        if (!res.ok) return [] as Commit[];
+        const j = await res.json();
+        if (!Array.isArray(j)) return [] as Commit[];
+        return j.map((c) => ({
+          repo: r,
+          msg: String(c.commit?.message ?? "").split("\n")[0] ?? "",
+          date: String(c.commit?.author?.date ?? ""),
+          url: String(c.html_url ?? ""),
+        })) as Commit[];
+      } catch {
+        return [] as Commit[];
+      }
+    }),
+  );
+
+  const all = results.flat().filter((c) => c.date && c.msg);
+  if (!all.length) {
+    list.innerHTML = `<li class="act-load">Could not reach GitHub. <a href="https://github.com/${esc(user)}" style="border-bottom:1px solid var(--line-3)">See the repos</a></li>`;
+    return;
+  }
+  all.sort((a, b) => +new Date(b.date) - +new Date(a.date));
+
+  const byDay = new Map<string, number>();
+  for (const c of all) {
+    const k = c.date.slice(0, 10);
+    byDay.set(k, (byDay.get(k) ?? 0) + 1);
+  }
+
+  const WEEKS = 18;
+  const today = new Date();
+  const end = new Date(today);
+  end.setDate(end.getDate() + (6 - end.getDay()));
+  const cells: string[] = [];
+  for (let i = WEEKS * 7 - 1; i >= 0; i--) {
+    const d = new Date(end);
+    d.setDate(d.getDate() - i);
+    const n = byDay.get(d.toISOString().slice(0, 10)) ?? 0;
+    const lvl = n === 0 ? 0 : n === 1 ? 1 : n <= 3 ? 2 : n <= 6 ? 3 : 4;
+    cells.push(`<span class="act-cell l${lvl}"></span>`);
+  }
+  grid.innerHTML = cells.join("");
+  grid.style.gridTemplateColumns = `repeat(${WEEKS}, 1fr)`;
+
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "Asia/Manila",
+  });
+  list.innerHTML = all
+    .slice(0, 5)
+    .map(
+      (c) => `<li>
+  <span class="act-msg">${esc(c.msg)}</span>
+  <span class="act-meta"><a href="${esc(c.url)}">${esc(c.repo)}</a> · ${esc(fmt.format(new Date(c.date)))}</span>
+</li>`,
+    )
+    .join("");
+}
+
+function caseStudies() {
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-study]")) {
+    const panel = document.getElementById(`study-${btn.dataset.study}`);
+    if (!panel) continue;
+    btn.addEventListener("click", () => {
+      const open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      const label = btn.querySelector("[data-study-label]");
+      if (label) label.textContent = open ? "Hide the write-up" : "Read the write-up";
+      open ? sfx.open() : sfx.close();
+    });
+  }
+}
+
+function palette() {
+  const root = document.querySelector<HTMLElement>("[data-pal]");
+  const input = document.querySelector<HTMLInputElement>("[data-pal-input]");
+  const list = document.querySelector<HTMLElement>("[data-pal-list]");
+  if (!root || !input || !list) return;
+
+  const items = [
+    ...[...document.querySelectorAll<HTMLElement>("section[id], header[id]")].map((s) => ({
+      label:
+        s.id === "top"
+          ? "Home"
+          : (s.querySelector(":scope > .shell > .marker")?.textContent?.replace(/[<>/]/g, "").trim() ?? s.id),
+      kind: "section",
+      go: () => s.scrollIntoView({ behavior: "smooth", block: "start" }),
+    })),
+    {
+      label: "Email Kyle",
+      kind: "action",
+      go: () => (window.location.href = `mailto:${document.querySelector<HTMLAnchorElement>("[data-copy]")?.dataset.copy ?? ""}`),
+    },
+    {
+      label: "Open GitHub",
+      kind: "action",
+      go: () => window.open("https://github.com/kkyleee23", "_blank"),
+    },
+  ];
+
+  let shown = items;
+  let sel = 0;
+
+  const render = () => {
+    list.innerHTML = shown
+      .map(
+        (it, i) =>
+          `<li role="option" aria-selected="${i === sel}" data-i="${i}">${esc(it.label)}<span class="pal-kind">${esc(it.kind)}</span></li>`,
+      )
+      .join("");
+  };
+  const open = () => {
+    root.hidden = false;
+    input.value = "";
+    shown = items;
+    sel = 0;
+    render();
+    input.focus();
+    sfx.open();
+  };
+  const close = () => {
+    root.hidden = true;
+    sfx.close();
+  };
+  const run = () => {
+    const it = shown[sel];
+    if (!it) {
+      const q = input.value.trim();
+      if (q) {
+        close();
+        document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" });
+        const box = document.querySelector<HTMLInputElement>("[data-input]");
+        if (box) {
+          box.value = q;
+          box.focus();
+        }
+      }
+      return;
+    }
+    close();
+    it.go();
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      root.hidden ? open() : close();
+      return;
+    }
+    if (root.hidden) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      sel = Math.min(sel + 1, shown.length - 1);
+      render();
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      sel = Math.max(sel - 1, 0);
+      render();
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      run();
+    }
+  });
+
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    shown = q ? items.filter((i) => i.label.toLowerCase().includes(q)) : items;
+    sel = 0;
+    render();
+  });
+  list.addEventListener("click", (e) => {
+    const li = (e.target as HTMLElement).closest<HTMLElement>("li");
+    if (!li) return;
+    sel = Number(li.dataset.i);
+    run();
+  });
+  root.addEventListener("click", (e) => {
+    if (e.target === root) close();
+  });
+  render();
+}
 
 type Turn = { role: "user" | "assistant"; content: string };
 
@@ -475,10 +629,6 @@ function chat() {
   );
 }
 
-/* ------------------------------------------------------------------
-   Copy the address rather than forcing a mail client open.
-   ------------------------------------------------------------------ */
-
 function copyEmail() {
   const el = document.querySelector<HTMLAnchorElement>("[data-copy]");
   if (!el || !navigator.clipboard) return;
@@ -500,7 +650,6 @@ function copyEmail() {
   });
 }
 
-/** For whoever opens the console. */
 function greet() {
   console.log(
     "%cdevByKyle",
@@ -517,6 +666,9 @@ function greet() {
 
 soundToggle();
 toolDetail();
+caseStudies();
+palette();
+void activity();
 navGlide();
 ripple();
 clock();

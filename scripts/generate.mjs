@@ -73,7 +73,7 @@ const hero = `
 
     <div class="id-row">
       <div class="avatar" data-avatar tabindex="0">
-        <img src="/img/kyle-formal.webp" width="520" height="520" alt="${esc(site.name)}" fetchpriority="high">
+        <img src="/img/kyle-portrait.webp" width="640" height="640" alt="${esc(site.name)}" fetchpriority="high">
         <span class="av-ring" aria-hidden="true"></span>
       </div>
       <div class="id-text">

@@ -29,7 +29,7 @@ export const currentFocus = {
 
 export const whatIBuild = [
   { title: "Backends & APIs", note: "Express · Supabase · PostgreSQL" },
-  { title: "AI Pipelines", note: "Groq · Gemini · OpenAI · Claude · Ollama" },
+  { title: "LLM Integration", note: "Groq · Gemini · OpenAI · Claude · Ollama" },
   { title: "Web & Mobile Apps", note: "Vanilla JS · Flutter · Capacitor" },
 ];
 
@@ -44,8 +44,8 @@ export const quickFacts = [
   { k: "Build for", v: "Individuals · Capstone teams · Small companies" },
   { k: "Available", v: "Weekdays from 2 PM · All day Sunday" },
   { k: "Work setup", v: "Remote · Hybrid around Pampanga & Metro Manila" },
-  { k: "Core focus", v: "Backend & data, full-stack when it needs one person" },
-  { k: "Interests", v: "APIs · Applied AI · Offline-first · Civic tech" },
+  { k: "Core focus", v: "Backend & data, full-stack when a project needs one person" },
+  { k: "Interests", v: "APIs · LLM integration · Offline-first · Civic tech" },
 ];
 
 export const about = [
@@ -132,8 +132,10 @@ before it answers.
 
 Stack used in public repos: HTML, CSS, JavaScript, Node.js, Express, PostgreSQL,
 Supabase, Vercel, Git, GitHub, Gemini.
-AI and LLM tooling he works with: Groq, Gemini, OpenAI, Claude, DeepSeek, Kimi,
-Grok, Ollama.
+LLM integration. He wires existing models into products through their APIs. He
+does not train or build models. Providers he has used or works with: Groq,
+Gemini, OpenAI, Claude, DeepSeek, Kimi, Grok, Ollama. Shipped examples are the
+Groq and Gemini pipeline in PrintScreen and the Nora assistant inside Planora.
 Also works with: TypeScript, React, Next.js, Vue, Tailwind, Flutter, Dart,
 Capacitor, Android Studio, PHP, Laravel, Python, FastAPI, MySQL, MongoDB,
 Firebase, GitHub Actions, Docker, Postman, Figma, VS Code, Java, C#, C++.

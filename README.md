@@ -87,6 +87,20 @@ animation, percentage skill bars, emoji icons, typewriter effects.
 - **Floating dock nav** with backdrop blur and an active-section pill.
 - Live Manila clock, capability rotator, click-to-copy email, console greeting.
 
+## GitHub data
+
+Both GitHub panels read from `/api/github`, a Vercel function that fetches on the
+server and caches at the edge for thirty minutes. One request serves every
+visitor, so nobody spends their own rate limit.
+
+GitHub allows sixty unauthenticated requests an hour **per IP**. The page used to
+make five per load, which is fine alone and not fine for a recruiter behind an
+office NAT sharing one address with two hundred colleagues.
+
+Set `GITHUB_TOKEN` in Vercel to raise the server limit to 5,000/hour. Optional.
+Without a deploy the client falls back to calling GitHub directly, so `npm run dev`
+still shows real data.
+
 ## The assistant
 
 **Kit** is the assistant. `<ASK-AI/>` posts to `/api/chat`, a Vercel serverless function that proxies to

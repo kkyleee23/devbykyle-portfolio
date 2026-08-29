@@ -323,10 +323,8 @@ async function repos() {
   const host = document.getElementById("repos");
   const handle = host?.dataset.handle;
   if (!host || !handle) return;
-  const list = await gh<Repo[]>(
-    `https://api.github.com/users/${handle}/repos?per_page=100&sort=pushed`,
-    "gh:repos",
-  );
+  const data = await ghData();
+  const list = data?.repos ?? null;
   if (!Array.isArray(list)) {
     host.innerHTML = `<p class="repo repo-meta">GitHub is rate limiting this browser. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">Open the repos directly</a></p>`;
     return;
@@ -388,6 +386,79 @@ async function gh<T>(url: string, key: string): Promise<T | null> {
 
 type Commit = { repo: string; msg: string; date: string; url: string };
 
+type GhPayload = { repos: Repo[]; commits: Commit[] };
+
+let ghOnce: Promise<GhPayload | null> | null = null;
+
+async function ghData(): Promise<GhPayload | null> {
+  if (ghOnce) return ghOnce;
+  ghOnce = (async () => {
+    const cached = readCache<GhPayload>("gh:all");
+    if (cached) return cached;
+    try {
+      const res = await fetch("/api/github");
+      if (res.ok) {
+        const v = (await res.json()) as GhPayload;
+        writeCache("gh:all", v);
+        return v;
+      }
+    } catch {}
+    return directGh();
+  })();
+  return ghOnce;
+}
+
+function readCache<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const hit = JSON.parse(raw);
+    if (Date.now() - hit.t < GH_TTL) return hit.v as T;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(key: string, v: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ t: Date.now(), v }));
+  } catch {}
+}
+
+async function directGh(): Promise<GhPayload | null> {
+  const user = "kkyleee23";
+  const names = ["Studs", "Planora-Official", "PrintScreen"];
+  const [repos, ...lists] = await Promise.all([
+    gh<Repo[]>(`https://api.github.com/users/${user}/repos?per_page=100&sort=pushed`, "gh:repos"),
+    ...names.map((r) =>
+      gh<any[]>(`https://api.github.com/repos/${user}/${r}/commits?per_page=20`, `gh:c:${r}`),
+    ),
+  ]);
+  const commits: Commit[] = [];
+  lists.forEach((j, i) => {
+    if (!Array.isArray(j)) return;
+    for (const c of j) {
+      commits.push({
+        repo: names[i]!,
+        msg: String(c.commit?.message ?? "").split(String.fromCharCode(10))[0] ?? "",
+        date: String(c.commit?.author?.date ?? ""),
+        url: String(c.html_url ?? ""),
+      });
+    }
+  });
+  commits.sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  if (!Array.isArray(repos) && !commits.length) return null;
+  return {
+    repos: Array.isArray(repos)
+      ? repos.filter((r) => !r.fork && r.name.toLowerCase() !== user.toLowerCase()).slice(0, 6)
+      : [],
+    commits,
+  };
+}
+
+
+
 async function activity() {
   const host = document.querySelector<HTMLElement>("[data-activity]");
   const grid = document.querySelector<HTMLElement>("[data-act-grid]");
@@ -398,25 +469,8 @@ async function activity() {
   const repos = (host.dataset.repos ?? "").split(",").filter(Boolean);
   if (!user || !repos.length) return;
 
-  const results = await Promise.all(
-    repos.map(async (r) => {
-      const j = await gh<any[]>(
-        `https://api.github.com/repos/${user}/${r}/commits?per_page=20`,
-        `gh:c:${r}`,
-      );
-      if (!Array.isArray(j)) return [] as Commit[];
-      {
-        return j.map((c) => ({
-          repo: r,
-          msg: String(c.commit?.message ?? "").split("\n")[0] ?? "",
-          date: String(c.commit?.author?.date ?? ""),
-          url: String(c.html_url ?? ""),
-        })) as Commit[];
-      }
-    }),
-  );
-
-  const all = results.flat().filter((c) => c.date && c.msg);
+  const data = await ghData();
+  const all = (data?.commits ?? []).filter((c) => c.date && c.msg);
   if (!all.length) {
     list.innerHTML = `<li class="act-load">Could not reach GitHub. <a href="https://github.com/${esc(user)}" style="border-bottom:1px solid var(--line-3)">See the repos</a></li>`;
     return;

@@ -76,9 +76,20 @@ animation, percentage skill bars, emoji icons, typewriter effects.
 - Motion is one scroll reveal per element, then the observer disconnects.
   `prefers-reduced-motion` disables it.
 
+## Interactivity
+
+- **Stack chips are buttons.** Clicking one opens a panel saying where that tool
+  is actually used and in which projects. Tools with no repo behind them say so
+  rather than staying silent — the claim stays checkable.
+- **Sound.** Synthesised with Web Audio, not audio files: a click is a short
+  filtered blip, so it costs nothing to download. Off by default, toggled from
+  the dock, and the choice persists.
+- **Floating dock nav** with backdrop blur and an active-section pill.
+- Live Manila clock, capability rotator, click-to-copy email, console greeting.
+
 ## The assistant
 
-`<ASK-AI/>` posts to `/api/chat`, a Vercel serverless function that proxies to
+**Kit** is the assistant. `<ASK-AI/>` posts to `/api/chat`, a Vercel serverless function that proxies to
 Groq. The key lives on the server — visitors are never asked for one.
 
 **Setup:** in Vercel → Settings → Environment Variables, add `GROQ_API_KEY`.

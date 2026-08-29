@@ -48,8 +48,8 @@ const plink = (l, project) => {
 /* ---------------- nav ---------------- */
 
 const nav = `
-<nav class="nav">
-  <div class="shell nav-in">
+<nav class="nav" aria-label="Primary">
+  <div class="dock">
     <a class="mark" href="#top"><span>dev</span>ByKyle</a>
     <div class="nav-links">
       <a href="#top">Home</a>
@@ -59,6 +59,7 @@ const nav = `
       <a href="#github">GitHub</a>
       <a href="#ask">Ask AI</a>
     </div>
+    <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
   </div>
 </nav>`;
@@ -220,6 +221,14 @@ const stackSection = `
   <div class="shell">
     ${marker("TECH-STACK")}
     <p class="legend"><span class="dot"></span> Used in shipped, public code &mdash; the rest I am still building fluency in</p>
+    <div class="tool-detail" id="tool-detail" data-detail hidden>
+      <div class="td-in">
+        <p class="td-name" data-td-name></p>
+        <p class="td-note" data-td-note></p>
+        <p class="td-used" data-td-used></p>
+      </div>
+      <button type="button" class="td-close" data-td-close aria-label="Close">&times;</button>
+    </div>
     <div class="stack">
       ${stack
         .map(
@@ -233,7 +242,7 @@ const stackSection = `
           ${g.tools
             .map(
               (t) =>
-                `<li class="chip${t.shipped ? " shipped" : ""}" style="--bc:${t.darkColor ?? t.color}"><svg viewBox="${t.box}" aria-hidden="true">${t.svg}</svg>${esc(t.name)}${t.shipped ? '<span class="dot" role="img" aria-label="used in shipped public code"></span>' : ""}</li>`,
+                `<li><button type="button" class="chip${t.shipped ? " shipped" : ""}" style="--bc:${t.darkColor ?? t.color}" data-tool="${esc(t.name)}" data-used="${esc((t.usedIn ?? []).join(","))}" data-note="${esc(t.note ?? "")}" aria-expanded="false"><svg viewBox="${t.box}" aria-hidden="true">${t.svg}</svg>${esc(t.name)}${t.shipped ? '<span class="dot" aria-hidden="true"></span>' : ""}</button></li>`,
             )
             .join("")}
         </ul>
@@ -274,18 +283,18 @@ const ask = `
 <section class="band" id="ask">
   <div class="shell">
     ${marker("ASK-AI")}
-    <p class="sub">Ask about my projects, stack or availability. It answers from the same facts
-      on this page, so it cannot invent experience I do not have.</p>
+    <p class="sub">Meet <strong>Kit</strong> &mdash; it answers from the same facts on this page,
+      so it cannot invent experience I do not have.</p>
     <div class="chat" data-chat>
       <div class="chat-log" data-log role="log" aria-live="polite" aria-label="Conversation">
-        <div class="msg msg-bot"><p>Hi. I can answer questions about Kyle&rsquo;s work. Try one of these, or ask your own.</p></div>
+        <div class="msg msg-bot"><p>I&rsquo;m Kit. I can answer questions about Kyle&rsquo;s work &mdash; what he has shipped, what he uses, when he is free. Try one of these, or ask your own.</p></div>
       </div>
       <div class="chat-chips">
         ${askChips.map((q) => `<button type="button" class="ask-chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
       </div>
       <form class="chat-form" data-form>
         <label class="sr-only" for="ask-input">Ask a question about Kyle</label>
-        <input id="ask-input" type="text" autocomplete="off" maxlength="300" placeholder="Ask something&hellip;" data-input>
+        <input id="ask-input" type="text" autocomplete="off" maxlength="300" placeholder="Ask Kit something&hellip;" data-input>
         <button class="btn btn-solid" type="submit" data-send>${icons.spark}Ask</button>
       </form>
       <p class="chat-note">Answers are generated and can be wrong. Nothing you type is stored.</p>
@@ -379,6 +388,7 @@ ${ask}
 ${timelineSection}
 </main>
 ${footer}
+<div class="page-fade" aria-hidden="true"></div>
 </body>
 </html>
 `;

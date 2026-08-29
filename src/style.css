@@ -980,10 +980,6 @@ img {
    Hero info-panel
    ============================================================ */
 
-.hero {
-  padding-block: 2.75rem 3rem;
-  border-bottom: 1px solid var(--line);
-}
 .kicker {
   font-family: var(--f-mono);
   font-size: 11px;
@@ -1437,5 +1433,223 @@ html:not(.js) .rot-item {
   }
   .proj:nth-child(even) .proj-media {
     order: 2;
+  }
+}
+
+/* ============================================================
+   Floating nav dock
+   ============================================================ */
+
+.nav {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding-inline: 0.75rem;
+  margin-bottom: -3.5rem;
+  background: none;
+  border: 0;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+.dock {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: min(100%, 62rem);
+  height: 52px;
+  padding: 0 0.4rem 0 0.9rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.25),
+    0 2px 4px -2px rgb(0 0 0 / 0.18),
+    0 0 0 1px rgb(255 255 255 / 0.06);
+  user-select: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.dock:hover {
+  border-color: var(--line-3);
+}
+.dock .mark {
+  padding-right: 0.15rem;
+}
+.dock .nav-links {
+  gap: 0.15rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dock .nav-links::-webkit-scrollbar {
+  display: none;
+}
+.dock .nav-links a {
+  position: relative;
+  padding: 0.4rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 13px;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease;
+}
+.dock .nav-links a:hover {
+  background: var(--surface-2);
+}
+.dock .nav-links a[aria-current] {
+  color: var(--ink);
+  background: var(--surface-3);
+}
+.dock .nav-cta {
+  padding: 0.5rem 0.85rem;
+  border-radius: 9999px;
+}
+.dock .btn-label {
+  display: none;
+}
+
+.sfx-toggle {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease;
+}
+.sfx-toggle:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.sfx-toggle svg {
+  width: 15px;
+  height: 15px;
+  grid-area: 1 / 1;
+}
+.sfx-toggle .i-on {
+  display: none;
+}
+.sfx-toggle[aria-pressed="true"] {
+  color: var(--ink);
+}
+.sfx-toggle[aria-pressed="true"] .i-on {
+  display: block;
+}
+.sfx-toggle[aria-pressed="true"] .i-off {
+  display: none;
+}
+
+/* The hero has to clear the floating dock. */
+.hero {
+  padding-top: 5.5rem;
+}
+
+@media (min-width: 900px) {
+  .dock .btn-label {
+    display: inline;
+  }
+  .dock .nav-links {
+    gap: 0.15rem;
+  }
+}
+
+/* ============================================================
+   Interactive stack chips
+   ============================================================ */
+
+.chip {
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-align: left;
+}
+.chip[aria-expanded="true"] {
+  border-color: var(--line-3);
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.chip:active {
+  transform: translateY(1px);
+}
+
+.tool-detail {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+.tool-detail[hidden] {
+  display: none;
+}
+.td-name {
+  font-family: var(--f-display);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.td-note {
+  margin-top: 0.3rem;
+  max-width: 62ch;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.td-used {
+  margin-top: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.td-close {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.td-close:hover {
+  color: var(--ink);
+  border-color: var(--line-3);
+}
+
+/* ============================================================
+   Bottom fade — content resolves into the page rather than
+   stopping against a hard edge.
+   ============================================================ */
+
+.page-fade {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 72px;
+  z-index: 40;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--bg) 20%, transparent);
+  -webkit-mask-image: linear-gradient(0deg, black 35%, transparent);
+  mask-image: linear-gradient(0deg, black 35%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip:active {
+    transform: none;
   }
 }

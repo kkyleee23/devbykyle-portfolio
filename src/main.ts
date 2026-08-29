@@ -64,6 +64,135 @@ function rotator() {
   );
 }
 
+
+/* ------------------------------------------------------------------
+   Sound. Synthesised with Web Audio rather than shipping audio files —
+   a click is a short filtered blip, which costs nothing to download.
+   Off until asked for, and the choice persists.
+   ------------------------------------------------------------------ */
+
+let ctx: AudioContext | null = null;
+let sfxOn = false;
+
+function tone(freq: number, ms: number, gain: number, type: OscillatorType = "triangle") {
+  if (!sfxOn) return;
+  try {
+    ctx ??= new AudioContext();
+    if (ctx.state === "suspended") void ctx.resume();
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const amp = ctx.createGain();
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 2600;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.72, t + ms / 1000);
+    amp.gain.setValueAtTime(0, t);
+    amp.gain.linearRampToValueAtTime(gain, t + 0.006);
+    amp.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000);
+    osc.connect(lp).connect(amp).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + ms / 1000 + 0.02);
+  } catch {
+    /* audio unavailable — the site does not depend on it */
+  }
+}
+
+const sfx = {
+  tap: () => tone(420, 70, 0.05),
+  open: () => tone(560, 110, 0.055),
+  close: () => tone(300, 90, 0.04),
+  send: () => tone(680, 120, 0.05, "sine"),
+  reply: () => tone(520, 150, 0.045, "sine"),
+};
+
+function soundToggle() {
+  const btn = document.querySelector<HTMLButtonElement>("[data-sfx]");
+  if (!btn) return;
+  try {
+    sfxOn = localStorage.getItem("sfx") === "on";
+  } catch {
+    sfxOn = false;
+  }
+  btn.setAttribute("aria-pressed", String(sfxOn));
+  btn.addEventListener("click", () => {
+    sfxOn = !sfxOn;
+    btn.setAttribute("aria-pressed", String(sfxOn));
+    try {
+      localStorage.setItem("sfx", sfxOn ? "on" : "off");
+    } catch {
+      /* private mode */
+    }
+    if (sfxOn) sfx.open();
+  });
+
+  // every control on the page shares one click sound
+  document.addEventListener("pointerdown", (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest("a, button") && !t.closest("[data-sfx]")) sfx.tap();
+  });
+}
+
+/* ------------------------------------------------------------------
+   Stack chips. Clicking one shows where that tool is actually used.
+   ------------------------------------------------------------------ */
+
+function toolDetail() {
+  const panel = document.querySelector<HTMLElement>("[data-detail]");
+  const nameEl = document.querySelector<HTMLElement>("[data-td-name]");
+  const noteEl = document.querySelector<HTMLElement>("[data-td-note]");
+  const usedEl = document.querySelector<HTMLElement>("[data-td-used]");
+  const closeEl = document.querySelector<HTMLButtonElement>("[data-td-close]");
+  if (!panel || !nameEl || !noteEl || !usedEl || !closeEl) return;
+
+  const chips = [...document.querySelectorAll<HTMLButtonElement>(".chip")];
+  let open: HTMLButtonElement | null = null;
+
+  const close = () => {
+    panel.hidden = true;
+    open?.setAttribute("aria-expanded", "false");
+    open = null;
+  };
+
+  for (const chip of chips) {
+    chip.setAttribute("aria-controls", "tool-detail");
+    chip.addEventListener("click", () => {
+      if (open === chip) {
+        sfx.close();
+        close();
+        return;
+      }
+      open?.setAttribute("aria-expanded", "false");
+      open = chip;
+      chip.setAttribute("aria-expanded", "true");
+
+      const used = (chip.dataset.used ?? "").split(",").filter(Boolean);
+      nameEl.textContent = chip.dataset.tool ?? "";
+      noteEl.textContent =
+        chip.dataset.note ||
+        "Not in a public repo yet — this one is still on the learning pile.";
+      usedEl.textContent = used.length
+        ? `Used in ${used.join(" · ")}`
+        : "No shipped project uses it yet";
+      panel.hidden = false;
+      sfx.open();
+      panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  }
+
+  closeEl.addEventListener("click", () => {
+    sfx.close();
+    close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && open) {
+      close();
+      open?.focus();
+    }
+  });
+}
+
 /* ------------------------------------------------------------------
    Scroll reveal. Fires once per element, then stops observing.
    ------------------------------------------------------------------ */
@@ -210,6 +339,7 @@ function chat() {
     send.disabled = true;
     input.value = "";
 
+    sfx.send();
     bubble("msg-user", `<p>${esc(q)}</p>`);
     history.push({ role: "user", content: q });
     const thinking = bubble(
@@ -233,6 +363,7 @@ function chat() {
         .map((p) => `<p>${esc(p.trim())}</p>`)
         .join("");
       history.push({ role: "assistant", content: reply });
+      sfx.reply();
     } catch (err) {
       thinking.className = "msg msg-err";
       const why = err instanceof Error ? err.message : "Something went wrong.";
@@ -294,6 +425,8 @@ function greet() {
   );
 }
 
+soundToggle();
+toolDetail();
 clock();
 rotator();
 reveal();

@@ -46,7 +46,7 @@ const nav = `
 <nav class="nav" aria-label="Primary">
   <div class="dock">
     <span class="dock-progress" data-progress aria-hidden="true"></span>
-    <a class="mark" href="#top"><span>dev</span>ByKyle</a>
+    <a class="mark" href="#top" aria-label="devByKyle, back to top"><span class="mark-full"><span>dev</span>ByKyle</span><span class="mark-mini" aria-hidden="true">&lt;/&gt;</span></a>
     <div class="nav-links">
       <a href="#top">Home</a>
       <a href="#about">About</a>

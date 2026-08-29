@@ -277,6 +277,19 @@ function navGlide() {
     attributeFilter: ["aria-current"],
   });
   window.addEventListener("resize", sync);
+
+  const dock = wrap.closest(".dock");
+  if (dock) {
+    dock.addEventListener("transitionend", (e) => {
+      if ((e as TransitionEvent).propertyName !== "opacity") sync();
+    });
+    new MutationObserver(sync).observe(dock, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(sync).observe(wrap);
+  if (document.fonts?.ready) void document.fonts.ready.then(sync);
   requestAnimationFrame(sync);
 }
 

@@ -365,27 +365,21 @@ async function gh<T>(url: string, key: string): Promise<T | null> {
       const hit = JSON.parse(raw);
       if (Date.now() - hit.t < GH_TTL) return hit.v as T;
     }
-  } catch {
-    /* */
-  }
+  } catch {}
   try {
     const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
     if (res.status === 403 || res.status === 429) {
       try {
         const stale = localStorage.getItem(key);
         if (stale) return JSON.parse(stale).v as T;
-      } catch {
-        /* */
-      }
+      } catch {}
       return null;
     }
     if (!res.ok) return null;
     const v = (await res.json()) as T;
     try {
       localStorage.setItem(key, JSON.stringify({ t: Date.now(), v }));
-    } catch {
-      /* */
-    }
+    } catch {}
     return v;
   } catch {
     return null;

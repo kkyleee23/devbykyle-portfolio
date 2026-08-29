@@ -74,8 +74,15 @@ export const projects = [
     spec: ["8 screens", "Repo-per-entity data layer", "No framework"],
     tags: ["Vite", "JavaScript", "Supabase", "PostgreSQL"],
     links: [{ kind: "source", href: "https://github.com/kkyleee23/Studs" }],
-    kind: "none",
-    shots: [],
+    kind: "web",
+    shots: [
+      {
+        src: "/img/studs-web.webp",
+        alt: "Studs running in the browser",
+        width: 1500,
+        height: 907,
+      },
+    ],
     study: {
       problem:
         "Recording attendance and scores took more clicks than it should, and the school system made simple things slow enough that people kept paper backups.",
@@ -136,8 +143,8 @@ export const services = [
 export const terminalToolsShot = {
   src: "/img/cybernant.webp",
   alt: "Cybernant running in a terminal, analysing a phone number",
-  width: 1400,
-  height: 654,
+  width: 1730,
+  height: 1128,
 };
 
 export const terminalTools = [

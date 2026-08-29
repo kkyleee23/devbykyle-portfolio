@@ -101,6 +101,18 @@ Set `GITHUB_TOKEN` in Vercel to raise the server limit to 5,000/hour. Optional.
 Without a deploy the client falls back to calling GitHub directly, so `npm run dev`
 still shows real data.
 
+## Source visibility
+
+The deployed site ships built assets only: one minified JS bundle, one CSS file,
+the fonts, the images and index.html. No source maps, so the TypeScript and the
+component structure are not reconstructable from the browser. The generator, the
+data files, the API handlers and the SQL never leave the build.
+
+Anyone can still read the minified bundle, because that is how the web works.
+There is no way to run code in a browser and hide it from that browser. What
+matters is that nothing sensitive lives in the client: the keys are all server
+side in the API routes, and those run on Vercel, not in the page.
+
 ## Deploying
 
 ```bash

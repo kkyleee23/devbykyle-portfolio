@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import {
   site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
-import { projects, nowCards, services } from "../src/data/projects.js";
+import { projects, nowCards, services, terminalTools } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
 import { icons, linkKinds } from "../src/data/icons.js";
 
@@ -51,9 +51,10 @@ const nav = `
       <a href="#top">Home</a>
       <a href="#about">About</a>
       <a href="#work">Projects</a>
-      <a href="#stack">Tech</a>
-      <a href="#github">GitHub</a>
       <a href="#services">Hire</a>
+      <a href="#stack">Tech</a>
+      <a href="#tools">Tools</a>
+      <a href="#github">GitHub</a>
       <a href="#recommend">Recommend</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
@@ -289,6 +290,39 @@ const servicesSection = `
   </div>
 </section>`;
 
+const tools = `
+<section class="band" id="tools">
+  <div class="shell">
+    ${marker("TERMINAL-TOOLS")}
+    <p class="sub">Two command-line tools, one defensive and one not. Both sit outside the
+      web work, and neither is on GitHub yet.</p>
+    <div class="tools">
+      ${terminalTools
+        .map(
+          (t) => `<article class="tool rise">
+        <div class="tool-top">
+          <div>
+            <h3>${esc(t.name)}</h3>
+            <p class="tool-tag">${esc(t.tagline)}</p>
+          </div>
+          ${badge(t.statusLabel, t.status)}
+        </div>
+        <p class="tool-body">${esc(t.body)}</p>
+        ${spec(t.spec)}
+        ${
+          t.features.length
+            ? `<ul class="tool-feat" role="list">${t.features.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`
+            : ""
+        }
+        <p class="tool-note">${esc(t.note)}</p>
+      </article>`,
+        )
+        .join("")}
+    </div>
+  </div>
+</section>`;
+
+
 const github = `
 <section class="band" id="github">
   <div class="shell">
@@ -456,6 +490,7 @@ ${building}
 ${work}
 ${servicesSection}
 ${stackSection}
+${tools}
 ${github}
 ${timelineSection}
 ${recommendations}

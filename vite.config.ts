@@ -7,7 +7,8 @@ export default defineConfig({
   },
   build: {
     target: "es2022",
-    // A portfolio has no business shipping a large bundle.
+    sourcemap: false,
+    minify: "esbuild",
     chunkSizeWarningLimit: 60,
   },
 });

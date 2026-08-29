@@ -2703,3 +2703,71 @@ html {
     gap: 2rem;
   }
 }
+
+.tools {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+.tool {
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.tool-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.tool h3 {
+  font-size: 17.5px;
+}
+.tool-tag {
+  margin-top: 0.15rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.tool-body {
+  margin-top: 0.7rem;
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+.tool-feat {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.9rem;
+}
+.tool-feat li {
+  position: relative;
+  padding-left: 0.95rem;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.tool-feat li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 1px;
+  background: var(--line-3);
+}
+.tool-note {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  max-width: 62ch;
+}
+
+@media (min-width: 820px) {
+  .tools {
+    grid-template-columns: 1.25fr 1fr;
+    align-items: start;
+  }
+}

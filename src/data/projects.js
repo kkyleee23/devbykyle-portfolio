@@ -132,3 +132,32 @@ export const services = [
     fit: "Best fit for a small company with one annoying process.",
   },
 ];
+
+export const terminalTools = [
+  {
+    name: "Cybernant",
+    tagline: "Phone number OSINT reconnaissance",
+    body: "A command-line tool that takes a phone number and returns carrier, line type, region, timezone, number formats, and approximate registration-area coordinates, plus manual lookup links for Telegram and Truecaller. Runs on Windows and Linux.",
+    spec: ["Python 3.10+", "Windows + Linux", "MIT", "Signed licence keys"],
+    features: [
+      "Validation, parsing and carrier identification",
+      "Line type detection for mobile, fixed line and VoIP",
+      "E.164, national and international format conversion",
+      "Registration-area coordinates with a Maps link",
+      "Cryptographically signed licence key system",
+    ],
+    note: "Built for authorised security testing and education. Using it against someone without consent is illegal, and the disclaimer in the repo says so.",
+    status: "building",
+    statusLabel: "Not public yet",
+  },
+  {
+    name: "Nightshade",
+    tagline: "The offensive counterpart, key-gated",
+    body: "A private build for security professionals doing counter-offensive work. Where Cybernant is the defensive, read-only half, Nightshade is the side that acts. Distribution is by key from me, and it is not open source.",
+    spec: ["Private", "Key required", "Professional use"],
+    features: [],
+    note: "Not published, and not handed out on request. Ask directly if your work calls for it.",
+    status: "building",
+    statusLabel: "Private",
+  },
+];

@@ -71,9 +71,18 @@ const hero = `
   <div class="shell">
     <p class="kicker">${esc(site.kicker)}</p>
 
-    ${site.openToWork ? `<p class="status"><span class="pip" aria-hidden="true"></span> Available for work</p>` : ""}
-    <h1>${esc(site.name)}</h1>
-    <p class="handle">${esc(site.handle)}</p>
+    <div class="id-row">
+      <div class="avatar" data-avatar tabindex="0" role="img" aria-label="${esc(site.name)}">
+        <img class="av-a" src="/img/kyle-formal.webp" width="520" height="520" alt="" fetchpriority="high">
+        <img class="av-b" src="/img/kyle-casual.webp" width="520" height="520" alt="" aria-hidden="true">
+        <span class="av-ring" aria-hidden="true"></span>
+      </div>
+      <div class="id-text">
+        ${site.openToWork ? `<p class="status"><span class="pip" aria-hidden="true"></span> Available for work</p>` : ""}
+        <h1>${esc(site.name)}</h1>
+        <p class="handle">${esc(site.handle)}</p>
+      </div>
+    </div>
 
     <p class="id-meta">
       <span>${esc(site.location)}</span>
@@ -140,14 +149,8 @@ const aboutSection = `
 <section class="band" id="about">
   <div class="shell">
     ${marker("ABOUT")}
-    <div class="about-grid">
-      <div class="about-prose">
-        ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
-      </div>
-      <figure class="portrait">
-        <img src="/img/kyle.jpg" width="1728" height="1736" alt="${esc(site.name)}" loading="lazy" decoding="async">
-        <figcaption>${esc(site.location)}</figcaption>
-      </figure>
+    <div class="about-prose">
+      ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
     </div>
   </div>
 </section>`;
@@ -222,6 +225,7 @@ const stackSection = `
     ${marker("TECH-STACK")}
     <p class="legend"><span class="dot"></span> Used in shipped, public code &mdash; the rest I am still building fluency in</p>
     <div class="tool-detail" id="tool-detail" data-detail hidden>
+      <span class="td-icon" data-td-icon aria-hidden="true"></span>
       <div class="td-in">
         <p class="td-name" data-td-name></p>
         <p class="td-note" data-td-note></p>
@@ -372,6 +376,7 @@ const html = `<!doctype html>
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
 <body>

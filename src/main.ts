@@ -74,37 +74,58 @@ function rotator() {
 let ctx: AudioContext | null = null;
 let sfxOn = false;
 
-function tone(freq: number, ms: number, gain: number, type: OscillatorType = "triangle") {
+/* A click is two things: a short noise transient for the "tick", and a low
+   sine body for weight. One oscillator alone reads as a beep, which is what
+   the first version sounded like. */
+function click(base: number, gain: number) {
   if (!sfxOn) return;
   try {
     ctx ??= new AudioContext();
     if (ctx.state === "suspended") void ctx.resume();
     const t = ctx.currentTime;
+    const out = ctx.createGain();
+    out.gain.value = gain;
+    out.connect(ctx.destination);
+
+    // transient: filtered noise burst, ~14ms
+    const n = Math.floor(ctx.sampleRate * 0.014);
+    const buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2.2;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = base * 3.2;
+    bp.Q.value = 0.9;
+    const ng = ctx.createGain();
+    ng.gain.value = 0.55;
+    noise.connect(bp).connect(ng).connect(out);
+    noise.start(t);
+
+    // body: quick sine thump
     const osc = ctx.createOscillator();
-    const amp = ctx.createGain();
-    const lp = ctx.createBiquadFilter();
-    lp.type = "lowpass";
-    lp.frequency.value = 2600;
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, t);
-    osc.frequency.exponentialRampToValueAtTime(freq * 0.72, t + ms / 1000);
-    amp.gain.setValueAtTime(0, t);
-    amp.gain.linearRampToValueAtTime(gain, t + 0.006);
-    amp.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000);
-    osc.connect(lp).connect(amp).connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(base, t);
+    osc.frequency.exponentialRampToValueAtTime(base * 0.55, t + 0.055);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(0, t);
+    og.gain.linearRampToValueAtTime(1, t + 0.004);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    osc.connect(og).connect(out);
     osc.start(t);
-    osc.stop(t + ms / 1000 + 0.02);
+    osc.stop(t + 0.09);
   } catch {
-    /* audio unavailable — the site does not depend on it */
+    /* audio unavailable */
   }
 }
 
 const sfx = {
-  tap: () => tone(420, 70, 0.05),
-  open: () => tone(560, 110, 0.055),
-  close: () => tone(300, 90, 0.04),
-  send: () => tone(680, 120, 0.05, "sine"),
-  reply: () => tone(520, 150, 0.045, "sine"),
+  tap: () => click(190, 0.055),
+  open: () => click(260, 0.06),
+  close: () => click(140, 0.05),
+  send: () => click(320, 0.06),
+  reply: () => click(230, 0.05),
 };
 
 function soundToggle() {
@@ -143,6 +164,7 @@ function toolDetail() {
   const nameEl = document.querySelector<HTMLElement>("[data-td-name]");
   const noteEl = document.querySelector<HTMLElement>("[data-td-note]");
   const usedEl = document.querySelector<HTMLElement>("[data-td-used]");
+  const iconEl = document.querySelector<HTMLElement>("[data-td-icon]");
   const closeEl = document.querySelector<HTMLButtonElement>("[data-td-close]");
   if (!panel || !nameEl || !noteEl || !usedEl || !closeEl) return;
 
@@ -168,12 +190,17 @@ function toolDetail() {
       chip.setAttribute("aria-expanded", "true");
 
       const used = (chip.dataset.used ?? "").split(",").filter(Boolean);
+      const mark = chip.querySelector("svg");
+      if (iconEl) {
+        iconEl.innerHTML = mark ? mark.outerHTML : "";
+        iconEl.style.setProperty("--bc", chip.style.getPropertyValue("--bc"));
+      }
       nameEl.textContent = chip.dataset.tool ?? "";
       noteEl.textContent =
         chip.dataset.note ||
         "Not in a public repo yet — this one is still on the learning pile.";
-      usedEl.textContent = used.length
-        ? `Used in ${used.join(" · ")}`
+      usedEl.innerHTML = used.length
+        ? `Used in ${used.map((u) => `<span class="td-proj">${esc(u)}</span>`).join("")}`
         : "No shipped project uses it yet";
       panel.hidden = false;
       sfx.open();
@@ -248,6 +275,69 @@ function activeNav() {
     { rootMargin: "-45% 0px -50% 0px" },
   );
   map.forEach((_, el) => io.observe(el));
+}
+
+
+/* ------------------------------------------------------------------
+   Nav: a pill that slides to whichever section you are in, plus a tap
+   ripple on press. Both are decoration, so both sit behind a guard.
+   ------------------------------------------------------------------ */
+
+function navGlide() {
+  const wrap = document.querySelector<HTMLElement>(".dock .nav-links");
+  if (!wrap) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const glide = document.createElement("span");
+  glide.className = "nav-glide";
+  wrap.prepend(glide);
+
+  const move = (to: HTMLElement | null) => {
+    if (!to) {
+      glide.classList.remove("on");
+      return;
+    }
+    glide.classList.add("on");
+    glide.style.width = `${to.offsetWidth}px`;
+    glide.style.transform = `translateX(${to.offsetLeft}px)`;
+  };
+
+  const current = () => wrap.querySelector<HTMLElement>("a[aria-current]");
+  const sync = () => move(current());
+
+  // follow the pointer, snap back to the active section on leave
+  wrap.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
+    a.addEventListener("pointerenter", () => !reduce && move(a));
+  });
+  wrap.addEventListener("pointerleave", sync);
+  new MutationObserver(sync).observe(wrap, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["aria-current"],
+  });
+  window.addEventListener("resize", sync);
+  requestAnimationFrame(sync);
+}
+
+function ripple() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.addEventListener("pointerdown", (e) => {
+    const host = (e.target as HTMLElement).closest<HTMLElement>(
+      ".dock .nav-links a, .btn, .ask-chip, .chip",
+    );
+    if (!host) return;
+    const r = host.getBoundingClientRect();
+    const d = Math.max(r.width, r.height);
+    const el = document.createElement("span");
+    el.className = "ink";
+    el.style.width = el.style.height = `${d}px`;
+    el.style.left = `${e.clientX - r.left - d / 2}px`;
+    el.style.top = `${e.clientY - r.top - d / 2}px`;
+    const pos = getComputedStyle(host).position;
+    if (pos === "static") host.style.position = "relative";
+    host.append(el);
+    el.addEventListener("animationend", () => el.remove());
+  });
 }
 
 /* ------------------------------------------------------------------
@@ -427,6 +517,8 @@ function greet() {
 
 soundToggle();
 toolDetail();
+navGlide();
+ripple();
 clock();
 rotator();
 reveal();

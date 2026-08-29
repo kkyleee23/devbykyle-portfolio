@@ -53,6 +53,10 @@ function rotator() {
   document.addEventListener("visibilitychange", () =>
     document.hidden ? stop() : start(),
   );
+  host.addEventListener("pointerenter", stop);
+  host.addEventListener("pointerleave", start);
+  host.addEventListener("focusin", stop);
+  host.addEventListener("focusout", start);
 }
 
 let ctx: AudioContext | null = null;
@@ -319,17 +323,22 @@ async function repos() {
   const host = document.getElementById("repos");
   const handle = host?.dataset.handle;
   if (!host || !handle) return;
-  try {
-    const res = await fetch(
-      `https://api.github.com/users/${handle}/repos?per_page=100&sort=pushed`,
-      { headers: { Accept: "application/vnd.github+json" } },
-    );
-    if (!res.ok) throw new Error(String(res.status));
-    const list: Repo[] = await res.json();
+  const list = await gh<Repo[]>(
+    `https://api.github.com/users/${handle}/repos?per_page=100&sort=pushed`,
+    "gh:repos",
+  );
+  if (!Array.isArray(list)) {
+    host.innerHTML = `<p class="repo repo-meta">GitHub is rate limiting this browser. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">Open the repos directly</a></p>`;
+    return;
+  }
+  {
     const shown = list
       .filter((r) => !r.fork && r.name.toLowerCase() !== handle.toLowerCase())
       .slice(0, 6);
-    if (!shown.length) throw new Error("empty");
+    if (!shown.length) {
+      host.innerHTML = `<p class="repo repo-meta">No public repositories yet. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">Open the profile</a></p>`;
+      return;
+    }
 
     host.innerHTML = shown
       .map(
@@ -344,8 +353,42 @@ async function repos() {
 </article>`,
       )
       .join("");
+  }
+}
+
+const GH_TTL = 30 * 60 * 1000;
+
+async function gh<T>(url: string, key: string): Promise<T | null> {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      const hit = JSON.parse(raw);
+      if (Date.now() - hit.t < GH_TTL) return hit.v as T;
+    }
   } catch {
-    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">browse the repos directly</a>.</p>`;
+    /* */
+  }
+  try {
+    const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+    if (res.status === 403 || res.status === 429) {
+      try {
+        const stale = localStorage.getItem(key);
+        if (stale) return JSON.parse(stale).v as T;
+      } catch {
+        /* */
+      }
+      return null;
+    }
+    if (!res.ok) return null;
+    const v = (await res.json()) as T;
+    try {
+      localStorage.setItem(key, JSON.stringify({ t: Date.now(), v }));
+    } catch {
+      /* */
+    }
+    return v;
+  } catch {
+    return null;
   }
 }
 
@@ -363,22 +406,18 @@ async function activity() {
 
   const results = await Promise.all(
     repos.map(async (r) => {
-      try {
-        const res = await fetch(
-          `https://api.github.com/repos/${user}/${r}/commits?per_page=20`,
-          { headers: { Accept: "application/vnd.github+json" } },
-        );
-        if (!res.ok) return [] as Commit[];
-        const j = await res.json();
-        if (!Array.isArray(j)) return [] as Commit[];
+      const j = await gh<any[]>(
+        `https://api.github.com/repos/${user}/${r}/commits?per_page=20`,
+        `gh:c:${r}`,
+      );
+      if (!Array.isArray(j)) return [] as Commit[];
+      {
         return j.map((c) => ({
           repo: r,
           msg: String(c.commit?.message ?? "").split("\n")[0] ?? "",
           date: String(c.commit?.author?.date ?? ""),
           url: String(c.html_url ?? ""),
         })) as Commit[];
-      } catch {
-        return [] as Commit[];
       }
     }),
   );
@@ -469,6 +508,16 @@ function kitWidget() {
       fab.focus();
     }
   });
+}
+
+function dockShrink() {
+  const dock = document.querySelector<HTMLElement>(".dock");
+  const hero = document.getElementById("top");
+  if (!dock || !hero) return;
+  new IntersectionObserver(
+    ([e]) => dock.classList.toggle("tight", !!e && !e.isIntersecting),
+    { rootMargin: "-120px 0px 0px 0px", threshold: 0 },
+  ).observe(hero);
 }
 
 function scrollProgress() {
@@ -718,6 +767,7 @@ caseStudies();
 palette();
 kitWidget();
 scrollProgress();
+dockShrink();
 void activity();
 navGlide();
 ripple();

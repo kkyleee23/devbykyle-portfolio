@@ -3,10 +3,10 @@ export const site = {
   short: "devByKyle",
   handle: "@kkyleee23",
   role: "Backend-focused Full-Stack Developer",
-  kicker: "// grade 12 student & developer",
+  kicker: "Grade 12 student, and a developer since 2024",
   headline: "I build the parts that keep an app running.",
   lede:
-    "Backend is where I am strongest: data, APIs, and the pipeline behind the screen. I learned the front end so I could ship a whole thing myself instead of handing half of it off.",
+    "Backend is where I am strongest. Data models, APIs, and the part nobody sees. I learned the front end so I could ship a whole thing myself instead of handing half of it off.",
   location: "Apalit, Pampanga, Philippines",
   timezone: "GMT+8",
   tz: "Asia/Manila",
@@ -24,13 +24,13 @@ export const site = {
 
 export const currentFocus = {
   body: "Shipping small tools that solve a real problem, then writing down what broke so the next one goes faster. It started with tools for students. Now it is for anyone who needs one.",
-  motto: "> learn · build · ship · write it down",
+  motto: "Learn it, build it, ship it, then write down what broke.",
 };
 
 export const whatIBuild = [
-  { title: "Backends & APIs", note: "Express, Supabase, PostgreSQL" },
-  { title: "AI Pipelines", note: "Groq, Gemini, OpenAI, Claude, Ollama" },
-  { title: "Web & Mobile Apps", note: "Vanilla JS, Flutter, Capacitor" },
+  { title: "Backends & APIs", note: "Express · Supabase · PostgreSQL" },
+  { title: "AI Pipelines", note: "Groq · Gemini · OpenAI · Claude · Ollama" },
+  { title: "Web & Mobile Apps", note: "Vanilla JS · Flutter · Capacitor" },
 ];
 
 export const howIWork = [
@@ -49,8 +49,8 @@ export const quickFacts = [
 ];
 
 export const about = [
-  "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.",
-  "Backend is the half I care about most: the data model, the API, the pipeline that turns an upload into something useful. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",
+  "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. I still reach for plain HTML and JavaScript more often than a framework, because I learned to make things run before I learned to make them look right.",
+  "Backend is the half I care about most. The data model, the API, and the pipeline that turns an upload into something a person can use. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",
   "The first things I made were for school, since that was the problem in front of me. The work is not limited to that. A capstone team that needs a backend, a small company that needs an internal tool, or one person who needs something that does a single job properly. Those are all the same problem shaped differently.",
   "I pick up design from wherever it turns up, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.",
 ];

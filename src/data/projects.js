@@ -5,7 +5,7 @@ export const projects = [
     status: "live",
     statusLabel: "Live",
     summary:
-      "A free task manager for Android and web with a built-in AI assistant called Nora. Tasks, notes and goals in one place, with no accounts, no ads, and full offline support.",
+      "A free task manager for Android and web with a built-in AI assistant called Nora. Tasks, notes and goals in one place. No accounts, no ads, and it works with the network off.",
     spec: ["Under 5 MB", "Works offline", "No account", "Android + Web"],
     tags: ["HTML", "CSS", "JavaScript", "Vercel"],
     links: [
@@ -118,7 +118,7 @@ export const nowCards = [
 export const services = [
   {
     title: "An API or a backend",
-    body: "Data model, endpoints, auth and the deployment. You get something your front end can talk to, with the queries in one place rather than scattered through the app.",
+    body: "The data model, the endpoints, auth, and the deployment. You get something your front end can talk to, with the queries in one place rather than scattered through the app.",
     fit: "Best fit if you have a front end and nothing behind it.",
   },
   {

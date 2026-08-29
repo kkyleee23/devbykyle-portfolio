@@ -2,11 +2,11 @@ export const site = {
   name: "Juniz Kyle Sarmiento",
   short: "devByKyle",
   handle: "@kkyleee23",
-  role: "Web & Software Developer",
+  role: "Backend-focused Full-Stack Developer",
   kicker: "// grade 12 student & developer",
-  headline: "I build web and mobile tools for students.",
+  headline: "I build the parts that keep an app running.",
   lede:
-    "The kind that do one thing, load fast, and don't ask you to make an account first. I reach for a framework when a project earns it and keep things plain when it doesn't.",
+    "Backend is where I am strongest — data, APIs, the pipeline behind the screen. I learned the front end so I could ship the whole thing myself instead of handing half of it off.",
   location: "Apalit, Pampanga, Philippines",
   timezone: "GMT+8",
   tz: "Asia/Manila",
@@ -24,15 +24,15 @@ export const site = {
 
 /** Hero: one sentence on where my attention is. */
 export const currentFocus = {
-  body: "Shipping small tools that solve a real problem for students, then writing down what broke so the next one goes faster.",
+  body: "Shipping small tools that solve a real problem, then writing down what broke so the next one goes faster. Started with tools for students; building for anyone who needs one now.",
   motto: "> learn · build · ship · write it down",
 };
 
 /** Hero: rotates. Each is something with a repo behind it. */
 export const whatIBuild = [
-  { title: "Student Tools", note: "Planora, PrintScreen, Studs" },
-  { title: "Mobile Apps", note: "Flutter and Capacitor" },
-  { title: "AI-assisted Features", note: "Groq and Gemini pipelines" },
+  { title: "Backends & APIs", note: "Express, Supabase, PostgreSQL" },
+  { title: "AI Pipelines", note: "Groq, Gemini, OpenAI, Claude, Ollama" },
+  { title: "Web & Mobile Apps", note: "Vanilla JS, Flutter, Capacitor" },
 ];
 
 export const howIWork = [
@@ -43,24 +43,26 @@ export const howIWork = [
 
 export const quickFacts = [
   { k: "Open to", v: "Internships · Junior roles · Freelance" },
+  { k: "Build for", v: "Individuals · Capstone teams · Small companies" },
   { k: "Available", v: "Weekdays from 2 PM · All day Sunday" },
   { k: "Work setup", v: "Remote · Hybrid around Pampanga & Metro Manila" },
-  { k: "Core focus", v: "Front-end engineering + practical AI" },
-  { k: "Interests", v: "Student tools · Offline-first · Civic tech" },
+  { k: "Core focus", v: "Backend & data, full-stack when it needs one person" },
+  { k: "Interests", v: "APIs · Applied AI · Offline-first · Civic tech" },
 ];
 
 export const about = [
   "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.",
-  "Everything on this page solves a problem I had in school. Planora came from losing track of my own tasks. PrintScreen came from re-reading slide decks the night before an exam. Studs came from school software that made simple things slow.",
-  "I pick up design from wherever it turns up, mostly screenshots and whatever scrolls past me, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.",
+  "Backend is the half I care about most — the data model, the API, the pipeline that turns an upload into something useful. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",
+  "The first things I made were for school, since that was the problem in front of me. The work is not limited to that. A capstone team that needs a backend, a small company that needs an internal tool, or one person who needs something that does a single job properly — those are all the same problem shaped differently.",
+  "I pick up design from wherever it turns up, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.",
 ];
 
 export const timeline = [
   {
     when: "2026 — Now",
     tag: "Building",
-    title: "Shipping student tools",
-    body: "PrintScreen in March, Studs from April, Planora in May, and Agos now. Four builds in one year, all aimed at the same problem: school software that gets in the way.",
+    title: "Shipping tools end to end",
+    body: "PrintScreen in March, Studs from April, Planora in May, and Agos now. Four builds in one year, each one taking a problem from the data model through to something you can open.",
     tags: ["JavaScript", "Supabase", "Flutter", "Groq"],
   },
   {
@@ -86,6 +88,14 @@ export const timeline = [
   },
 ];
 
+/** Footer colophon — how this site is put together. */
+export const colophon = [
+  { k: "Built with", v: "Hand-written HTML & CSS, a small Vite build" },
+  { k: "Framework", v: "None. It has not earned a place here yet" },
+  { k: "Type", v: "Bricolage Grotesque · Instrument Sans · DM Mono, self-hosted" },
+  { k: "Data", v: "Repositories pulled live from the GitHub API" },
+];
+
 /** Seeds the assistant. Everything here is verifiable from the page or the repos. */
 export const aiContext = `
 Juniz Kyle Sarmiento — Grade 12 senior high student, ITMAWD strand (Information
@@ -94,6 +104,17 @@ Apalit, Pampanga, Philippines (GMT+8). Self-taught since about 2024.
 Email junizkylesarmiento@gmail.com. GitHub github.com/kkyleee23.
 Available weekday afternoons from 2 PM and all day Sunday. Open to internships,
 junior roles and freelance work, remote or hybrid around Pampanga and Metro Manila.
+
+Positioning: he is BACKEND-FOCUSED and full-stack by choice. Backend is his
+stronger and preferred half — data models, APIs, and the pipeline behind the
+interface. He learned front-end so he could ship a whole product alone rather
+than hand half of it off. Do not describe him as primarily a front-end or UI
+developer.
+
+Who he builds for: anyone who needs a tool. Individuals, college capstone teams,
+small companies, and students. His first projects happened to be for students
+because that was the problem in front of him at the time — it is not a limit on
+the work he takes.
 
 Projects:
 - Planora (live, planora-official.vercel.app): task manager for Android and web
@@ -113,12 +134,13 @@ Projects:
 Currently fixing Nora, Planora's assistant, by rebuilding the context it receives
 before it answers.
 
-Stack he has used in public repos: HTML, CSS, JavaScript, Node.js, Express,
-PostgreSQL, Supabase, Vercel, Git, GitHub, Gemini.
+Stack used in public repos: HTML, CSS, JavaScript, Node.js, Express, PostgreSQL,
+Supabase, Vercel, Git, GitHub, Gemini.
+AI and LLM tooling he works with: Groq, Gemini, OpenAI, Claude, DeepSeek, Kimi,
+Grok, Ollama.
 Also works with: TypeScript, React, Next.js, Vue, Tailwind, Flutter, Dart,
 Capacitor, Android Studio, PHP, Laravel, Python, FastAPI, MySQL, MongoDB,
-Firebase, Claude, DeepSeek, Kimi, Grok, Ollama, GitHub Actions, Docker, Postman,
-Figma, VS Code, Java, C#, C++.
+Firebase, GitHub Actions, Docker, Postman, Figma, VS Code, Java, C#, C++.
 
 This site: hand-written HTML and CSS, a small Vite build, no framework.
 `.trim();

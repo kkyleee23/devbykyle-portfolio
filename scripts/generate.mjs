@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import {
-  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts,
+  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
 import { projects, nowCards } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
@@ -72,9 +72,8 @@ const hero = `
     <p class="kicker">${esc(site.kicker)}</p>
 
     <div class="id-row">
-      <div class="avatar" data-avatar tabindex="0" role="img" aria-label="${esc(site.name)}">
-        <img class="av-a" src="/img/kyle-formal.webp" width="520" height="520" alt="" fetchpriority="high">
-        <img class="av-b" src="/img/kyle-casual.webp" width="520" height="520" alt="" aria-hidden="true">
+      <div class="avatar" data-avatar tabindex="0">
+        <img src="/img/kyle-formal.webp" width="520" height="520" alt="${esc(site.name)}" fetchpriority="high">
         <span class="av-ring" aria-hidden="true"></span>
       </div>
       <div class="id-text">
@@ -340,20 +339,29 @@ const footer = `
         <span>${esc(site.email)}</span>
         <span class="copy-hint" aria-hidden="true">click to copy</span>
       </a>
-      <p class="foot-note">${esc(site.availability)}</p>
+      <p class="foot-note">Replies within a day. ${esc(site.availability)}.</p>
+      <p class="foot-note">Good things to send: a backend that needs building, a capstone
+        that needs finishing, an internal tool nobody has time for.</p>
     </div>
     <div>
-      ${marker("SOCIAL-CHANNELS")}
+      ${marker("COLOPHON")}
+      <dl class="colophon">
+        ${colophon.map((c) => `<div><dt>${esc(c.k)}</dt><dd>${esc(c.v)}</dd></div>`).join("")}
+      </dl>
+    </div>
+    <div>
+      ${marker("ELSEWHERE")}
       <ul class="foot-links" role="list">
         <li><a href="${esc(site.github)}">${icons.github}GitHub</a></li>
         ${site.linkedin ? `<li><a href="${esc(site.linkedin)}">LinkedIn</a></li>` : ""}
         <li><a href="mailto:${esc(site.email)}">${icons.mail}Email</a></li>
       </ul>
+      <p class="foot-note">${esc(site.location)} · ${esc(site.timezone)}</p>
     </div>
   </div>
   <div class="shell foot-end">
-    <p>&copy; ${new Date().getFullYear()} ${esc(site.name)}</p>
-    <p>Hand-written HTML &amp; CSS &middot; no framework</p>
+    <p>© ${new Date().getFullYear()} ${esc(site.name)}</p>
+    <p>Last updated ${new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date())}</p>
   </div>
 </footer>`;
 
@@ -376,7 +384,6 @@ const html = `<!doctype html>
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
 <body>

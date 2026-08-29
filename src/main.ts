@@ -442,6 +442,54 @@ function caseStudies() {
   }
 }
 
+
+function kitWidget() {
+  const fab = document.querySelector<HTMLButtonElement>("[data-kit-toggle]");
+  const panel = document.getElementById("kit-panel");
+  const close = document.querySelector<HTMLButtonElement>("[data-kit-close]");
+  if (!fab || !panel) return;
+
+  const set = (open: boolean) => {
+    panel.hidden = !open;
+    fab.setAttribute("aria-expanded", String(open));
+    if (open) {
+      document.querySelector<HTMLInputElement>("[data-input]")?.focus();
+      sfx.open();
+    } else sfx.close();
+  };
+
+  fab.addEventListener("click", () => set(panel.hidden));
+  close?.addEventListener("click", () => set(false));
+  for (const b of document.querySelectorAll<HTMLElement>("[data-kit-open]")) {
+    b.addEventListener("click", () => set(true));
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !panel.hidden) {
+      set(false);
+      fab.focus();
+    }
+  });
+}
+
+function scrollProgress() {
+  const bar = document.querySelector<HTMLElement>("[data-progress]");
+  if (!bar) return;
+  let ticking = false;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    bar.style.transform = `scaleX(${p})`;
+    ticking = false;
+  };
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+  update();
+}
+
 function palette() {
   const root = document.querySelector<HTMLElement>("[data-pal]");
   const input = document.querySelector<HTMLInputElement>("[data-pal-input]");
@@ -499,7 +547,7 @@ function palette() {
       const q = input.value.trim();
       if (q) {
         close();
-        document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" });
+        document.querySelector<HTMLButtonElement>("[data-kit-toggle]")?.click();
         const box = document.querySelector<HTMLInputElement>("[data-input]");
         if (box) {
           box.value = q;
@@ -668,6 +716,8 @@ soundToggle();
 toolDetail();
 caseStudies();
 palette();
+kitWidget();
+scrollProgress();
 void activity();
 navGlide();
 ripple();

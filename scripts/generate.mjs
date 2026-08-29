@@ -18,8 +18,11 @@ const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const marker = (label) =>
-  `<h2 class="marker"><span aria-hidden="true">&lt;</span>${esc(label)}<span aria-hidden="true">/&gt;</span></h2>`;
+let markerN = 0;
+const marker = (label) => {
+  markerN += 1;
+  return `<h2 class="marker"><span class="marker-n" aria-hidden="true">${String(markerN).padStart(2, "0")}</span><span aria-hidden="true">&lt;</span>${esc(label)}<span aria-hidden="true">/&gt;</span></h2>`;
+};
 
 const tags = (items) =>
   items.length
@@ -42,6 +45,7 @@ const plink = (l, project) => {
 const nav = `
 <nav class="nav" aria-label="Primary">
   <div class="dock">
+    <span class="dock-progress" data-progress aria-hidden="true"></span>
     <a class="mark" href="#top"><span>dev</span>ByKyle</a>
     <div class="nav-links">
       <a href="#top">Home</a>
@@ -50,7 +54,6 @@ const nav = `
       <a href="#stack">Tech</a>
       <a href="#github">GitHub</a>
       <a href="#services">Hire</a>
-      <a href="#ask">Ask Kit</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
@@ -89,7 +92,7 @@ const hero = `
     <div class="hero-cta">
       <a class="btn btn-solid" href="mailto:${esc(site.email)}">${icons.mail}Send Email</a>
       <a class="btn btn-ghost" href="${esc(site.github)}">${icons.github}GitHub</a>
-      <a class="btn btn-ghost" href="#ask">${icons.spark}Ask about me</a>
+      <button type="button" class="btn btn-ghost" data-kit-open>${icons.bot}Ask about me</button>
       ${site.resume ? `<a class="btn btn-ghost" href="${esc(site.resume)}">Resume</a>` : ""}
     </div>
 
@@ -307,29 +310,31 @@ const askChips = [
   "What is he strongest at?",
 ];
 
-const ask = `
-<section class="band" id="ask">
-  <div class="shell">
-    ${marker("ASK-AI")}
-    <p class="sub">Meet <strong>Kit</strong>. It answers from the same facts on this page, so it cannot
-      invent experience I do not have.</p>
-    <div class="chat" data-chat>
-      <div class="chat-log" data-log role="log" aria-live="polite" aria-label="Conversation">
-        <div class="msg msg-bot"><p>I&rsquo;m Kit. I can answer questions about what Kyle has shipped, what he uses, and when he is free. Try one of these, or ask your own.</p></div>
-      </div>
-      <div class="chat-chips">
-        ${askChips.map((q) => `<button type="button" class="ask-chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
-      </div>
-      <form class="chat-form" data-form>
-        <label class="sr-only" for="ask-input">Ask a question about Kyle</label>
-        <input id="ask-input" type="text" autocomplete="off" maxlength="300" placeholder="Ask Kit something&hellip;" data-input>
-        <button class="btn btn-solid" type="submit" data-send>${icons.spark}Ask</button>
-      </form>
-      <p class="chat-note">Answers are generated and can be wrong. Nothing you type is stored.</p>
+const kit = `
+<div class="kit" data-chat>
+  <button type="button" class="kit-fab" data-kit-toggle aria-expanded="false" aria-controls="kit-panel" aria-label="Ask Kit">
+    ${icons.bot}
+    <span class="kit-pulse" aria-hidden="true"></span>
+  </button>
+  <div class="kit-panel" id="kit-panel" hidden>
+    <div class="kit-head">
+      <span class="kit-id">${icons.bot}<span><b>Kit</b><i>answers from this page only</i></span></span>
+      <button type="button" class="kit-x" data-kit-close aria-label="Close">&times;</button>
     </div>
+    <div class="chat-log" data-log role="log" aria-live="polite" aria-label="Conversation">
+      <div class="msg msg-bot"><p>I&rsquo;m Kit. Ask about what Kyle has shipped, what he uses, or when he is free.</p></div>
+    </div>
+    <div class="chat-chips">
+      ${askChips.map((q) => `<button type="button" class="ask-chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
+    </div>
+    <form class="chat-form" data-form>
+      <label class="sr-only" for="ask-input">Ask a question about Kyle</label>
+      <input id="ask-input" type="text" autocomplete="off" maxlength="300" placeholder="Ask Kit something&hellip;" data-input>
+      <button class="btn btn-solid" type="submit" data-send aria-label="Send">${icons.spark}</button>
+    </form>
+    <p class="chat-note">Answers are generated and can be wrong. Nothing you type is stored.</p>
   </div>
-</section>`;
-
+</div>`;
 const timelineSection = `
 <section class="band" id="timeline">
   <div class="shell">
@@ -403,6 +408,7 @@ const html = `<!doctype html>
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/schibsted-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
 <body>
@@ -416,10 +422,10 @@ ${work}
 ${servicesSection}
 ${stackSection}
 ${github}
-${ask}
 ${timelineSection}
 </main>
 ${footer}
+${kit}
 
 <div class="pal" data-pal hidden>
   <div class="pal-box" role="dialog" aria-modal="true" aria-label="Jump to a section">

@@ -1,4 +1,5 @@
 import "./style.css";
+import { link as linkIcon } from "./data/icons.js";
 
 /* ------------------------------------------------------------------
    Scroll reveal. Fires once per element, then stops observing.
@@ -111,7 +112,7 @@ async function repos() {
         (r) => `<article class="repo">
   <a class="repo-name" href="${esc(r.html_url)}">${esc(r.name)}</a>${
     r.homepage
-      ? ` <a class="repo-live" href="${esc(r.homepage)}">live &#8599;</a>`
+      ? ` <a class="repo-live" href="${esc(r.homepage)}" aria-label="Open ${esc(r.name)} live" title="Open live site">${linkIcon}</a>`
       : ""
   }
   ${r.description ? `<p>${esc(r.description)}</p>` : ""}
@@ -120,10 +121,53 @@ async function repos() {
       )
       .join("");
   } catch {
-    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now — <a class="repo-live" href="https://github.com/${esc(handle)}">browse the repos directly</a>.</p>`;
+    host.innerHTML = `<p class="repo repo-meta">Could not reach the GitHub API just now — <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">browse the repos directly</a>.</p>`;
   }
+}
+
+/* ------------------------------------------------------------------
+   Copy the address rather than forcing a mail client open. The href stays
+   a real mailto, so middle-click and "open in new tab" still behave.
+   ------------------------------------------------------------------ */
+
+function copyEmail() {
+  const el = document.querySelector<HTMLAnchorElement>("[data-copy]");
+  if (!el || !navigator.clipboard) return;
+  const hint = el.querySelector(".copy-hint");
+  el.addEventListener("click", async (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(el.dataset.copy ?? "");
+      el.dataset.copied = "true";
+      if (hint) hint.textContent = "copied";
+      setTimeout(() => {
+        delete el.dataset.copied;
+        if (hint) hint.textContent = "click to copy";
+      }, 2000);
+    } catch {
+      window.location.href = el.href;
+    }
+  });
+}
+
+/* For whoever opens the console. */
+function greet() {
+  const name = "%cdevByKyle";
+  const style =
+    "font:600 15px ui-monospace,monospace;color:#0a0a0b;background:#fafafa;padding:4px 8px;border-radius:4px";
+  console.log(name, style);
+  console.log(
+    [
+      "%cNo framework. A few kB of JavaScript, and you are reading most of it.",
+      "If you are hiring: junizkylesarmiento@gmail.com",
+    ].join("\n"),
+    "font:13px ui-monospace,monospace;color:#b2b2b9",
+  );
 }
 
 reveal();
 activeNav();
+copyEmail();
+greet();
 void repos();

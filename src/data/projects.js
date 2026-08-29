@@ -14,12 +14,10 @@ export const projects = [
       { kind: "live", href: "https://planora-official.vercel.app" },
       { kind: "source", href: "https://github.com/kkyleee23/Planora-Official" },
     ],
-    kind: "phone",
+    kind: "web",
     feature: true,
     shots: [
-      { src: "/img/planora-dashboard.png", alt: "Planora dashboard showing tasks and progress", width: 1080, height: 2400 },
-      { src: "/img/planora-dark.png", alt: "Planora in dark mode", width: 1080, height: 2400 },
-      { src: "/img/planora-tasks.png", alt: "Planora task list", width: 1080, height: 2400 },
+      { src: "/img/planora-web.png", alt: "Planora running in the browser", width: 2442, height: 1166 },
     ],
   },
   {
@@ -37,7 +35,7 @@ export const projects = [
     ],
     kind: "web",
     shots: [
-      { src: "/img/printscreen-1.png", alt: "PrintScreen turning an uploaded document into a reviewer", width: 2442, height: 1166 },
+      { src: "/img/printscreen-1.png", alt: "PrintScreen turning an uploaded document into a reviewer", width: 2390, height: 1150 },
     ],
   },
   {

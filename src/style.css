@@ -1,3 +1,44 @@
+/* ------------------------------------------------------------------
+   Self-hosted. Going to fonts.googleapis.com meant a DNS lookup, a TLS
+   handshake and a CSS round trip before any text could render in the real
+   face — that is the flash on refresh. Same-origin + preload removes it.
+   ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-latin.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-latin.woff2") format("woff2-variations");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/dmmono-400-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/dmmono-500-latin.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
 /* ============================================================
    devByKyle
    Dark, monochrome, dense. The only colour on this page comes
@@ -276,9 +317,35 @@ img {
   padding-block: 3.25rem 2.75rem;
   border-bottom: 1px solid var(--line);
 }
-.hero-grid {
-  display: grid;
-  gap: 1.75rem;
+.hero-id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+}
+.hero-name {
+  font-family: var(--f-display);
+  font-size: 15.5px;
+  font-weight: 600;
+  font-variation-settings: "wdth" 88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.hero-role {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-role::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--line-3);
 }
 .hero h1 {
   margin-top: 0.9rem;
@@ -309,18 +376,6 @@ img {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1.4rem;
-}
-.portrait {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--surface);
-  aspect-ratio: 16 / 10;
-}
-.portrait img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* ---------- band ---------- */
@@ -660,11 +715,15 @@ img {
 .repo-live {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 44px;
   min-height: 44px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  color: var(--ink-2);
-  border-bottom: 1px solid var(--line-3);
+  color: var(--ink-3);
+  transition: color 0.16s ease;
+}
+.repo-live svg {
+  width: 14px;
+  height: 14px;
 }
 .repo-live:hover {
   color: var(--ink);
@@ -679,12 +738,40 @@ img {
 
 /* ---------- timeline ---------- */
 
+.about-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.portrait {
+  margin: 0;
+  max-width: 260px;
+}
+.portrait img {
+  width: 100%;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  /* Full colour would be the only unmanaged colour on the page. It resolves
+     on hover, which is a small reward for anyone who bothers. */
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 0.4s ease;
+}
+.portrait:hover img,
+.portrait:focus-within img {
+  filter: grayscale(0) contrast(1);
+}
+.portrait figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
 .about-prose {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
   max-width: 62ch;
-  margin-top: 1rem;
 }
 .about-prose p {
   color: var(--ink-2);
@@ -756,6 +843,23 @@ img {
 }
 .mailto:hover {
   border-bottom-color: var(--ink);
+}
+.copy-hint {
+  margin-left: 0.65rem;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+.mailto:hover .copy-hint,
+.mailto:focus-visible .copy-hint {
+  opacity: 1;
+}
+.mailto[data-copied] .copy-hint {
+  opacity: 1;
+  color: var(--ink);
 }
 
 .foot {
@@ -843,6 +947,14 @@ img {
   }
 }
 
+@media (min-width: 760px) {
+  .about-grid {
+    grid-template-columns: 1fr 260px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+}
+
 @media (min-width: 860px) {
   :root {
     --gut: 2rem;
@@ -852,14 +964,6 @@ img {
   }
   .hero {
     padding-block: 4.5rem 3.5rem;
-  }
-  .hero-grid {
-    grid-template-columns: 1.55fr 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  .portrait {
-    aspect-ratio: 4 / 5;
   }
   .proj {
     grid-template-columns: 1fr 1fr;

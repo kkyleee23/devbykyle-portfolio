@@ -59,9 +59,12 @@ const nav = `
 
 const hero = `
 <header class="hero" id="top">
-  <div class="shell hero-grid">
+  <div class="shell">
     <div>
-      <p class="eyebrow rise">${esc(site.name)} — ${esc(site.role)}</p>
+      <p class="hero-id rise">
+        <span class="hero-name">${esc(site.name)}</span>
+        <span class="hero-role">${esc(site.role)}</span>
+      </p>
       <h1 class="rise">${esc(site.headline)}</h1>
       <p class="lede rise">${esc(site.lede)}</p>
       <div class="hero-meta rise">
@@ -74,9 +77,6 @@ const hero = `
         <a class="btn btn-ghost" href="${esc(site.github)}">${icons.github}GitHub</a>
         ${site.linkedin ? `<a class="btn btn-ghost" href="${esc(site.linkedin)}">LinkedIn</a>` : ""}
       </div>
-    </div>
-    <div class="portrait rise">
-      <img src="/img/kyle.jpg" width="1728" height="1736" alt="${esc(site.name)}, ${esc(site.role)}" fetchpriority="high">
     </div>
   </div>
 </header>`;
@@ -203,7 +203,13 @@ const aboutSection = `
   <div class="shell">
     <p class="eyebrow">Background</p>
     <h2 class="h-sec">How I got here</h2>
-    <div class="about-prose">${about.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+    <div class="about-grid">
+      <div class="about-prose">${about.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+      <figure class="portrait">
+        <img src="/img/kyle.jpg" width="1728" height="1736" alt="${esc(site.name)}" loading="lazy" decoding="async">
+        <figcaption>${esc(site.location)} · ${esc(site.timezone)}</figcaption>
+      </figure>
+    </div>
     <div class="tl">
       ${timeline
         .map(
@@ -223,7 +229,10 @@ const contact = `
     <p class="eyebrow">Contact</p>
     <h2>Got something that needs building?</h2>
     <p>Open to internships, junior roles and freelance work — remote, or hybrid around Pampanga and Metro Manila. I&rsquo;m in school on weekdays but free from 2 PM, and all day Sunday. I reply within a day.</p>
-    <a class="mailto" href="mailto:${esc(site.email)}">${esc(site.email)}</a>
+    <a class="mailto" href="mailto:${esc(site.email)}" data-copy="${esc(site.email)}">
+      <span>${esc(site.email)}</span>
+      <span class="copy-hint" aria-hidden="true">click to copy</span>
+    </a>
   </div>
 </section>`;
 
@@ -254,9 +263,8 @@ const html = `<!doctype html>
 <meta property="og:description" content="${esc(site.headline)}">
 <meta property="og:url" content="${esc(site.url)}">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
 <body>

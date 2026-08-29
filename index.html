@@ -13,9 +13,8 @@
 <meta property="og:description" content="I build web and mobile tools for students.">
 <meta property="og:url" content="https://devbykyle.vercel.app">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
 <body>
@@ -38,9 +37,12 @@
 <main id="main">
 
 <header class="hero" id="top">
-  <div class="shell hero-grid">
+  <div class="shell">
     <div>
-      <p class="eyebrow rise">Juniz Kyle Sarmiento — Web &amp; software developer</p>
+      <p class="hero-id rise">
+        <span class="hero-name">Juniz Kyle Sarmiento</span>
+        <span class="hero-role">Web &amp; software developer</span>
+      </p>
       <h1 class="rise">I build web and mobile tools for students.</h1>
       <p class="lede rise">The kind that do one thing, load fast, and don't ask you to make an account first. I reach for a framework when a project earns it and keep things plain when it doesn't.</p>
       <div class="hero-meta rise">
@@ -53,9 +55,6 @@
         <a class="btn btn-ghost" href="https://github.com/kkyleee23"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.3v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>GitHub</a>
         
       </div>
-    </div>
-    <div class="portrait rise">
-      <img src="/img/kyle.jpg" width="1728" height="1736" alt="Juniz Kyle Sarmiento, Web &amp; software developer" fetchpriority="high">
     </div>
   </div>
 </header>
@@ -106,7 +105,8 @@
               <a class="btn btn-solid" href="https://planora-official.vercel.app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>Visit site<span class="sr-only"> — Planora</span></a><a class="btn btn-ghost" href="https://github.com/kkyleee23/Planora-Official"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.3v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>Source<span class="sr-only"> — Planora</span></a>
             </div>
           </div>
-            <div class="proj-media"><div class="phones"><figure><img src="/img/planora-dashboard.png" width="1080" height="2400" alt="Planora dashboard showing tasks and progress" loading="lazy" decoding="async"></figure><figure><img src="/img/planora-dark.png" width="1080" height="2400" alt="Planora in dark mode" loading="lazy" decoding="async"></figure><figure><img src="/img/planora-tasks.png" width="1080" height="2400" alt="Planora task list" loading="lazy" decoding="async"></figure></div></div>
+            <div class="proj-media"><div class="web"><div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+      <img src="/img/planora-web.png" width="2442" height="1166" alt="Planora running in the browser" loading="lazy" decoding="async"></div></div>
           </article><article class="proj rise">
             
           <div>
@@ -123,7 +123,7 @@
             </div>
           </div>
             <div class="proj-media"><div class="web"><div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
-      <img src="/img/printscreen-1.png" width="2442" height="1166" alt="PrintScreen turning an uploaded document into a reviewer" loading="lazy" decoding="async"></div></div>
+      <img src="/img/printscreen-1.png" width="2390" height="1150" alt="PrintScreen turning an uploaded document into a reviewer" loading="lazy" decoding="async"></div></div>
           </article><article class="proj rise">
             
           <div>
@@ -213,7 +213,13 @@
   <div class="shell">
     <p class="eyebrow">Background</p>
     <h2 class="h-sec">How I got here</h2>
-    <div class="about-prose"><p>I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.</p><p>Everything on this page solves a problem I had in school. Planora came from losing track of my own tasks. PrintScreen came from re-reading slide decks the night before an exam. Studs came from school software that made simple things slow.</p><p>I pick up design from wherever it turns up, mostly screenshots and whatever scrolls past me, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.</p></div>
+    <div class="about-grid">
+      <div class="about-prose"><p>I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. It is why I still reach for plain HTML and JavaScript more often than a framework: I learned to make things run before I learned to make them look right.</p><p>Everything on this page solves a problem I had in school. Planora came from losing track of my own tasks. PrintScreen came from re-reading slide decks the night before an exam. Studs came from school software that made simple things slow.</p><p>I pick up design from wherever it turns up, mostly screenshots and whatever scrolls past me, and I send small fixes to open-source projects when I notice something broken. Two years of this so far, all self-taught, all outside class hours.</p></div>
+      <figure class="portrait">
+        <img src="/img/kyle.jpg" width="1728" height="1736" alt="Juniz Kyle Sarmiento" loading="lazy" decoding="async">
+        <figcaption>Apalit, Pampanga · GMT+8</figcaption>
+      </figure>
+    </div>
     <div class="tl">
       <div class="tl-row rise">
         <p class="tl-when">2026 — Now</p>
@@ -237,7 +243,10 @@
     <p class="eyebrow">Contact</p>
     <h2>Got something that needs building?</h2>
     <p>Open to internships, junior roles and freelance work — remote, or hybrid around Pampanga and Metro Manila. I&rsquo;m in school on weekdays but free from 2 PM, and all day Sunday. I reply within a day.</p>
-    <a class="mailto" href="mailto:junizkylesarmiento@gmail.com">junizkylesarmiento@gmail.com</a>
+    <a class="mailto" href="mailto:junizkylesarmiento@gmail.com" data-copy="junizkylesarmiento@gmail.com">
+      <span>junizkylesarmiento@gmail.com</span>
+      <span class="copy-hint" aria-hidden="true">click to copy</span>
+    </a>
   </div>
 </section>
 </main>

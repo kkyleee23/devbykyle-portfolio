@@ -76,6 +76,24 @@ animation, percentage skill bars, emoji icons, typewriter effects.
 - Motion is one scroll reveal per element, then the observer disconnects.
   `prefers-reduced-motion` disables it.
 
+## The assistant
+
+`<ASK-AI/>` posts to `/api/chat`, a Vercel serverless function that proxies to
+Groq. The key lives on the server — visitors are never asked for one.
+
+**Setup:** in Vercel → Settings → Environment Variables, add `GROQ_API_KEY`.
+Without it the endpoint returns a clear "not configured yet" message rather
+than failing silently.
+
+The system prompt is built from `aiContext` in `src/data/site.js`, so the
+assistant can only speak from facts that are already on this page. It is told
+not to invent experience, to keep answers to a few sentences, and to redirect
+anything off-topic to the contact address. Update the facts there, not the
+prompt.
+
+`npm run dev` serves the static site only — `/api/chat` needs `vercel dev`
+(or a deploy) to run.
+
 ## Still to do
 
 - LinkedIn URL and résumé PDF — `src/data/site.js`

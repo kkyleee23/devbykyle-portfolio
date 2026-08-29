@@ -1,6 +1,69 @@
 import "./style.css";
 import { link as linkIcon } from "./data/icons.js";
 
+const esc = (s: string) =>
+  s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+/* ------------------------------------------------------------------
+   Local clock. Shows what time it actually is where Kyle is, so a
+   recruiter in another timezone knows whether they are messaging at 3am.
+   ------------------------------------------------------------------ */
+
+function clock() {
+  const el = document.querySelector<HTMLElement>(".clock");
+  const tz = el?.dataset.tz;
+  if (!el || !tz) return;
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: tz,
+  });
+  const tick = () => {
+    el.textContent = `· ${fmt.format(new Date())} local`;
+  };
+  tick();
+  setInterval(tick, 30_000);
+}
+
+/* ------------------------------------------------------------------
+   Capability rotator. Pauses when off-screen or when the tab is hidden.
+   ------------------------------------------------------------------ */
+
+function rotator() {
+  const host = document.querySelector<HTMLElement>("[data-rotate]");
+  const count = document.querySelector<HTMLElement>("[data-rot-count]");
+  if (!host) return;
+  const items = [...host.querySelectorAll<HTMLElement>(".rot-item")];
+  if (items.length < 2) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let i = 0;
+  let timer = 0;
+  const show = () => {
+    items.forEach((el, n) => el.classList.toggle("on", n === i));
+    if (count) count.textContent = `0${i + 1} / 0${items.length}`;
+  };
+  const start = () => {
+    if (timer) return;
+    timer = window.setInterval(() => {
+      i = (i + 1) % items.length;
+      show();
+    }, 3800);
+  };
+  const stop = () => {
+    clearInterval(timer);
+    timer = 0;
+  };
+
+  new IntersectionObserver(
+    ([e]) => (e && e.isIntersecting ? start() : stop()),
+    { threshold: 0.2 },
+  ).observe(host);
+  document.addEventListener("visibilitychange", () =>
+    document.hidden ? stop() : start(),
+  );
+}
+
 /* ------------------------------------------------------------------
    Scroll reveal. Fires once per element, then stops observing.
    ------------------------------------------------------------------ */
@@ -21,8 +84,6 @@ function reveal() {
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
   );
-  // Stagger within each group, not across the whole page — a global index
-  // gave everything below the hero a flat delay.
   for (const el of items) {
     const peers = [...(el.parentElement?.children ?? [])].filter((c) =>
       c.classList.contains("rise"),
@@ -33,7 +94,7 @@ function reveal() {
 }
 
 /* ------------------------------------------------------------------
-   Active nav link, driven by which section is on screen.
+   Active nav link.
    ------------------------------------------------------------------ */
 
 function activeNav() {
@@ -45,13 +106,11 @@ function activeNav() {
     if (el) map.set(el, a);
   }
   if (!map.size || !("IntersectionObserver" in window)) return;
-
   const io = new IntersectionObserver(
     (entries) => {
       for (const e of entries) {
         const a = map.get(e.target);
-        if (!a) continue;
-        if (e.isIntersecting) {
+        if (a && e.isIntersecting) {
           links.forEach((l) => l.removeAttribute("aria-current"));
           a.setAttribute("aria-current", "true");
         }
@@ -63,8 +122,7 @@ function activeNav() {
 }
 
 /* ------------------------------------------------------------------
-   Live repositories. Real data beats a decorative graph — and if the
-   API is unreachable the panel says so rather than rendering nothing.
+   Live repositories.
    ------------------------------------------------------------------ */
 
 type Repo = {
@@ -76,9 +134,6 @@ type Repo = {
   fork: boolean;
   homepage: string | null;
 };
-
-const esc = (s: string) =>
-  s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
 const when = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", {
@@ -92,19 +147,16 @@ async function repos() {
   const host = document.getElementById("repos");
   const handle = host?.dataset.handle;
   if (!host || !handle) return;
-
   try {
     const res = await fetch(
       `https://api.github.com/users/${handle}/repos?per_page=100&sort=pushed`,
       { headers: { Accept: "application/vnd.github+json" } },
     );
     if (!res.ok) throw new Error(String(res.status));
-
     const list: Repo[] = await res.json();
     const shown = list
       .filter((r) => !r.fork && r.name.toLowerCase() !== handle.toLowerCase())
       .slice(0, 6);
-
     if (!shown.length) throw new Error("empty");
 
     host.innerHTML = shown
@@ -126,8 +178,84 @@ async function repos() {
 }
 
 /* ------------------------------------------------------------------
-   Copy the address rather than forcing a mail client open. The href stays
-   a real mailto, so middle-click and "open in new tab" still behave.
+   Ask AI. Posts to /api/chat, which holds the key server-side.
+   ------------------------------------------------------------------ */
+
+type Turn = { role: "user" | "assistant"; content: string };
+
+function chat() {
+  const root = document.querySelector<HTMLElement>("[data-chat]");
+  if (!root) return;
+  const log = root.querySelector<HTMLElement>("[data-log]");
+  const form = root.querySelector<HTMLFormElement>("[data-form]");
+  const input = root.querySelector<HTMLInputElement>("[data-input]");
+  const send = root.querySelector<HTMLButtonElement>("[data-send]");
+  if (!log || !form || !input || !send) return;
+
+  const history: Turn[] = [];
+  let busy = false;
+
+  const bubble = (cls: string, html: string) => {
+    const el = document.createElement("div");
+    el.className = `msg ${cls}`;
+    el.innerHTML = html;
+    log.append(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  };
+
+  const ask = async (q: string) => {
+    if (busy || !q.trim()) return;
+    busy = true;
+    send.disabled = true;
+    input.value = "";
+
+    bubble("msg-user", `<p>${esc(q)}</p>`);
+    history.push({ role: "user", content: q });
+    const thinking = bubble(
+      "msg-bot",
+      `<p class="dots" aria-label="Thinking"><span></span><span></span><span></span></p>`,
+    );
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+      });
+      const data = await res.json().catch(() => ({}) as Record<string, string>);
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+
+      const reply = String(data.reply ?? "");
+      thinking.className = "msg msg-bot";
+      thinking.innerHTML = reply
+        .split(/\n{2,}/)
+        .map((p) => `<p>${esc(p.trim())}</p>`)
+        .join("");
+      history.push({ role: "assistant", content: reply });
+    } catch (err) {
+      thinking.className = "msg msg-err";
+      const why = err instanceof Error ? err.message : "Something went wrong.";
+      thinking.innerHTML = `<p>${esc(why)} You can always email <a href="mailto:junizkylesarmiento@gmail.com" style="border-bottom:1px solid var(--line-3)">Kyle directly</a>.</p>`;
+      history.pop();
+    } finally {
+      busy = false;
+      send.disabled = false;
+      log.scrollTop = log.scrollHeight;
+    }
+  };
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    void ask(input.value);
+  });
+  root.querySelectorAll<HTMLButtonElement>(".ask-chip").forEach((b) =>
+    b.addEventListener("click", () => void ask(b.dataset.q ?? "")),
+  );
+}
+
+/* ------------------------------------------------------------------
+   Copy the address rather than forcing a mail client open.
    ------------------------------------------------------------------ */
 
 function copyEmail() {
@@ -151,12 +279,12 @@ function copyEmail() {
   });
 }
 
-/* For whoever opens the console. */
+/** For whoever opens the console. */
 function greet() {
-  const name = "%cdevByKyle";
-  const style =
-    "font:600 15px ui-monospace,monospace;color:#0a0a0b;background:#fafafa;padding:4px 8px;border-radius:4px";
-  console.log(name, style);
+  console.log(
+    "%cdevByKyle",
+    "font:600 15px ui-monospace,monospace;color:#0a0a0b;background:#fafafa;padding:4px 8px;border-radius:4px",
+  );
   console.log(
     [
       "%cNo framework. A few kB of JavaScript, and you are reading most of it.",
@@ -166,8 +294,11 @@ function greet() {
   );
 }
 
+clock();
+rotator();
 reveal();
 activeNav();
+chat();
 copyEmail();
 greet();
 void repos();

@@ -1,0 +1,7 @@
+README.md
+design-system/
+github/
+supabase/
+scripts/github-readme.mjs
+.env.example
+*.md

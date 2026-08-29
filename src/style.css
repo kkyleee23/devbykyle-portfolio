@@ -1715,6 +1715,37 @@ html:not(.js) .rot-item {
 .dock .nav-links {
   position: relative;
 }
+.dock .nav-links a {
+  position: relative;
+  z-index: 1;
+  transition: color 0.16s var(--ease);
+}
+.dock .nav-links a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--surface-3);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.18s var(--ease),
+    transform 0.18s var(--spring);
+  z-index: -1;
+}
+.dock .nav-links a:hover::before,
+.dock .nav-links a:focus-visible::before {
+  opacity: 0.55;
+  transform: scale(1);
+}
+.dock .nav-links a:hover,
+.dock .nav-links a:focus-visible {
+  color: var(--ink);
+}
+.dock .nav-links a[aria-current] {
+  color: var(--ink);
+}
+
 .nav-glide {
   position: absolute;
   top: 0;
@@ -1733,17 +1764,9 @@ html:not(.js) .rot-item {
 .nav-glide.on {
   opacity: 1;
 }
-.dock .nav-links a {
-  position: relative;
-  z-index: 1;
-}
-.dock .nav-links a[aria-current] {
-  background: none;
-}
-.dock .nav-links a:hover {
-  background: none;
-  color: var(--ink);
-}
+
+
+
 
 .ink {
   position: absolute;
@@ -2710,6 +2733,13 @@ html {
   margin-top: 1.4rem;
 }
 .tool {
+  display: flex;
+  flex-direction: column;
+}
+.tool-note {
+  margin-top: auto;
+}
+.tool {
   padding: 1.15rem;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -2767,7 +2797,51 @@ html {
 
 @media (min-width: 820px) {
   .tools {
-    grid-template-columns: 1.25fr 1fr;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
   }
+}
+
+.tool-shot {
+  margin: 1.4rem 0 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.tool-shot .chrome {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.tool-shot .chrome span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line-3);
+}
+.tool-shot img {
+  width: 100%;
+  height: auto;
+}
+.tool-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-3);
+  padding-bottom: 2px;
+  transition: border-color 0.16s var(--ease);
+}
+.tool-cta svg {
+  width: 13px;
+  height: 13px;
+}
+.tool-cta:hover {
+  border-bottom-color: var(--ink);
 }

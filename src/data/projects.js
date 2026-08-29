@@ -133,6 +133,13 @@ export const services = [
   },
 ];
 
+export const terminalToolsShot = {
+  src: "/img/cybernant.webp",
+  alt: "Cybernant running in a terminal, analysing a phone number",
+  width: 1400,
+  height: 654,
+};
+
 export const terminalTools = [
   {
     name: "Cybernant",
@@ -147,6 +154,7 @@ export const terminalTools = [
       "Cryptographically signed licence key system",
     ],
     note: "Built for authorised security testing and education. Using it against someone without consent is illegal, and the disclaimer in the repo says so.",
+    cta: "Want it for authorised testing, or interested? Send me a message.",
     status: "building",
     statusLabel: "Not public yet",
   },
@@ -157,6 +165,7 @@ export const terminalTools = [
     spec: ["Private", "Key required", "Professional use"],
     features: [],
     note: "Not published, and not handed out on request. Ask directly if your work calls for it.",
+    cta: "For professional counter-offensive work. Message me to talk access.",
     status: "building",
     statusLabel: "Private",
   },

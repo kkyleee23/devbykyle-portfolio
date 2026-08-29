@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import {
   site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
-import { projects, nowCards, services, terminalTools } from "../src/data/projects.js";
+import { projects, nowCards, services, terminalTools, terminalToolsShot } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
 import { icons, linkKinds } from "../src/data/icons.js";
 
@@ -296,6 +296,10 @@ const tools = `
     ${marker("TERMINAL-TOOLS")}
     <p class="sub">Two command-line tools, one defensive and one not. Both sit outside the
       web work, and neither is on GitHub yet.</p>
+    <figure class="tool-shot">
+      <div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+      <img src="${terminalToolsShot.src}" width="${terminalToolsShot.width}" height="${terminalToolsShot.height}" alt="${esc(terminalToolsShot.alt)}" loading="lazy" decoding="async">
+    </figure>
     <div class="tools">
       ${terminalTools
         .map(
@@ -315,6 +319,7 @@ const tools = `
             : ""
         }
         <p class="tool-note">${esc(t.note)}</p>
+        ${t.cta ? `<a class="tool-cta" href="mailto:${esc(site.email)}?subject=${encodeURIComponent(t.name)}">${icons.mail}${esc(t.cta)}</a>` : ""}
       </article>`,
         )
         .join("")}

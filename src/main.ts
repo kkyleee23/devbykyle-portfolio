@@ -248,29 +248,22 @@ function activeNav() {
 function navGlide() {
   const wrap = document.querySelector<HTMLElement>(".dock .nav-links");
   if (!wrap) return;
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const glide = document.createElement("span");
   glide.className = "nav-glide";
   wrap.prepend(glide);
 
-  const move = (to: HTMLElement | null) => {
-    if (!to) {
+  const sync = () => {
+    const active = wrap.querySelector<HTMLElement>("a[aria-current]");
+    if (!active) {
       glide.classList.remove("on");
       return;
     }
     glide.classList.add("on");
-    glide.style.width = `${to.offsetWidth}px`;
-    glide.style.transform = `translateX(${to.offsetLeft}px)`;
+    glide.style.width = `${active.offsetWidth}px`;
+    glide.style.transform = `translateX(${active.offsetLeft}px)`;
   };
 
-  const current = () => wrap.querySelector<HTMLElement>("a[aria-current]");
-  const sync = () => move(current());
-
-  wrap.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
-    a.addEventListener("pointerenter", () => !reduce && move(a));
-  });
-  wrap.addEventListener("pointerleave", sync);
   new MutationObserver(sync).observe(wrap, {
     subtree: true,
     attributes: true,

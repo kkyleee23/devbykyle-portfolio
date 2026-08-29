@@ -34,14 +34,15 @@ export const whatIBuild = [
 ];
 
 export const howIWork = [
-  "Plain HTML until a framework earns its place",
-  "Ship small, then write down what broke",
-  "Offline-first, no account walls",
+  "Start in plain HTML, CSS and JavaScript",
+  "Get it working, then find where a framework would actually help",
+  "Add one only where it earns the weight it costs",
 ];
 
 export const quickFacts = [
   { k: "Open to", v: "Internships · Junior roles · Freelance" },
   { k: "Build for", v: "Individuals · Capstone teams · Small companies" },
+  { k: "Capstone slots", v: "One at a time. Ask Kit or me whether it is open" },
   { k: "Available", v: "Weekdays from 2 PM · All day Sunday" },
   { k: "Work setup", v: "Remote · Hybrid around Pampanga & Metro Manila" },
   { k: "Core focus", v: "Backend & data, full-stack when a project needs one person" },
@@ -109,8 +110,20 @@ developer.
 
 Who he builds for: anyone who needs a tool. Individuals, college capstone teams,
 small companies, and students. His first projects happened to be for students
-because that was the problem in front of him at the time — it is not a limit on
+because that was the problem in front of him at the time. It is not a limit on
 the work he takes.
+
+AVAILABILITY, IMPORTANT: Kyle takes ONE capstone project at a time and does not
+accept another until the current one is finished. This is deliberate, so the
+work stays good. If someone asks whether he can take their capstone, tell them
+the slot may or may not be open right now, that you cannot see his current
+workload, and that they should email him to ask. The same applies to websites,
+mobile apps and tools: ask first, because he may already be booked. Never
+promise availability or a start date on his behalf.
+
+How he builds: he starts every project in plain HTML, CSS and JavaScript, gets
+it working, and only then looks at whether a framework would genuinely improve
+it. He adds one where it earns its weight, not by default.
 
 Projects:
 - Planora (live, planora-official.vercel.app): task manager for Android and web

@@ -124,7 +124,7 @@ export const services = [
   {
     title: "A capstone that has to ship",
     body: "I have built four of these end to end this year. I can take the half nobody on the team wants, usually the database and the server, and get it running before the defence.",
-    fit: "Best fit for a college team on a deadline.",
+    fit: "One capstone at a time, so the slot may be taken. Ask before you plan around it.",
   },
   {
     title: "An internal tool",

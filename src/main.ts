@@ -543,6 +543,87 @@ function caseStudies() {
 }
 
 
+
+type Rec = { name: string; role: string | null; body: string; created_at: string };
+
+function recommendations() {
+  const list = document.querySelector<HTMLElement>("[data-rec-list]");
+  const form = document.querySelector<HTMLFormElement>("[data-rec-form]");
+  const note = document.querySelector<HTMLElement>("[data-rec-note]");
+  const send = document.querySelector<HTMLButtonElement>("[data-rec-send]");
+  if (!list || !form || !note || !send) return;
+
+  const when = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric" });
+
+  const render = (items: Rec[]) => {
+    if (!items.length) {
+      list.innerHTML =
+        '<li class="rec-empty">No recommendations yet. If we have worked together, yours would be the first.</li>';
+      return;
+    }
+    list.innerHTML = items
+      .map(
+        (r) => `<li class="rec">
+  <blockquote>${esc(r.body)}</blockquote>
+  <p class="rec-by"><b>${esc(r.name)}</b>${r.role ? `<span>${esc(r.role)}</span>` : ""}<time>${esc(when.format(new Date(r.created_at)))}</time></p>
+</li>`,
+      )
+      .join("");
+  };
+
+  const load = async () => {
+    try {
+      const res = await fetch("/api/recommendations");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      render(Array.isArray(data.items) ? data.items : []);
+    } catch {
+      list.innerHTML = '<li class="rec-empty">Recommendations are not loading right now.</li>';
+    }
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (send.disabled) return;
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") ?? ""),
+      role: String(fd.get("role") ?? ""),
+      body: String(fd.get("body") ?? ""),
+      contact: String(fd.get("contact") ?? ""),
+      website: String(fd.get("website") ?? ""),
+    };
+    if (payload.body.trim().length < 20) {
+      note.textContent = "A little more detail would help. Twenty characters minimum.";
+      note.dataset.state = "err";
+      return;
+    }
+    send.disabled = true;
+    note.dataset.state = "";
+    note.textContent = "Sending";
+    try {
+      const res = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}) as Record<string, string>);
+      if (!res.ok) throw new Error(data.error || "Could not send that.");
+      form.reset();
+      note.dataset.state = "ok";
+      note.textContent = "Thank you. It will appear here once Kyle has read it.";
+      sfx.reply();
+    } catch (err) {
+      note.dataset.state = "err";
+      note.textContent = err instanceof Error ? err.message : "Could not send that.";
+    } finally {
+      send.disabled = false;
+    }
+  });
+
+  void load();
+}
+
 function kitWidget() {
   const fab = document.querySelector<HTMLButtonElement>("[data-kit-toggle]");
   const panel = document.getElementById("kit-panel");
@@ -827,6 +908,7 @@ toolDetail();
 caseStudies();
 palette();
 kitWidget();
+recommendations();
 scrollProgress();
 dockShrink();
 void activity();

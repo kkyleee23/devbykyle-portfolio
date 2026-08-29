@@ -101,6 +101,48 @@ Set `GITHUB_TOKEN` in Vercel to raise the server limit to 5,000/hour. Optional.
 Without a deploy the client falls back to calling GitHub directly, so `npm run dev`
 still shows real data.
 
+## Deploying
+
+```bash
+npx vercel
+```
+
+Then set these in Vercel, Settings, Environment Variables. Apply each to
+Production, Preview and Development, and redeploy after adding them.
+
+| Variable | Needed for | Where to get it |
+|---|---|---|
+| `GROQ_API_KEY` | Kit, the assistant | console.groq.com, API Keys. Starts `gsk_` |
+| `SUPABASE_URL` | Recommendations | Supabase, Project Settings, Data API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Writing a recommendation | Same page. **Server only, never ship this to a browser** |
+| `SUPABASE_ANON_KEY` | Reading approved ones | Same page. Safe to expose, but this site keeps it server side anyway |
+| `IP_SALT` | Rate limiting | Any random string you invent |
+| `GITHUB_TOKEN` | Optional | Raises the GitHub limit from 60 to 5,000 an hour |
+
+Every endpoint degrades on its own. Missing `GROQ_API_KEY` and Kit says it is
+not configured. Missing the Supabase pair and the recommendations list simply
+stays empty. Nothing crashes.
+
+## Recommendations
+
+Visitors submit through the form in `<RECOMMENDATIONS/>`. Nothing appears on the
+site until you approve it.
+
+**One-time setup:** open the Supabase SQL editor and run
+[`supabase/schema.sql`](supabase/schema.sql). It creates the table, the indexes,
+and a row level security policy that lets the public read approved rows only.
+
+**Approving:** Supabase, Table Editor, `recommendations`, flip `approved` to
+true. It shows up within five minutes, which is the cache window.
+
+Submissions are guarded four ways: a honeypot field bots fill and humans cannot
+see, length limits enforced on the server as well as in the form, an email
+format check, and a limit of three per hour per visitor. The visitor's IP is
+hashed with `IP_SALT` before storage, so the raw address is never kept.
+
+Emails collected are for you to reply to. They are never returned by the read
+endpoint and never rendered.
+
 ## The assistant
 
 **Kit** is the assistant. `<ASK-AI/>` posts to `/api/chat`, a Vercel serverless function that proxies to

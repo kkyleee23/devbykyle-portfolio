@@ -2577,3 +2577,129 @@ html {
     line-height: 1.1;
   }
 }
+
+.rec-wrap {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.4rem;
+}
+.rec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.rec {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.rec blockquote {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.rec blockquote::before {
+  content: "\201C";
+  color: var(--line-3);
+}
+.rec blockquote::after {
+  content: "\201D";
+  color: var(--line-3);
+}
+.rec-by {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  margin-top: 0.7rem;
+  font-size: 12.5px;
+}
+.rec-by b {
+  font-weight: 600;
+}
+.rec-by span,
+.rec-by time {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.rec-empty {
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--line-2);
+  border-radius: 6px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.rec-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--surface-2);
+  align-self: start;
+}
+.rec-head {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.rec-form input,
+.rec-form textarea {
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 0.6rem 0.7rem;
+  width: 100%;
+}
+.rec-form textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+.rec-form input::placeholder,
+.rec-form textarea::placeholder {
+  color: var(--ink-3);
+}
+.rec-form input:focus-visible,
+.rec-form textarea:focus-visible {
+  border-color: var(--line-3);
+}
+.rec-form .btn {
+  justify-content: center;
+}
+.rec-bot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.rec-note {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.rec-note[data-state="ok"] {
+  color: var(--ink);
+}
+.rec-note[data-state="err"] {
+  color: var(--ink-2);
+  border-left: 2px solid var(--line-3);
+  padding-left: 0.5rem;
+}
+
+@media (min-width: 820px) {
+  .rec-wrap {
+    grid-template-columns: 1fr 20rem;
+    gap: 2rem;
+  }
+}

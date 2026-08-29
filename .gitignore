@@ -5,3 +5,5 @@ dist
 .vercel
 CLAUDE.md
 AGENTS.md
+.env
+.env*.local

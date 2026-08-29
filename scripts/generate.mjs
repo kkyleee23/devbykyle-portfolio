@@ -54,6 +54,7 @@ const nav = `
       <a href="#stack">Tech</a>
       <a href="#github">GitHub</a>
       <a href="#services">Hire</a>
+      <a href="#recommend">Recommend</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
@@ -335,6 +336,40 @@ const kit = `
     <p class="chat-note">Answers are generated and can be wrong. Nothing you type is stored.</p>
   </div>
 </div>`;
+const recommendations = `
+<section class="band" id="recommend">
+  <div class="shell">
+    ${marker("RECOMMENDATIONS")}
+    <p class="sub">If we have worked together, or you have used something I built, a short
+      note here is worth more than anything I can say about myself.</p>
+
+    <div class="rec-wrap">
+      <ol class="rec-list" data-rec-list>
+        <li class="rec-empty">Loading</li>
+      </ol>
+
+      <form class="rec-form" data-rec-form>
+        <p class="rec-head">Leave one</p>
+        <label class="sr-only" for="rec-name">Your name</label>
+        <input id="rec-name" name="name" type="text" placeholder="Your name" maxlength="60" required autocomplete="name">
+        <label class="sr-only" for="rec-role">Your role or company, optional</label>
+        <input id="rec-role" name="role" type="text" placeholder="Role or company, optional" maxlength="80" autocomplete="organization">
+        <label class="sr-only" for="rec-body">Your recommendation</label>
+        <textarea id="rec-body" name="body" rows="4" placeholder="What did we work on, and how did it go?" minlength="20" maxlength="600" required></textarea>
+        <label class="sr-only" for="rec-contact">Email, optional, never published</label>
+        <input id="rec-contact" name="contact" type="email" placeholder="Email, optional. Never published" maxlength="120" autocomplete="email">
+        <div class="rec-bot" aria-hidden="true">
+          <label for="rec-website">Leave this empty</label>
+          <input id="rec-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn btn-solid" type="submit" data-rec-send>Send it</button>
+        <p class="rec-note" data-rec-note>Reviewed before it appears. Your email is never shown.</p>
+      </form>
+    </div>
+  </div>
+</section>`;
+
+
 const timelineSection = `
 <section class="band" id="timeline">
   <div class="shell">
@@ -423,6 +458,7 @@ ${servicesSection}
 ${stackSection}
 ${github}
 ${timelineSection}
+${recommendations}
 </main>
 ${footer}
 ${kit}

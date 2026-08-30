@@ -3,6 +3,69 @@ import "./style.css";
 const esc = (s: string) =>
   s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
+function inline(s: string): string {
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, "$1<em>$2</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+function mdToHtml(src: string): string {
+  const lines = src.replace(/\r/g, "").split("\n");
+  const out: string[] = [];
+  let list: "ul" | "ol" | null = null;
+  const closeList = () => {
+    if (list) {
+      out.push(`</${list}>`);
+      list = null;
+    }
+  };
+  let para: string[] = [];
+  const flush = () => {
+    if (para.length) {
+      out.push(`<p>${para.map(inline).join("<br>")}</p>`);
+      para = [];
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const h = line.match(/^(#{1,4})\s+(.*)$/);
+    const ul = line.match(/^[-*]\s+(.*)$/);
+    const ol = line.match(/^\d+\.\s+(.*)$/);
+    if (h) {
+      flush();
+      closeList();
+      out.push(`<p class="chat-h">${inline(h[2]!)}</p>`);
+    } else if (ul) {
+      flush();
+      if (list !== "ul") {
+        closeList();
+        out.push("<ul>");
+        list = "ul";
+      }
+      out.push(`<li>${inline(ul[1]!)}</li>`);
+    } else if (ol) {
+      flush();
+      if (list !== "ol") {
+        closeList();
+        out.push("<ol>");
+        list = "ol";
+      }
+      out.push(`<li>${inline(ol[1]!)}</li>`);
+    } else if (line === "") {
+      flush();
+      closeList();
+    } else {
+      if (list) closeList();
+      para.push(line);
+    }
+  }
+  flush();
+  closeList();
+  return out.join("");
+}
+
 function clock() {
   const el = document.querySelector<HTMLElement>(".clock");
   const tz = el?.dataset.tz;
@@ -791,10 +854,7 @@ function chat() {
 
       const reply = String(data.reply ?? "");
       thinking.className = "msg msg-bot";
-      thinking.innerHTML = reply
-        .split(/\n{2,}/)
-        .map((p) => `<p>${esc(p.trim())}</p>`)
-        .join("");
+      thinking.innerHTML = mdToHtml(reply);
       history.push({ role: "assistant", content: reply });
       sfx.reply();
     } catch (err) {

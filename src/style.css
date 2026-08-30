@@ -2520,15 +2520,6 @@ html {
   padding-left: 0.6rem;
   background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
-.dock .mark {
-  display: inline-flex;
-  overflow: hidden;
-  white-space: nowrap;
-  transition:
-    max-width 0.3s var(--ease),
-    opacity 0.25s var(--ease);
-  max-width: 10rem;
-}
 .dock.tight .nav-links a {
   padding-block: 0.3rem;
 }
@@ -2847,4 +2838,62 @@ html {
 }
 .tool-cta:hover {
   border-bottom-color: var(--ink);
+}
+
+.msg-bot strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.msg-bot em {
+  font-style: italic;
+}
+.msg-bot code {
+  font-family: var(--f-mono);
+  font-size: 0.86em;
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  background: var(--surface-3);
+}
+.msg-bot a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-3);
+}
+.msg-bot .chat-h {
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 0.6rem;
+}
+.msg-bot ul,
+.msg-bot ol {
+  margin: 0.4rem 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.msg-bot ul {
+  list-style: none;
+}
+.msg-bot ul li {
+  position: relative;
+  padding-left: 0.9rem;
+}
+.msg-bot ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 1px;
+  background: var(--line-3);
+}
+.msg-bot ol {
+  list-style: decimal;
+}
+.msg-bot li {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.msg-bot p + p {
+  margin-top: 0.5rem;
 }

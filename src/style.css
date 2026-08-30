@@ -2897,3 +2897,18 @@ html {
 .msg-bot p + p {
   margin-top: 0.5rem;
 }
+
+.btn {
+  min-height: 44px;
+}
+.dock .btn {
+  min-height: 0;
+}
+@media (max-width: 640px) {
+  .ask-chip {
+    min-height: 36px;
+  }
+  .kit .ask-chip {
+    min-height: 32px;
+  }
+}

@@ -124,52 +124,63 @@ function rotator() {
 let ctx: AudioContext | null = null;
 let sfxOn = false;
 
+function ensureCtx(): AudioContext | null {
+  try {
+    ctx ??= new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    if (ctx.state === "suspended") void ctx.resume();
+    return ctx;
+  } catch {
+    return null;
+  }
+}
+
 function click(base: number, gain: number) {
   if (!sfxOn) return;
+  const ac = ensureCtx();
+  if (!ac) return;
   try {
-    ctx ??= new AudioContext();
-    if (ctx.state === "suspended") void ctx.resume();
-    const t = ctx.currentTime;
-    const out = ctx.createGain();
+    const t = Math.max(ac.currentTime, 0) + 0.005;
+    const out = ac.createGain();
     out.gain.value = gain;
-    out.connect(ctx.destination);
+    out.connect(ac.destination);
 
-    const n = Math.floor(ctx.sampleRate * 0.014);
-    const buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    const n = Math.floor(ac.sampleRate * 0.014);
+    const buf = ac.createBuffer(1, n, ac.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2.2;
-    const noise = ctx.createBufferSource();
+    const noise = ac.createBufferSource();
     noise.buffer = buf;
-    const bp = ctx.createBiquadFilter();
+    const bp = ac.createBiquadFilter();
     bp.type = "bandpass";
     bp.frequency.value = base * 3.2;
     bp.Q.value = 0.9;
-    const ng = ctx.createGain();
-    ng.gain.value = 0.55;
+    const ng = ac.createGain();
+    ng.gain.value = 0.7;
     noise.connect(bp).connect(ng).connect(out);
     noise.start(t);
 
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
+    const osc = ac.createOscillator();
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(base, t);
-    osc.frequency.exponentialRampToValueAtTime(base * 0.55, t + 0.055);
-    const og = ctx.createGain();
+    osc.frequency.exponentialRampToValueAtTime(base * 0.55, t + 0.06);
+    const og = ac.createGain();
     og.gain.setValueAtTime(0, t);
     og.gain.linearRampToValueAtTime(1, t + 0.004);
-    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
     osc.connect(og).connect(out);
     osc.start(t);
-    osc.stop(t + 0.09);
+    osc.stop(t + 0.11);
   } catch {
+    /* audio unavailable */
   }
 }
 
 const sfx = {
-  tap: () => click(190, 0.055),
-  open: () => click(260, 0.06),
-  close: () => click(140, 0.05),
-  send: () => click(320, 0.06),
-  reply: () => click(230, 0.05),
+  tap: () => click(200, 0.16),
+  open: () => click(270, 0.19),
+  close: () => click(150, 0.15),
+  send: () => click(330, 0.19),
+  reply: () => click(240, 0.16),
 };
 
 function soundToggle() {
@@ -187,8 +198,12 @@ function soundToggle() {
     try {
       localStorage.setItem("sfx", sfxOn ? "on" : "off");
     } catch {
+      /* private mode */
     }
-    if (sfxOn) sfx.open();
+    if (sfxOn) {
+      ensureCtx();
+      sfx.open();
+    }
   });
 
   document.addEventListener("pointerdown", (e) => {

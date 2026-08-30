@@ -19,7 +19,7 @@ export const site = {
   linkedin: "",
   resume: "",
   openToWork: true,
-  url: "https://devbykyle-portfolio.vercel.app",
+  url: "https://devbykyle.vercel.app",
 };
 
 export const currentFocus = {

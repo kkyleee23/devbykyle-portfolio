@@ -142,17 +142,8 @@ const aboutSection = `
 <section class="band" id="about">
   <div class="shell">
     ${marker("ABOUT")}
-    <div class="about-grid">
-      <div class="about-prose">
-        ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
-      </div>
-      <aside class="activity" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
-        <p class="act-head"><span>Recent commits</span><a href="${esc(site.github)}">on GitHub</a></p>
-        <div class="act-grid" data-act-grid aria-hidden="true"></div>
-        <ol class="act-list" data-act-list>
-          <li class="act-load">Loading activity</li>
-        </ol>
-      </aside>
+    <div class="about-prose">
+      ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
     </div>
   </div>
 </section>`;
@@ -332,14 +323,18 @@ const github = `
 <section class="band" id="github">
   <div class="shell">
     ${marker("GITHUB")}
-    <div class="gh">
+    <p class="sub">Pulled live from the API, so this cannot drift from the code. Each square is a day, and the darker it is the more I pushed.</p>
+    <div class="gh" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
       <div class="gh-top">
         <a href="${esc(site.github)}">github.com/${esc(site.githubHandle)}</a>
-        <span>live from the API</span>
+        <span data-act-summary>live from the API</span>
       </div>
-      <div id="repos" data-handle="${esc(site.githubHandle)}">
-        <p class="repo repo-meta">Loading repositories&hellip;</p>
+      <div class="gh-graph">
+        <div class="act-grid" data-act-grid aria-hidden="true"></div>
       </div>
+      <ol class="act-list" data-act-list>
+        <li class="act-load">Loading recent commits</li>
+      </ol>
     </div>
   </div>
 </section>`;

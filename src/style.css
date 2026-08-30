@@ -210,7 +210,7 @@ img {
   letter-spacing: -0.035em;
   flex: none;
 }
-.mark span {
+.mark-full > span {
   color: var(--ink-3);
 }
 .nav-links {
@@ -2542,6 +2542,9 @@ html {
   display: grid;
   place-items: center start;
   min-width: 1.9rem;
+}
+.mark-full {
+  color: var(--ink);
 }
 .mark-full,
 .mark-mini {

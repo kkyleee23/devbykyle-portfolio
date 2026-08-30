@@ -1,5 +1,4 @@
 import "./style.css";
-import { link as linkIcon } from "./data/icons.js";
 
 const esc = (s: string) =>
   s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -317,48 +316,6 @@ type Repo = {
   homepage: string | null;
 };
 
-const when = (iso: string) =>
-  new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Asia/Manila",
-  }).format(new Date(iso));
-
-async function repos() {
-  const host = document.getElementById("repos");
-  const handle = host?.dataset.handle;
-  if (!host || !handle) return;
-  const data = await ghData();
-  const list = data?.repos ?? null;
-  if (!Array.isArray(list)) {
-    host.innerHTML = `<p class="repo repo-meta">GitHub is rate limiting this browser. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">Open the repos directly</a></p>`;
-    return;
-  }
-  {
-    const shown = list
-      .filter((r) => !r.fork && r.name.toLowerCase() !== handle.toLowerCase())
-      .slice(0, 6);
-    if (!shown.length) {
-      host.innerHTML = `<p class="repo repo-meta">No public repositories yet. <a href="https://github.com/${esc(handle)}" style="border-bottom:1px solid var(--line-3)">Open the profile</a></p>`;
-      return;
-    }
-
-    host.innerHTML = shown
-      .map(
-        (r) => `<article class="repo">
-  <a class="repo-name" href="${esc(r.html_url)}">${esc(r.name)}</a>${
-    r.homepage
-      ? ` <a class="repo-live" href="${esc(r.homepage)}" aria-label="Open ${esc(r.name)} live" title="Open live site">${linkIcon}</a>`
-      : ""
-  }
-  ${r.description ? `<p>${esc(r.description)}</p>` : ""}
-  <span class="repo-meta">${esc(r.language ?? "—")} · updated ${when(r.pushed_at)}</span>
-</article>`,
-      )
-      .join("");
-  }
-}
 
 const GH_TTL = 30 * 60 * 1000;
 
@@ -914,4 +871,3 @@ activeNav();
 chat();
 copyEmail();
 greet();
-void repos();

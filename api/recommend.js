@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
+import { clientIp, sameOrigin, tooFast } from "./_guard.js";
 
 const LIMITS = { name: [2, 60], role: [0, 80], body: [20, 600], contact: [0, 120] };
-const WINDOW_MS = 60 * 60 * 1000;
+const WINDOW_MS = 24 * 60 * 60 * 1000;
 const MAX_PER_WINDOW = 3;
 
 const base = (u) => (u || "").replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
@@ -18,6 +19,11 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return fail(res, 405, "Use POST.");
+  }
+
+  if (!sameOrigin(req)) return fail(res, 403, "Not allowed from here.");
+  if (tooFast(`rec:${clientIp(req)}`, 1, 5000)) {
+    return fail(res, 429, "One moment between submissions.");
   }
 
   const url = base(process.env.SUPABASE_URL);

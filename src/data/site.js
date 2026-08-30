@@ -140,6 +140,21 @@ Projects:
   flood, traffic or landslide, add a photo or note, other users see it. Flutter
   and Dart. Built to v1.0.1, repo not public yet.
 
+Terminal tools (command-line, outside the web work, not yet on GitHub):
+- Cybernant: a phone-number OSINT reconnaissance tool. Give it a phone number
+  and it returns carrier, line type (mobile, fixed line, VoIP), country, region,
+  timezone, number formats (E.164, national, international), and approximate
+  registration-area coordinates with a Maps link, plus manual lookup links for
+  Telegram and Truecaller. Python 3.10+, runs on Windows and Linux, MIT licence,
+  with a cryptographically signed licence-key system. It is built strictly for
+  authorised security testing and education; using it against someone without
+  consent is illegal, and the tool says so. Anyone interested or wanting it for
+  authorised testing should email Kyle.
+- Nightshade: the offensive counterpart to Cybernant, for security professionals
+  doing counter-offensive work. Private and key-gated, distributed by key from
+  Kyle only, not open source. Do not describe its internals; if asked, say it is
+  private and that they should email Kyle to talk about access.
+
 Currently fixing Nora, Planora's assistant, by rebuilding the context it receives
 before it answers.
 

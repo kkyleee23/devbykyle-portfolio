@@ -828,10 +828,22 @@ function chat() {
   const form = root.querySelector<HTMLFormElement>("[data-form]");
   const input = root.querySelector<HTMLInputElement>("[data-input]");
   const send = root.querySelector<HTMLButtonElement>("[data-send]");
+  const note = root.querySelector<HTMLElement>(".chat-note");
   if (!log || !form || !input || !send) return;
+
+  const noteDefault = note?.textContent ?? "";
+  const hint = (msg: string) => {
+    if (!note) return;
+    note.textContent = msg;
+    window.setTimeout(() => {
+      note.textContent = noteDefault;
+    }, 2500);
+  };
 
   const history: Turn[] = [];
   let busy = false;
+  let lastSent = 0;
+  const COOLDOWN = 3500;
 
   const bubble = (cls: string, html: string) => {
     const el = document.createElement("div");
@@ -844,6 +856,12 @@ function chat() {
 
   const ask = async (q: string) => {
     if (busy || !q.trim()) return;
+    const wait = COOLDOWN - (Date.now() - lastSent);
+    if (wait > 0) {
+      hint(`Give Kit a moment, ${Math.ceil(wait / 1000)}s.`);
+      return;
+    }
+    lastSent = Date.now();
     busy = true;
     send.disabled = true;
     input.value = "";

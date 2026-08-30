@@ -1,4 +1,4 @@
-const base = (u) => (u || "").replace(//rest/v1/?$/, "").replace(//+$/, "");
+const base = (u) => (u || "").replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {

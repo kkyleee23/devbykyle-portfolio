@@ -171,7 +171,6 @@ function click(base: number, gain: number) {
     osc.start(t);
     osc.stop(t + 0.11);
   } catch {
-    /* audio unavailable */
   }
 }
 
@@ -198,7 +197,6 @@ function soundToggle() {
     try {
       localStorage.setItem("sfx", sfxOn ? "on" : "off");
     } catch {
-      /* private mode */
     }
     if (sfxOn) {
       ensureCtx();

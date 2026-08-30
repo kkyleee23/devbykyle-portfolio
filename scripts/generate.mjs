@@ -53,8 +53,7 @@ const nav = `
       <a href="#work">Projects</a>
       <a href="#services">Hire</a>
       <a href="#stack">Tech</a>
-      <a href="#tools">Tools</a>
-      <a href="#github">GitHub</a>
+      <a href="#tools">Tools</a>
       <a href="#recommend">Recommend</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
@@ -142,8 +141,17 @@ const aboutSection = `
 <section class="band" id="about">
   <div class="shell">
     ${marker("ABOUT")}
-    <div class="about-prose">
-      ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
+    <div class="about-grid">
+      <div class="about-prose">
+        ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
+      </div>
+      <aside class="activity" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
+        <p class="act-head"><span>Recent commits</span><a href="${esc(site.github)}">on GitHub</a></p>
+        <div class="act-grid" data-act-grid aria-hidden="true"></div>
+        <ol class="act-list" data-act-list>
+          <li class="act-load">Loading activity</li>
+        </ol>
+      </aside>
     </div>
   </div>
 </section>`;
@@ -319,26 +327,6 @@ const tools = `
 </section>`;
 
 
-const github = `
-<section class="band" id="github">
-  <div class="shell">
-    ${marker("GITHUB")}
-    <p class="sub">Pulled live from the API, so this cannot drift from the code. Each square is a day, and the darker it is the more I pushed.</p>
-    <div class="gh" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
-      <div class="gh-top">
-        <a href="${esc(site.github)}">github.com/${esc(site.githubHandle)}</a>
-        <span data-act-summary>live from the API</span>
-      </div>
-      <div class="gh-graph">
-        <div class="act-grid" data-act-grid aria-hidden="true"></div>
-      </div>
-      <ol class="act-list" data-act-list>
-        <li class="act-load">Loading recent commits</li>
-      </ol>
-    </div>
-  </div>
-</section>`;
-
 const askChips = [
   "What has he actually shipped?",
   "Is he free for an internship?",
@@ -490,8 +478,7 @@ ${building}
 ${work}
 ${servicesSection}
 ${stackSection}
-${tools}
-${github}
+${tools}
 ${timelineSection}
 ${recommendations}
 </main>

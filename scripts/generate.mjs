@@ -53,7 +53,7 @@ const nav = `
       <a href="#work">Projects</a>
       <a href="#services">Hire</a>
       <a href="#stack">Tech</a>
-      <a href="#tools">Tools</a>
+      <a href="#tools">Tools</a>
       <a href="#recommend">Recommend</a>
     </div>
     <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
@@ -457,12 +457,26 @@ const html = `<!doctype html>
 <title>${esc(site.name)} &mdash; ${esc(site.role)}</title>
 <meta name="description" content="${esc(site.headline + " " + site.lede)}">
 <meta name="theme-color" content="${BG}">
+<meta name="color-scheme" content="dark">
 <link rel="canonical" href="${esc(site.url)}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(site.short)}">
+<meta property="og:locale" content="en_PH">
 <meta property="og:title" content="${esc(site.name)} &mdash; ${esc(site.role)}">
-<meta property="og:description" content="${esc(site.headline)}">
+<meta property="og:description" content="${esc(site.headline + " " + site.lede.split(". ")[0] + ".")}">
 <meta property="og:url" content="${esc(site.url)}">
+<meta property="og:image" content="${esc(site.url)}/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(site.name)}, ${esc(site.role)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(site.name)} &mdash; ${esc(site.role)}">
+<meta name="twitter:description" content="${esc(site.headline)}">
+<meta name="twitter:image" content="${esc(site.url)}/img/og.png">
 <link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/schibsted-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -478,7 +492,7 @@ ${building}
 ${work}
 ${servicesSection}
 ${stackSection}
-${tools}
+${tools}
 ${timelineSection}
 ${recommendations}
 </main>

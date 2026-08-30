@@ -1,10 +1,12 @@
+const base = (u) => (u || "").replace(//rest/v1/?$/, "").replace(//+$/, "");
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Use GET." });
   }
 
-  const url = process.env.SUPABASE_URL;
+  const url = base(process.env.SUPABASE_URL);
   const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return res.status(200).json({ items: [] });
 

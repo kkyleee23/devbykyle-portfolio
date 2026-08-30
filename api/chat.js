@@ -1,7 +1,7 @@
 
 import { aiContext, site } from "../src/data/site.js";
 
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "openai/gpt-oss-120b";
 const MAX_CHARS = 300;
 const MAX_TURNS = 8;
 

@@ -15,7 +15,13 @@ export const soundOff = `<svg class="i-off" viewBox="0 0 24 24" fill="none" stro
 
 export const mail = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>`;
 
-export const icons = { github, external, link, mail, spark, soundOn, soundOff, bot };
+export const moon = `<svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>`;
+
+export const sun = `<svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>`;
+
+export const star = `<svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg>`;
+
+export const icons = { github, external, link, mail, spark, soundOn, soundOff, bot, moon, sun, star };
 
 export const linkKinds = {
   live: { label: "Visit site", icon: "external", strong: true },

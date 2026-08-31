@@ -570,7 +570,35 @@ function caseStudies() {
 
 
 
-type Rec = { name: string; role: string | null; body: string; created_at: string };
+type Rec = {
+  name: string;
+  role: string | null;
+  body: string;
+  rating: number | null;
+  created_at: string;
+};
+
+const STAR_PATH =
+  "M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z";
+
+function monogram(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const initials =
+    ((parts[0]?.[0] ?? "") + (parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "")).toUpperCase() ||
+    "?";
+  let h = 0;
+  for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return `<span class="rec-av" data-variant="${h % 3}" aria-hidden="true">${esc(initials)}</span>`;
+}
+
+function starsRow(rating: number) {
+  const r = Math.max(0, Math.min(5, Math.round(rating)));
+  let out = `<span class="rec-stars" aria-label="${r} out of 5">`;
+  for (let i = 1; i <= 5; i++) {
+    out += `<svg viewBox="0 0 24 24"${i <= r ? ' class="on"' : ""} aria-hidden="true"><path d="${STAR_PATH}"/></svg>`;
+  }
+  return out + "</span>";
+}
 
 function recommendations() {
   const list = document.querySelector<HTMLElement>("[data-rec-list]");
@@ -590,8 +618,13 @@ function recommendations() {
     list.innerHTML = items
       .map(
         (r) => `<li class="rec">
+  <div class="rec-top">
+    ${monogram(r.name)}
+    <div class="rec-who"><b>${esc(r.name)}</b>${r.role ? `<span class="rec-role">${esc(r.role)}</span>` : ""}</div>
+    ${r.rating ? starsRow(r.rating) : ""}
+  </div>
   <blockquote>${esc(r.body)}</blockquote>
-  <p class="rec-by"><b>${esc(r.name)}</b>${r.role ? `<span>${esc(r.role)}</span>` : ""}<time>${esc(when.format(new Date(r.created_at)))}</time></p>
+  <time class="rec-when">${esc(when.format(new Date(r.created_at)))}</time>
 </li>`,
       )
       .join("");
@@ -612,13 +645,20 @@ function recommendations() {
     e.preventDefault();
     if (send.disabled) return;
     const fd = new FormData(form);
+    const rating = Number(fd.get("rating") ?? 0);
     const payload = {
       name: String(fd.get("name") ?? ""),
       role: String(fd.get("role") ?? ""),
       body: String(fd.get("body") ?? ""),
       contact: String(fd.get("contact") ?? ""),
       website: String(fd.get("website") ?? ""),
+      rating,
     };
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      note.textContent = "Pick a star rating first.";
+      note.dataset.state = "err";
+      return;
+    }
     if (payload.body.trim().length < 20) {
       note.textContent = "A little more detail would help. Twenty characters minimum.";
       note.dataset.state = "err";
@@ -995,7 +1035,52 @@ function galleries() {
   }
 }
 
+function theme() {
+  const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  if (!btn) return;
+  const root = document.documentElement;
+  const current = (): "light" | "dark" => (root.dataset.theme === "light" ? "light" : "dark");
+
+  const sync = () => {
+    const light = current() === "light";
+    btn.setAttribute("aria-pressed", String(light));
+    btn.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+  };
+  sync();
+
+  const apply = (next: "light" | "dark") => {
+    if (next === "light") root.dataset.theme = "light";
+    else root.removeAttribute("data-theme");
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+    }
+    sync();
+  };
+
+  btn.addEventListener("click", (e) => {
+    const next = current() === "light" ? "dark" : "light";
+    const start = (document as unknown as {
+      startViewTransition?: (cb: () => void) => void;
+    }).startViewTransition?.bind(document);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!start || reduce) {
+      apply(next);
+      return;
+    }
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX || rect.left + rect.width / 2;
+    const y = e.clientY || rect.top + rect.height / 2;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.style.setProperty("--vt-x", `${x}px`);
+    root.style.setProperty("--vt-y", `${y}px`);
+    root.style.setProperty("--vt-r", `${r}px`);
+    start(() => apply(next));
+  });
+}
+
 soundToggle();
+theme();
 toolDetail();
 caseStudies();
 palette();

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juniz Kyle Sarmiento &mdash; Backend-focused Full-Stack Developer</title>
 <meta name="description" content="I build the parts that keep an app running. Backend is where I am strongest. Data models, APIs, and the part nobody sees. I learned the front end so I could ship a whole thing myself instead of handing half of it off.">
@@ -48,7 +48,8 @@
       <a href="#tools">Tools</a>
       <a href="#recommend">Recommend</a>
     </div>
-    <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects"><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    <button type="button" class="dock-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to light mode" title="Theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
+    <button type="button" class="dock-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects"><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
     <a class="btn btn-solid nav-cta" href="mailto:junizkylesarmiento@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span class="btn-label">Get in touch</span></a>
   </div>
 </nav>
@@ -385,10 +386,13 @@
     <h2 class="marker"><span class="marker-n" aria-hidden="true">10</span><span aria-hidden="true">&lt;</span>TERMINAL-TOOLS<span aria-hidden="true">/&gt;</span></h2>
     <p class="sub">Two command-line tools, one defensive and one not. Both sit outside the
       web work, and neither is on GitHub yet.</p>
-    <div class="tool-shot"><div class="shotframe single">
+    <div class="tool-shot"><div class="shotframe" data-gallery>
     <div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div class="shot-stage"><figure class="shot-slide on"><img src="/img/cybernant-1.webp" width="1280" height="835" alt="Cybernant running in a terminal, analysing a phone number" loading="lazy" decoding="async"></figure></div>
-    
+    <div class="shot-stage"><figure class="shot-slide on"><img src="/img/cybernant-1.webp" width="1280" height="835" alt="Cybernant running in a terminal, analysing a phone number" loading="lazy" decoding="async"></figure><figure class="shot-slide"><img src="/img/nightshade-1.webp" width="1280" height="784" alt="Nightshade, the offensive counterpart, showing its engagement menu" loading="lazy" decoding="async"></figure></div>
+    <button type="button" class="shot-nav prev" data-prev aria-label="Previous image">&lsaquo;</button>
+    <button type="button" class="shot-nav next" data-next aria-label="Next image">&rsaquo;</button>
+    <p class="shot-count" data-count>1 / 2</p>
+    <div class="shot-dots"><button type="button" class="shot-dot on" data-dot="0" aria-label="Image 1 of 2"></button><button type="button" class="shot-dot" data-dot="1" aria-label="Image 2 of 2"></button></div>
   </div></div>
     <div class="tools">
       <article class="tool rise">
@@ -476,6 +480,12 @@
         <input id="rec-name" name="name" type="text" placeholder="Your name" maxlength="60" required autocomplete="name">
         <label class="sr-only" for="rec-role">Your role or company, optional</label>
         <input id="rec-role" name="role" type="text" placeholder="Role or company, optional" maxlength="80" autocomplete="organization">
+        <div class="rec-rate" role="radiogroup" aria-label="Your rating" data-rate>
+          <span class="rec-rate-label">Rating</span>
+          <div class="rec-stars-in">
+            <input class="sr-only" type="radio" name="rating" id="rec-star-5" value="5"><label for="rec-star-5" aria-label="5 stars"><svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg></label><input class="sr-only" type="radio" name="rating" id="rec-star-4" value="4"><label for="rec-star-4" aria-label="4 stars"><svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg></label><input class="sr-only" type="radio" name="rating" id="rec-star-3" value="3"><label for="rec-star-3" aria-label="3 stars"><svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg></label><input class="sr-only" type="radio" name="rating" id="rec-star-2" value="2"><label for="rec-star-2" aria-label="2 stars"><svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg></label><input class="sr-only" type="radio" name="rating" id="rec-star-1" value="1"><label for="rec-star-1" aria-label="1 star"><svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg></label>
+          </div>
+        </div>
         <label class="sr-only" for="rec-body">Your recommendation</label>
         <textarea id="rec-body" name="body" rows="4" placeholder="What did we work on, and how did it go?" minlength="20" maxlength="600" required></textarea>
         <label class="sr-only" for="rec-contact">Email, optional, never published</label>

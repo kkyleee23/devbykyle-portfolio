@@ -128,12 +128,20 @@ export const services = [
   },
 ];
 
-export const terminalToolsShot = {
-  src: "/img/cybernant-1.webp",
-  alt: "Cybernant running in a terminal, analysing a phone number",
-  width: 1280,
-  height: 835,
-};
+export const terminalShots = [
+  {
+    src: "/img/cybernant-1.webp",
+    alt: "Cybernant running in a terminal, analysing a phone number",
+    width: 1280,
+    height: 835,
+  },
+  {
+    src: "/img/nightshade-1.webp",
+    alt: "Nightshade, the offensive counterpart, showing its engagement menu",
+    width: 1280,
+    height: 784,
+  },
+];
 
 export const terminalTools = [
   {

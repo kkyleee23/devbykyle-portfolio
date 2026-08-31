@@ -10,11 +10,16 @@ export default async function handler(req, res) {
   const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return res.status(200).json({ items: [] });
 
-  try {
-    const r = await fetch(
-      `${url}/rest/v1/recommendations?select=name,role,body,created_at&approved=eq.true&order=created_at.desc&limit=12`,
-      { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+  const headers = { apikey: key, Authorization: `Bearer ${key}` };
+  const query = (cols) =>
+    fetch(
+      `${url}/rest/v1/recommendations?select=${cols}&approved=eq.true&order=created_at.desc&limit=12`,
+      { headers },
     );
+
+  try {
+    let r = await query("name,role,body,rating,created_at");
+    if (!r.ok) r = await query("name,role,body,created_at");
     if (!r.ok) {
       console.error("supabase select", r.status);
       return res.status(200).json({ items: [] });

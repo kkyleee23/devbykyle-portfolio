@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import {
   site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
-import { projects, nowCards, services, terminalTools, terminalToolsShot } from "../src/data/projects.js";
+import { projects, nowCards, services, terminalTools, terminalShots } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
 import { icons, linkKinds } from "../src/data/icons.js";
 
@@ -56,7 +56,8 @@ const nav = `
       <a href="#tools">Tools</a>
       <a href="#recommend">Recommend</a>
     </div>
-    <button type="button" class="sfx-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
+    <button type="button" class="dock-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to light mode" title="Theme">${icons.moon}${icons.sun}</button>
+    <button type="button" class="dock-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>
   </div>
 </nav>`;
@@ -319,7 +320,7 @@ const tools = `
     ${marker("TERMINAL-TOOLS")}
     <p class="sub">Two command-line tools, one defensive and one not. Both sit outside the
       web work, and neither is on GitHub yet.</p>
-    <div class="tool-shot">${frame([terminalToolsShot], "Cybernant", true)}</div>
+    <div class="tool-shot">${frame(terminalShots, "Terminal tools")}</div>
     <div class="tools">
       ${terminalTools
         .map(
@@ -397,6 +398,17 @@ const recommendations = `
         <input id="rec-name" name="name" type="text" placeholder="Your name" maxlength="60" required autocomplete="name">
         <label class="sr-only" for="rec-role">Your role or company, optional</label>
         <input id="rec-role" name="role" type="text" placeholder="Role or company, optional" maxlength="80" autocomplete="organization">
+        <div class="rec-rate" role="radiogroup" aria-label="Your rating" data-rate>
+          <span class="rec-rate-label">Rating</span>
+          <div class="rec-stars-in">
+            ${[5, 4, 3, 2, 1]
+              .map(
+                (n) =>
+                  `<input class="sr-only" type="radio" name="rating" id="rec-star-${n}" value="${n}"><label for="rec-star-${n}" aria-label="${n} star${n > 1 ? "s" : ""}">${icons.star}</label>`,
+              )
+              .join("")}
+          </div>
+        </div>
         <label class="sr-only" for="rec-body">Your recommendation</label>
         <textarea id="rec-body" name="body" rows="4" placeholder="What did we work on, and how did it go?" minlength="20" maxlength="600" required></textarea>
         <label class="sr-only" for="rec-contact">Email, optional, never published</label>
@@ -473,7 +485,7 @@ const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(site.name)} &mdash; ${esc(site.role)}</title>
 <meta name="description" content="${esc(site.headline + " " + site.lede)}">

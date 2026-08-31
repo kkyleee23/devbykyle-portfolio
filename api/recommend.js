@@ -45,8 +45,11 @@ export default async function handler(req, res) {
   const role = clean(body?.role, LIMITS.role[1]);
   const text = clean(body?.body, LIMITS.body[1]);
   const contact = clean(body?.contact, LIMITS.contact[1]);
+  const rating = Math.trunc(Number(body?.rating));
 
   if (name.length < LIMITS.name[0]) return fail(res, 400, "Please give your name.");
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5)
+    return fail(res, 400, "Please include a star rating from 1 to 5.");
   if (text.length < LIMITS.body[0])
     return fail(res, 400, "A recommendation needs at least 20 characters.");
   if (contact && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact))
@@ -80,21 +83,32 @@ export default async function handler(req, res) {
         return fail(res, 429, "That is a few already. Try again later.");
     }
 
-    const insert = await fetch(rest, {
-      method: "POST",
-      headers: { ...headers, Prefer: "return=minimal" },
-      body: JSON.stringify({
-        name,
-        role: role || null,
-        body: text,
-        contact: contact || null,
-        ip_hash: ipHash,
-      }),
-    });
+    const row = {
+      name,
+      role: role || null,
+      body: text,
+      contact: contact || null,
+      rating,
+      ip_hash: ipHash,
+    };
+    const save = (payload) =>
+      fetch(rest, {
+        method: "POST",
+        headers: { ...headers, Prefer: "return=minimal" },
+        body: JSON.stringify(payload),
+      });
 
+    let insert = await save(row);
     if (!insert.ok) {
-      console.error("supabase insert", insert.status, (await insert.text()).slice(0, 200));
-      return fail(res, 502, "Could not save that. Try again in a moment.");
+      const detail = (await insert.text()).slice(0, 200);
+      if (/rating/i.test(detail)) {
+        const { rating: _rating, ...withoutRating } = row;
+        insert = await save(withoutRating);
+      }
+      if (!insert.ok) {
+        console.error("supabase insert", insert.status, detail);
+        return fail(res, 502, "Could not save that. Try again in a moment.");
+      }
     }
 
     res.setHeader("Cache-Control", "no-store");

@@ -944,6 +944,57 @@ function greet() {
   );
 }
 
+function galleries() {
+  const frames = [...document.querySelectorAll<HTMLElement>("[data-gallery]")];
+  for (const frame of frames) {
+    const slides = [...frame.querySelectorAll<HTMLElement>(".shot-slide")];
+    const dots = [...frame.querySelectorAll<HTMLButtonElement>("[data-dot]")];
+    const count = frame.querySelector<HTMLElement>("[data-count]");
+    const prev = frame.querySelector<HTMLButtonElement>("[data-prev]");
+    const next = frame.querySelector<HTMLButtonElement>("[data-next]");
+    if (slides.length < 2) continue;
+
+    let i = 0;
+    const go = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle("on", k === i));
+      dots.forEach((d, k) => d.classList.toggle("on", k === i));
+      if (count) count.textContent = `${i + 1} / ${slides.length}`;
+    };
+
+    prev?.addEventListener("click", () => go(i - 1));
+    next?.addEventListener("click", () => go(i + 1));
+    dots.forEach((d, k) => d.addEventListener("click", () => go(k)));
+
+    frame.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        go(i - 1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        go(i + 1);
+      }
+    });
+
+    let x0: number | null = null;
+    const stage = frame.querySelector<HTMLElement>(".shot-stage") ?? frame;
+    stage.addEventListener(
+      "touchstart",
+      (e) => {
+        x0 = e.touches[0]?.clientX ?? null;
+      },
+      { passive: true },
+    );
+    stage.addEventListener("touchend", (e) => {
+      const end = e.changedTouches[0]?.clientX;
+      if (x0 === null || end === undefined) return;
+      const dx = end - x0;
+      if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1);
+      x0 = null;
+    });
+  }
+}
+
 soundToggle();
 toolDetail();
 caseStudies();
@@ -962,3 +1013,4 @@ activeNav();
 chat();
 copyEmail();
 greet();
+galleries();

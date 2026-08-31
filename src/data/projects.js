@@ -15,12 +15,9 @@ export const projects = [
     kind: "web",
     feature: true,
     shots: [
-      {
-        src: "/img/planora-web.png",
-        alt: "Planora running in the browser",
-        width: 2430,
-        height: 1172,
-      },
+      { src: "/img/planora-1.webp", alt: "Planora landing page", width: 1440, height: 900 },
+      { src: "/img/planora-2.webp", alt: "Planora feature overview", width: 1440, height: 900 },
+      { src: "/img/planora-3.webp", alt: "Planora app preview", width: 1440, height: 900 },
     ],
     study: {
       problem:
@@ -34,25 +31,21 @@ export const projects = [
   },
   {
     slug: "printscreen",
-    name: "PrintScreen",
-    status: "redeploying",
-    statusLabel: "Redeploying",
+    name: "PrintScr",
+    status: "live",
+    statusLabel: "Live",
     summary:
-      "Upload a PDF, PPTX, DOCX, XLSX or image and get back a structured reviewer: a summary, key terms, flashcards and a practice quiz. Parsing runs on the server before anything reaches a model.",
-    spec: ["5 file types", "Express API", "Groq + Gemini"],
-    tags: ["Node.js", "Express", "Groq", "Gemini", "Render"],
+      "Upload a PDF, a deck, or a photo of your notes and get back a summary, the key terms, flashcards and a practice quiz, built only from what is in the file. Parsing runs on the server before anything reaches a model.",
+    spec: ["5 file types", "Express API", "Server-side keys"],
+    tags: ["Node.js", "Express", "Groq", "Gemini", "Vercel"],
     links: [
+      { kind: "live", href: "https://printscr.vercel.app" },
       { kind: "source", href: "https://github.com/kkyleee23/PrintScreen" },
-      { kind: "preview", href: "https://printscreen.onrender.com" },
     ],
     kind: "web",
     shots: [
-      {
-        src: "/img/printscreen-1.png",
-        alt: "PrintScreen turning an uploaded document into a reviewer",
-        width: 2390,
-        height: 1150,
-      },
+      { src: "/img/printscr-1.webp", alt: "PrintScr upload screen", width: 1440, height: 900 },
+      { src: "/img/printscr-2.webp", alt: "PrintScr turning a file into a reviewer", width: 1440, height: 900 },
     ],
     study: {
       problem:
@@ -60,8 +53,8 @@ export const projects = [
       approach:
         "Extract text per format on the server, then send clean text to a model rather than raw files. PPTX has no parser worth using, so it unzips the archive and reads the slide XML directly.",
       broke:
-        "The deployed build asks each visitor for their own API key, which makes it look broken to anyone who opens it cold. Free tier hosting also sleeps, so the first request waits about twenty seconds.",
-      next: "Move the key server-side, keep the instance warm, and cap the context so a forty slide deck does not blow the window.",
+        "The first build asked each visitor for their own API key, which made it look broken cold, and it ran on a free tier that slept between requests.",
+      next: "Moved it to Vercel with the keys server-side and a comma-separated Groq key pool that fails over when one is revoked, and tuned the completion budget so a reasoning model finishes the JSON instead of running out of room.",
     },
   },
   {
@@ -76,12 +69,7 @@ export const projects = [
     links: [{ kind: "source", href: "https://github.com/kkyleee23/Studs" }],
     kind: "web",
     shots: [
-      {
-        src: "/img/studs-web.webp",
-        alt: "Studs running in the browser",
-        width: 1500,
-        height: 907,
-      },
+      { src: "/img/studs-1.webp", alt: "Studs running in the browser", width: 1440, height: 900 },
     ],
     study: {
       problem:
@@ -141,10 +129,10 @@ export const services = [
 ];
 
 export const terminalToolsShot = {
-  src: "/img/cybernant.webp",
+  src: "/img/cybernant-1.webp",
   alt: "Cybernant running in a terminal, analysing a phone number",
-  width: 1730,
-  height: 1128,
+  width: 1280,
+  height: 835,
 };
 
 export const terminalTools = [

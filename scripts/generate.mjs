@@ -178,12 +178,36 @@ const building = `
   </div>
 </section>`;
 
+function frame(shots, label, single) {
+  const multi = shots.length > 1;
+  const slides = shots
+    .map(
+      (s, i) =>
+        `<figure class="shot-slide${i === 0 ? " on" : ""}"><img src="${esc(s.src)}" width="${s.width}" height="${s.height}" alt="${esc(s.alt)}" loading="lazy" decoding="async"></figure>`,
+    )
+    .join("");
+  const dots = shots
+    .map(
+      (_, i) =>
+        `<button type="button" class="shot-dot${i === 0 ? " on" : ""}" data-dot="${i}" aria-label="Image ${i + 1} of ${shots.length}"></button>`,
+    )
+    .join("");
+  return `<div class="shotframe${single ? " single" : ""}"${multi ? " data-gallery" : ""}>
+    <div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="shot-stage">${slides}</div>
+    ${
+      multi
+        ? `<button type="button" class="shot-nav prev" data-prev aria-label="Previous image">&lsaquo;</button>
+    <button type="button" class="shot-nav next" data-next aria-label="Next image">&rsaquo;</button>
+    <p class="shot-count" data-count>1 / ${shots.length}</p>
+    <div class="shot-dots">${dots}</div>`
+        : ""
+    }
+  </div>`;
+}
+
 function media(p) {
-  if (p.kind === "web" && p.shots.length) {
-    const s = p.shots[0];
-    return `<div class="web"><div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
-      <img src="${esc(s.src)}" width="${s.width}" height="${s.height}" alt="${esc(s.alt)}" loading="lazy" decoding="async"></div>`;
-  }
+  if (p.kind === "web" && p.shots.length) return frame(p.shots, p.name);
   return `<div class="noshot">${esc(p.name)} &mdash; screenshot to come</div>`;
 }
 
@@ -295,10 +319,7 @@ const tools = `
     ${marker("TERMINAL-TOOLS")}
     <p class="sub">Two command-line tools, one defensive and one not. Both sit outside the
       web work, and neither is on GitHub yet.</p>
-    <figure class="tool-shot">
-      <div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
-      <img src="${terminalToolsShot.src}" width="${terminalToolsShot.width}" height="${terminalToolsShot.height}" alt="${esc(terminalToolsShot.alt)}" loading="lazy" decoding="async">
-    </figure>
+    <div class="tool-shot">${frame([terminalToolsShot], "Cybernant", true)}</div>
     <div class="tools">
       ${terminalTools
         .map(

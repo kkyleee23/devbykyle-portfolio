@@ -36,3 +36,4 @@ design-system/
 github/
 scripts/github-readme.mjs
 reference-images/
+*-session.md

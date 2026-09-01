@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import {
-  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
+  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon, stats,
 } from "../src/data/site.js";
 import { projects, nowCards, services, terminalTools, terminalShots } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
@@ -98,6 +98,17 @@ const hero = `
       <button type="button" class="btn btn-ghost" data-kit-open>${icons.bot}Ask about me</button>
       ${site.resume ? `<a class="btn btn-ghost" href="${esc(site.resume)}">Resume</a>` : ""}
     </div>
+
+    <dl class="stats rise" data-stats aria-label="At a glance">
+      ${stats
+        .map(
+          (s) => `<div class="stat">
+        <dt class="stat-num" data-count="${s.n}">${s.n}</dt>
+        <dd class="stat-label">${esc(s.label)}</dd>
+      </div>`,
+        )
+        .join("")}
+    </dl>
 
     <div class="panels">
       <section class="panel">

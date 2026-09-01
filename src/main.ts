@@ -954,6 +954,38 @@ function chat() {
   );
 }
 
+function statsCount() {
+  const box = document.querySelector<HTMLElement>("[data-stats]");
+  if (!box) return;
+  const nums = [...box.querySelectorAll<HTMLElement>(".stat-num")];
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const run = (el: HTMLElement) => {
+    const target = Number(el.dataset.count ?? "0");
+    const dur = 850;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = String(Math.round(eased * target));
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = String(target);
+    };
+    el.textContent = "0";
+    requestAnimationFrame(tick);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        run(e.target as HTMLElement);
+        io.unobserve(e.target);
+      }
+    },
+    { threshold: 0.6 },
+  );
+  for (const n of nums) io.observe(n);
+}
+
 function copyEmail() {
   const el = document.querySelector<HTMLAnchorElement>("[data-copy]");
   if (!el || !navigator.clipboard) return;
@@ -1649,3 +1681,4 @@ copyEmail();
 greet();
 galleries();
 lightbox();
+statsCount();

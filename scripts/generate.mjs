@@ -449,15 +449,15 @@ const timelineSection = `
 const footer = `
 <footer class="foot-band">
   <div class="shell foot-grid">
-    <div>
+    <div class="foot-contact">
       ${marker("DIRECT-CONTACT")}
-      <a class="mailto" href="mailto:${esc(site.email)}" data-copy="${esc(site.email)}">
-        <span>${esc(site.email)}</span>
-        <span class="copy-hint" aria-hidden="true">click to copy</span>
+      <p class="foot-lead">A backend that needs building, a capstone that needs finishing,
+        an internal tool nobody has time for. Send a paragraph.</p>
+      <a class="mailto" href="mailto:${esc(site.email)}" data-copy="${esc(site.email)}" aria-label="Email ${esc(site.email)} — click to copy">
+        <span class="mailto-addr">${esc(site.email)}</span>
+        <span class="copy-hint" aria-hidden="true"><span class="ch-idle">click to copy</span><span class="ch-done">copied</span></span>
       </a>
       <p class="foot-note">Replies within a day. ${esc(site.availability)}.</p>
-      <p class="foot-note">Good things to send: a backend that needs building, a capstone
-        that needs finishing, an internal tool nobody has time for.</p>
     </div>
     <div>
       ${marker("COLOPHON")}
@@ -476,8 +476,8 @@ const footer = `
     </div>
   </div>
   <div class="shell foot-end">
-    <p>© ${new Date().getFullYear()} ${esc(site.name)}</p>
-    <p>Last updated ${new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date())}</p>
+    <p><span class="foot-mark" aria-hidden="true">&lt;/&gt;</span> &copy; ${new Date().getFullYear()} ${esc(site.name)} &middot; built by hand, no framework</p>
+    <p>No trackers &middot; press <kbd>&grave;</kbd> for a terminal &middot; updated ${new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date())}</p>
   </div>
 </footer>`;
 

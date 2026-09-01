@@ -957,18 +957,16 @@ function chat() {
 function copyEmail() {
   const el = document.querySelector<HTMLAnchorElement>("[data-copy]");
   if (!el || !navigator.clipboard) return;
-  const hint = el.querySelector(".copy-hint");
+  let timer = 0;
   el.addEventListener("click", async (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
     e.preventDefault();
     try {
       await navigator.clipboard.writeText(el.dataset.copy ?? "");
       el.dataset.copied = "true";
-      if (hint) hint.textContent = "copied";
-      setTimeout(() => {
-        delete el.dataset.copied;
-        if (hint) hint.textContent = "click to copy";
-      }, 2000);
+      sfx.tap();
+      clearTimeout(timer);
+      timer = window.setTimeout(() => delete el.dataset.copied, 2000);
     } catch {
       window.location.href = el.href;
     }

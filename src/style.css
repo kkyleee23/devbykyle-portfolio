@@ -1107,35 +1107,68 @@ img {
   color: var(--ink-2);
   font-size: 14px;
 }
+.foot-lead {
+  max-width: 32ch;
+  margin-top: 0.1rem;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
 .mailto {
-  display: inline-block;
-  margin-top: 1.4rem;
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin-top: 1.15rem;
   font-family: var(--f-mono);
-  font-size: clamp(0.8rem, 2vw, 1.05rem);
-  border-bottom: 2px solid var(--line-3);
-  padding-bottom: 2px;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
   min-height: 44px;
+}
+.mailto-addr {
+  border-bottom: 2px solid var(--line-3);
+  padding-bottom: 3px;
   transition: border-color 0.16s ease;
 }
-.mailto:hover {
+.mailto:hover .mailto-addr,
+.mailto:focus-visible .mailto-addr {
   border-bottom-color: var(--ink);
 }
 .copy-hint {
-  margin-left: 0.65rem;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
+  transform: translateY(-1px);
+}
+.copy-hint .ch-done {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ink);
+}
+.copy-hint .ch-done::before {
+  content: "";
+  width: 6px;
+  height: 10px;
+  border: solid var(--ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+.copy-hint .ch-idle {
   opacity: 0;
   transition: opacity 0.16s ease;
 }
-.mailto:hover .copy-hint,
-.mailto:focus-visible .copy-hint {
+.mailto:hover .ch-idle,
+.mailto:focus-visible .ch-idle {
   opacity: 1;
 }
-.mailto[data-copied] .copy-hint {
-  opacity: 1;
-  color: var(--ink);
+.mailto[data-copied] .ch-idle {
+  display: none;
+}
+.mailto[data-copied] .ch-done {
+  display: inline-flex;
+  animation: pop 0.24s var(--spring);
 }
 
 .foot {
@@ -1629,6 +1662,7 @@ html:not(.js) .rot-item {
 .foot-end {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   padding-block: 1.1rem 2.5rem;
@@ -1636,6 +1670,22 @@ html:not(.js) .rot-item {
   font-family: var(--f-mono);
   font-size: 11px;
   color: var(--ink-3);
+}
+.foot-end p {
+  margin: 0;
+}
+.foot-mark {
+  color: var(--ink);
+  letter-spacing: -0.05em;
+  margin-right: 0.35rem;
+}
+.foot-end kbd {
+  font: inherit;
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  padding: 0 0.28rem;
+  line-height: 1.4;
 }
 
 @media (min-width: 640px) {

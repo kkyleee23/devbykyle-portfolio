@@ -252,19 +252,19 @@
         <div class="proj-body">
           <div class="proj-head">
             <span class="proj-idx" aria-hidden="true">03</span>
-            <span class="badge">Building</span>
+            <span class="badge badge-live">Live</span>
           </div>
           <h3>Studs</h3>
           <p class="desc">Student and teacher management that runs outside the LMS a school already has. Attendance, activities and scores in one place, without waiting on IT to provision anything.</p>
           <ul class="spec" role="list"><li>8 screens</li><li>Repo-per-entity data layer</li><li>No framework</li></ul>
           <ul class="tags" role="list"><li>Vite</li><li>JavaScript</li><li>Supabase</li><li>PostgreSQL</li></ul>
-          <div class="proj-links"><a class="btn btn-ghost" href="https://github.com/kkyleee23/Studs"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.3v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>Source<span class="sr-only"> &mdash; Studs</span></a><button type="button" class="btn btn-ghost" data-study="studs" aria-expanded="false" aria-controls="study-studs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg><span data-study-label>Read the write-up</span></button></div>
+          <div class="proj-links"><a class="btn btn-solid" href="https://studs-web.vercel.app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>Visit site<span class="sr-only"> &mdash; Studs</span></a><a class="btn btn-ghost" href="https://github.com/kkyleee23/Studs"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.3v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>Source<span class="sr-only"> &mdash; Studs</span></a><button type="button" class="btn btn-ghost" data-study="studs" aria-expanded="false" aria-controls="study-studs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg><span data-study-label>Read the write-up</span></button></div>
           <div class="study" id="study-studs" hidden>
             <dl>
               <div><dt>The problem</dt><dd>Recording attendance and scores took more clicks than it should, and the school system made simple things slow enough that people kept paper backups.</dd></div>
               <div><dt>What I did</dt><dd>One repository module per entity, so every page talks to a data layer instead of reaching for the database directly. That keeps queries in one place and makes each page short enough to read in a sitting.</dd></div>
               <div><dt>What broke</dt><dd>The first version put Supabase calls inside the pages. Adding a second screen meant copying query logic, and a schema change meant editing five files.</dd></div>
-              <div><dt>What is next</dt><dd>Finish the reports view, then move the database to a fresh project with row level security switched on from the start.</dd></div>
+              <div><dt>What is next</dt><dd>Polish the login screen, and finish the reports view now that the data layer and row-level security are locked down.</dd></div>
             </dl>
           </div>
         </div>
@@ -532,7 +532,7 @@
   </div>
   <div class="shell foot-end">
     <p>© 2026 Juniz Kyle Sarmiento</p>
-    <p>Last updated August 2026</p>
+    <p>Last updated September 2026</p>
   </div>
 </footer>
 

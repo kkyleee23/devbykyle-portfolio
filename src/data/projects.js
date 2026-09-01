@@ -60,13 +60,16 @@ export const projects = [
   {
     slug: "studs",
     name: "Studs",
-    status: "building",
-    statusLabel: "Building",
+    status: "live",
+    statusLabel: "Live",
     summary:
       "Student and teacher management that runs outside the LMS a school already has. Attendance, activities and scores in one place, without waiting on IT to provision anything.",
     spec: ["8 screens", "Repo-per-entity data layer", "No framework"],
     tags: ["Vite", "JavaScript", "Supabase", "PostgreSQL"],
-    links: [{ kind: "source", href: "https://github.com/kkyleee23/Studs" }],
+    links: [
+      { kind: "live", href: "https://studs-web.vercel.app" },
+      { kind: "source", href: "https://github.com/kkyleee23/Studs" },
+    ],
     kind: "web",
     shots: [
       { src: "/img/studs-1.webp", alt: "Studs running in the browser", width: 1440, height: 900 },
@@ -78,7 +81,7 @@ export const projects = [
         "One repository module per entity, so every page talks to a data layer instead of reaching for the database directly. That keeps queries in one place and makes each page short enough to read in a sitting.",
       broke:
         "The first version put Supabase calls inside the pages. Adding a second screen meant copying query logic, and a schema change meant editing five files.",
-      next: "Finish the reports view, then move the database to a fresh project with row level security switched on from the start.",
+      next: "Polish the login screen, and finish the reports view now that the data layer and row-level security are locked down.",
     },
   },
 ];

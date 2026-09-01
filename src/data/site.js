@@ -129,13 +129,14 @@ Projects:
 - Planora (live, planora-official.vercel.app): task manager for Android and web
   with a built-in AI assistant called Nora. Tasks, notes and goals. No accounts,
   no ads, works offline, under 5 MB. Vanilla HTML, CSS and JavaScript, no build step.
-- PrintScreen (github.com/kkyleee23/PrintScreen): upload a PDF, PPTX, DOCX, XLSX
-  or image and get back a summary, key terms, flashcards and a practice quiz.
-  Node and Express, groq-sdk and Google Generative AI, pdf-parse, mammoth,
-  exceljs, jszip and xml2js for parsing. Currently being redeployed.
-- Studs (github.com/kkyleee23/Studs): student-teacher management outside the
+- PrintScr (live, printscr.vercel.app): upload a PDF, PPTX, DOCX, XLSX or image
+  and get back a summary, key terms, flashcards and a practice quiz. Node and
+  Express, groq-sdk and Google Generative AI, pdf-parse, mammoth, exceljs, jszip
+  and xml2js for parsing. Runs on Vercel with the keys server-side.
+- Studs (live, studs-web.vercel.app): student-teacher management outside the
   school LMS. Attendance, activities, scores. Vite, vanilla JavaScript and
-  Supabase, with a repository-per-entity data layer across 8 pages. In progress.
+  Supabase, with a repository-per-entity data layer across 8 pages and row-level
+  security on every table.
 - Agos: crowdsourced hazard reporting for the Philippines. Drop a pin, tag it
   flood, traffic or landslide, add a photo or note, other users see it. Flutter
   and Dart. Built to v1.0.1, repo not public yet.

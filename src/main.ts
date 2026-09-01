@@ -1211,18 +1211,37 @@ function term() {
     home: "top", top: "top", about: "about", me: "about",
     work: "work", projects: "work", services: "services", hire: "services",
     stack: "stack", tech: "stack", skills: "stack", tools: "tools",
+    now: "now", building: "now",
     recommend: "recommend", reviews: "recommend", recommendations: "recommend",
   };
+  const txt = (el: Element | null, sel: string) => el?.querySelector(sel)?.textContent?.trim() ?? "";
   const projects = () =>
     [...document.querySelectorAll<HTMLElement>(".proj")].map((el) => {
       const links = [...el.querySelectorAll<HTMLAnchorElement>(".proj-links a")];
       return {
-        name: el.querySelector("h3")?.textContent?.trim() ?? "",
-        status: el.querySelector(".badge")?.textContent?.trim() ?? "",
+        name: txt(el, "h3"),
+        status: txt(el, ".badge"),
         live: links.find((a) => !/github\.com/.test(a.href))?.href,
         el,
       };
     });
+  const tools = () =>
+    [...document.querySelectorAll<HTMLElement>("#tools .tool")].map((el) => ({
+      name: txt(el, "h3"),
+      tag: txt(el, ".tool-tag"),
+      status: txt(el, ".badge"),
+    }));
+  const svcs = () =>
+    [...document.querySelectorAll<HTMLElement>("#services .svc-card")].map((el) => ({
+      title: txt(el, "h3"),
+      fit: txt(el, ".svc-fit"),
+    }));
+  const nowItems = () =>
+    [...document.querySelectorAll<HTMLElement>("#now .card")].map((el) => ({
+      title: txt(el, "h3"),
+      status: txt(el, ".badge"),
+      when: txt(el, ".card-when"),
+    }));
   const jump = (el: Element | null) => {
     if (!el) return false;
     close();
@@ -1288,8 +1307,9 @@ function term() {
         ["whoami", "who is behind this"],
         ["about", "the short version"],
         ["projects", "what I have shipped"],
-        ["open <name>", "jump to a project or section"],
+        ["open <name>", "jump to a project, tool or section"],
         ["stack / tools", "the tech and the CLI tools"],
+        ["services / now", "what I offer, what I'm building"],
         ["email", "reach me (and copy the address)"],
         ["github · resume", "the links"],
         ["theme [dark|light]", "switch the look"],
@@ -1332,19 +1352,48 @@ function term() {
         jump(pj.el);
         return;
       }
+      const tl = tools().find((x) => x.name.toLowerCase().includes(t));
+      if (tl) {
+        print(`opening ${esc(tl.name)} <span class="t-dim">— ${esc(tl.tag)}</span>`, "t-dim");
+        jump(document.getElementById("tools"));
+        return;
+      }
       const id = sections[t];
       if (id && jump(document.getElementById(id))) return print(`opening ${esc(t)}…`, "t-dim");
-      print(`open: no match for '${esc(arg)}'. try 'projects' or 'help'.`, "t-err");
+      print(`open: no match for '${esc(arg)}'. try 'projects', 'tools' or 'help'.`, "t-err");
     },
     stack() {
       const n = document.querySelectorAll("#stack .chip").length;
-      print(`opening the tech stack — ${n} tools across languages, frontend, backend, data and tooling.`, "t-dim");
-      jump(document.getElementById("stack"));
+      print(`${n} tools across languages, frontend, backend, data and tooling.`);
+      print('Run <span class="t-key">open stack</span> to see the section, or <span class="t-key">ask</span> Kit what he uses.', "t-dim");
     },
     tools() {
-      print("Cybernant  ·  phone-number OSINT recon, the read-only half");
-      print("Nightshade ·  the offensive counterpart, key-gated", "t-dim");
-      jump(document.getElementById("tools"));
+      const list = tools();
+      if (!list.length) return print("no terminal tools on this page.", "t-dim");
+      print("command-line tools", "t-head");
+      list.forEach((x) =>
+        print(`<span class="t-row"><span class="t-key">${esc(x.name)}</span>  <span class="t-dim">${esc(x.tag)}</span>  [${esc(x.status)}]</span>`),
+      );
+      print(`Run <span class="t-key">open ${esc((list[0]?.name ?? "").toLowerCase())}</span> to jump there. Both are for authorised use only.`, "t-dim");
+    },
+    services() {
+      const list = svcs();
+      if (!list.length) return print("no services listed on this page.", "t-dim");
+      print("what Kyle can build for you", "t-head");
+      list.forEach((s) => {
+        print(`<span class="t-key">${esc(s.title)}</span>`);
+        if (s.fit) print(esc(s.fit), "t-dim");
+      });
+      print('One capstone at a time — <span class="t-key">ask</span> if a slot is open, or run <span class="t-key">email</span>.', "t-dim");
+    },
+    now() {
+      const list = nowItems();
+      if (!list.length) return print("nothing listed under currently-building.", "t-dim");
+      print("currently building", "t-head");
+      list.forEach((c) =>
+        print(`<span class="t-row"><span class="t-key">${esc(c.title)}</span>  <span class="t-dim">[${esc(c.status)}] · ${esc(c.when)}</span></span>`),
+      );
+      print('Run <span class="t-key">open now</span> to see the cards.', "t-dim");
     },
     email() {
       const em = document.querySelector<HTMLElement>("[data-copy]")?.dataset.copy ?? "";
@@ -1412,6 +1461,7 @@ function term() {
     ls: "projects", cls: "clear", tech: "stack", skills: "stack",
     contact: "email", mail: "email", cv: "resume", time: "date",
     quit: "exit", close: "exit", man: "help", "?": "help", kit: "ask",
+    hire: "services", building: "now",
   };
 
   const run = (raw: string) => {

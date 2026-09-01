@@ -44,8 +44,9 @@ export const projects = [
     ],
     kind: "web",
     shots: [
-      { src: "/img/printscr-1.webp", alt: "PrintScr upload screen", width: 1440, height: 900 },
-      { src: "/img/printscr-2.webp", alt: "PrintScr turning a file into a reviewer", width: 1440, height: 900 },
+      { src: "/img/printscr-1.webp", alt: "PrintScr upload screen", width: 1600, height: 1000 },
+      { src: "/img/printscr-2.webp", alt: "A generated study review, with the summary open", width: 1600, height: 1000 },
+      { src: "/img/printscr-3.webp", alt: "Flashcards generated from the uploaded file", width: 1600, height: 1000 },
     ],
     study: {
       problem:
@@ -72,7 +73,10 @@ export const projects = [
     ],
     kind: "web",
     shots: [
-      { src: "/img/studs-1.webp", alt: "Studs running in the browser", width: 1440, height: 900 },
+      { src: "/img/studs-1.webp", alt: "The Studs teacher dashboard", width: 1600, height: 1000 },
+      { src: "/img/studs-2.webp", alt: "A class overview with its grading settings", width: 1600, height: 1000 },
+      { src: "/img/studs-3.webp", alt: "The class grade report", width: 1600, height: 1000 },
+      { src: "/img/studs-4.webp", alt: "Creating a class", width: 1600, height: 1000 },
     ],
     study: {
       problem:

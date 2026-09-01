@@ -622,7 +622,7 @@ img {
 }
 .shot-nav {
   position: absolute;
-  top: calc(50% + 14px);
+  top: 50%;
   transform: translateY(-50%);
   width: 34px;
   height: 34px;
@@ -637,11 +637,19 @@ img {
   line-height: 1;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s var(--ease), background 0.2s var(--ease);
+  pointer-events: none;
+  transition:
+    opacity 0.2s var(--ease),
+    background 0.2s var(--ease),
+    transform 0.2s var(--ease);
 }
 .shotframe:hover .shot-nav,
 .shotframe:focus-within .shot-nav {
   opacity: 1;
+  pointer-events: auto;
+}
+.shot-nav:active {
+  transform: translateY(-50%) scale(0.9);
 }
 .shot-nav.prev {
   left: 0.6rem;
@@ -654,7 +662,7 @@ img {
 }
 .shot-count {
   position: absolute;
-  top: calc(0.5rem + 28px);
+  top: 0.6rem;
   right: 0.6rem;
   font-family: var(--f-mono);
   font-size: 11px;
@@ -695,6 +703,57 @@ img {
 .tool-shot {
   margin: 1.4rem auto 0;
   max-width: 640px;
+}
+
+.tool,
+.card,
+.rec {
+  transition:
+    border-color 0.2s var(--ease),
+    transform 0.28s var(--spring),
+    box-shadow 0.28s var(--ease);
+}
+.tool:hover,
+.card:hover,
+.rec:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-2);
+  box-shadow: 0 14px 34px -26px rgb(0 0 0 / 0.7);
+}
+.shotframe {
+  transition:
+    transform 0.3s var(--spring),
+    box-shadow 0.3s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.proj-media:hover .shotframe,
+.tool-shot:hover .shotframe {
+  transform: translateY(-3px);
+  border-color: var(--line-2);
+  box-shadow: 0 20px 44px -26px rgb(0 0 0 / 0.72);
+}
+.shot-slide img {
+  transition: transform 0.5s var(--ease);
+}
+.shotframe:hover .shot-slide.on img {
+  transform: scale(1.035);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool,
+  .card,
+  .rec,
+  .shotframe,
+  .shot-slide img {
+    transition: none;
+  }
+  .tool:hover,
+  .card:hover,
+  .rec:hover,
+  .proj-media:hover .shotframe,
+  .tool-shot:hover .shotframe,
+  .shotframe:hover .shot-slide.on img {
+    transform: none;
+  }
 }
 
 .lightbox {
@@ -1605,7 +1664,7 @@ html:not(.js) .rot-item {
   .proj {
     grid-template-columns: 1.05fr 1fr;
     gap: 2.25rem;
-    align-items: center;
+    align-items: start;
   }
   .proj:nth-child(even) .proj-media {
     order: 2;

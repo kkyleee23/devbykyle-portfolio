@@ -196,15 +196,14 @@ function frame(shots, label, single) {
     .join("");
   return `<div class="shotframe${single ? " single" : ""}"${multi ? " data-gallery" : ""}>
     <div class="chrome" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div class="shot-stage">${slides}</div>
-    ${
+    <div class="shot-stage">${slides}${
       multi
         ? `<button type="button" class="shot-nav prev" data-prev aria-label="Previous image">&lsaquo;</button>
     <button type="button" class="shot-nav next" data-next aria-label="Next image">&rsaquo;</button>
     <p class="shot-count" data-count>1 / ${shots.length}</p>
     <div class="shot-dots">${dots}</div>`
         : ""
-    }
+    }</div>
   </div>`;
 }
 

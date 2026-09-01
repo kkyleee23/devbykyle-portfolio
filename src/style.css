@@ -145,18 +145,16 @@ img {
   height: auto;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
+:root[data-vt="theme"]::view-transition-old(root),
+:root[data-vt="theme"]::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-old(root) {
+:root[data-vt="theme"]::view-transition-old(root) {
   z-index: 1;
 }
-::view-transition-new(root) {
+:root[data-vt="theme"]::view-transition-new(root) {
   z-index: 9999;
-}
-::view-transition-new(root) {
   animation: theme-reveal 0.52s var(--ease);
 }
 @keyframes theme-reveal {
@@ -167,12 +165,9 @@ img {
     clip-path: circle(var(--vt-r, 150%) at var(--vt-x, 50%) var(--vt-y, 50%));
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(root),
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
-  }
+::view-transition-group(lb-shot) {
+  animation-duration: 0.42s;
+  animation-timing-function: var(--ease);
 }
 
 :focus-visible {
@@ -609,10 +604,12 @@ img {
   inset: 0;
   margin: 0;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.4s var(--ease);
 }
 .shot-slide.on {
   opacity: 1;
+  pointer-events: auto;
 }
 .shot-slide img {
   width: 100%;
@@ -620,6 +617,7 @@ img {
   object-fit: cover;
   object-position: top center;
   display: block;
+  cursor: zoom-in;
 }
 .shot-nav {
   position: absolute;
@@ -696,6 +694,106 @@ img {
 .tool-shot {
   margin: 1.4rem auto 0;
   max-width: 640px;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgb(6 6 7 / 0.86);
+  backdrop-filter: blur(6px);
+}
+.lightbox[hidden] {
+  display: none;
+}
+.lb-inner {
+  position: relative;
+  width: min(100%, 1100px);
+}
+.lb-stage {
+  margin: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 30px 70px -24px rgb(0 0 0 / 0.9);
+}
+.lb-stage img {
+  width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  display: block;
+  background: var(--bg);
+}
+.lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lb-nav:hover {
+  background: var(--surface-2);
+}
+.lb-nav.prev {
+  left: -0.4rem;
+}
+.lb-nav.next {
+  right: -0.4rem;
+}
+.lb-count {
+  position: absolute;
+  left: 50%;
+  bottom: -1.9rem;
+  transform: translateX(-50%);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: rgb(255 255 255 / 0.72);
+}
+.lb-x {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lb-x:hover {
+  background: var(--surface-2);
+}
+@media (max-width: 620px) {
+  .lb-nav.prev {
+    left: 0.3rem;
+  }
+  .lb-nav.next {
+    right: 0.3rem;
+  }
+  .lb-x {
+    top: 0.3rem;
+    right: 0.3rem;
+  }
 }
 
 .noshot {
@@ -3316,5 +3414,146 @@ html {
   }
   .kit .ask-chip {
     min-height: 32px;
+  }
+}
+
+@media print {
+  :root,
+  :root[data-theme="light"] {
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #fff;
+    --surface-3: #fff;
+    --ink: #000;
+    --ink-2: #1a1a1a;
+    --ink-3: #555;
+    --line: #cfcfcf;
+    --line-2: #bcbcbc;
+    --line-3: #9a9a9a;
+    --lift: none;
+  }
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .nav,
+  .kit-fab,
+  .kit-panel,
+  .term,
+  .pal,
+  .lightbox,
+  .page-fade,
+  [data-progress],
+  .dock-toggle,
+  .sfx-toggle,
+  .hero-cta button,
+  [data-kit-open],
+  .proj-media,
+  .tool-shot,
+  .rec-form,
+  .rec-bot,
+  .av-ring,
+  .ink,
+  .shot-nav,
+  .shot-count,
+  .shot-dots,
+  .tool-detail,
+  .tool-cta,
+  .legend,
+  .pip {
+    display: none !important;
+  }
+  html {
+    scroll-padding-top: 0;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 10.5pt;
+  }
+  .band,
+  .hero,
+  section {
+    padding: 0.35cm 0 !important;
+    border: 0 !important;
+  }
+  .hero {
+    padding-top: 0 !important;
+  }
+  .shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: none;
+  }
+  .btn svg,
+  .proj-links svg {
+    display: none !important;
+  }
+  .proj-links button,
+  .hero-cta button {
+    display: none !important;
+  }
+  .hero-cta,
+  .proj-links {
+    display: block !important;
+    margin-top: 0.1cm;
+  }
+  .hero-cta a,
+  .proj-links a {
+    display: inline !important;
+    position: static !important;
+    overflow: visible !important;
+    background: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 1.1rem 0 0 !important;
+    min-height: 0 !important;
+    color: #000 !important;
+    font-weight: 600;
+    white-space: normal;
+  }
+  .proj-links a[href^="http"]::after,
+  .hero-cta a[href^="http"]::after {
+    content: " · " attr(href);
+    display: inline !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    background: none !important;
+    font-family: var(--f-mono);
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: #555;
+  }
+  .marker {
+    font-size: 9pt;
+    color: #555;
+  }
+  h1,
+  h2,
+  h3,
+  .panel,
+  .proj,
+  .svc,
+  .rec,
+  .cat,
+  .tl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .proj {
+    border: 0 !important;
+    padding: 0 0 0.2cm !important;
+  }
+  @page {
+    margin: 1.4cm;
   }
 }

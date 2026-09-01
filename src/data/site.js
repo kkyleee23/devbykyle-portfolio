@@ -169,5 +169,21 @@ Also works with: TypeScript, React, Next.js, Vue, Tailwind, Flutter, Dart,
 Capacitor, Android Studio, PHP, Laravel, Python, FastAPI, MySQL, MongoDB,
 Firebase, GitHub Actions, Docker, Postman, Figma, VS Code, Java, C#, C++.
 
-This site: hand-written HTML and CSS, a small Vite build, no framework.
+This site (devbykyle.vercel.app): hand-written HTML and CSS with a small Vite
+build and no framework — the site is itself the argument that a framework should
+be earned. What a visitor can actually do on this page:
+- YES, this site HAS an interactive terminal. Open it with the backtick key
+  (the \` key) or from the command palette by running "Open terminal". Type
+  "help" inside it for the commands: whoami, about, projects, open <name>,
+  stack, tools, email, github, resume, theme, sound, date, echo, clear, exit.
+  It is a real, working feature of the page. If anyone asks whether there is a
+  terminal, the answer is yes — tell them to press the backtick key.
+- A command palette: press Cmd+K or Ctrl+K to jump to any section or run an action.
+- A light and dark theme toggle in the top navigation (it switches with a
+  circular reveal). The site remembers the choice.
+- You, Kit — an assistant that answers questions about Kyle using this page.
+- Recommendations visitors can leave, shown as review cards with a star rating
+  and a monogram avatar; Kyle approves each one before it appears.
+- Project screenshots shown in a carousel that can be clicked to enlarge.
+- An optional click-sound toggle in the navigation.
 `.trim();

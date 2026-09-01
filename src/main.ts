@@ -1040,6 +1040,101 @@ function galleries() {
   }
 }
 
+function lightbox() {
+  const wrap = document.querySelector<HTMLElement>("[data-lightbox]");
+  const img = document.querySelector<HTMLImageElement>("[data-lb-img]");
+  const count = document.querySelector<HTMLElement>("[data-lb-count]");
+  const prev = document.querySelector<HTMLButtonElement>("[data-lb-prev]");
+  const next = document.querySelector<HTMLButtonElement>("[data-lb-next]");
+  const closeBtn = document.querySelector<HTMLButtonElement>("[data-lb-close]");
+  const inner = wrap?.querySelector<HTMLElement>(".lb-inner");
+  if (!wrap || !img || !count || !prev || !next) return;
+
+  type Shot = { src: string; alt: string };
+  let shots: Shot[] = [];
+  let idx = 0;
+  let source: HTMLImageElement | null = null;
+
+  const vt = (fn: () => void) => {
+    const start = (document as unknown as {
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+    }).startViewTransition?.bind(document);
+    if (!start || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      fn();
+      return { finished: Promise.resolve() };
+    }
+    return start(fn);
+  };
+
+  const render = () => {
+    const s = shots[idx];
+    if (!s) return;
+    img.src = s.src;
+    img.alt = s.alt;
+    const multi = shots.length > 1;
+    prev.hidden = !multi;
+    next.hidden = !multi;
+    count.hidden = !multi;
+    if (multi) count.textContent = `${idx + 1} / ${shots.length}`;
+  };
+
+  const open = (list: Shot[], i: number, src: HTMLImageElement) => {
+    shots = list;
+    idx = i;
+    source = src;
+    render();
+    src.style.viewTransitionName = "lb-shot";
+    vt(() => {
+      wrap.hidden = false;
+      src.style.viewTransitionName = "";
+      img.style.viewTransitionName = "lb-shot";
+    }).finished.finally(() => {
+      img.style.viewTransitionName = "";
+    });
+    sfx.open();
+  };
+
+  const close = () => {
+    if (wrap.hidden) return;
+    const back = source;
+    img.style.viewTransitionName = "lb-shot";
+    vt(() => {
+      wrap.hidden = true;
+      img.style.viewTransitionName = "";
+      if (back) back.style.viewTransitionName = "lb-shot";
+    }).finished.finally(() => {
+      if (back) back.style.viewTransitionName = "";
+    });
+    source = null;
+    sfx.close();
+  };
+
+  const step = (d: number) => {
+    if (shots.length < 2) return;
+    idx = (idx + d + shots.length) % shots.length;
+    render();
+  };
+
+  prev.addEventListener("click", () => step(-1));
+  next.addEventListener("click", () => step(1));
+  closeBtn?.addEventListener("click", close);
+  wrap.addEventListener("mousedown", (e) => {
+    if (!inner || !inner.contains(e.target as Node)) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (wrap.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowLeft") step(-1);
+    else if (e.key === "ArrowRight") step(1);
+  });
+
+  for (const frame of document.querySelectorAll<HTMLElement>(".shotframe")) {
+    const imgs = [...frame.querySelectorAll<HTMLImageElement>(".shot-slide img")];
+    const list = imgs.map((im) => ({ src: im.currentSrc || im.src, alt: im.alt }));
+    imgs.forEach((im, i) => im.addEventListener("click", () => open(list, i, im)));
+  }
+}
+
 function theme() {
   const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
   if (!btn) return;
@@ -1066,7 +1161,7 @@ function theme() {
   btn.addEventListener("click", (e) => {
     const next = current() === "light" ? "dark" : "light";
     const start = (document as unknown as {
-      startViewTransition?: (cb: () => void) => void;
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
     }).startViewTransition?.bind(document);
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!start || reduce) {
@@ -1080,7 +1175,10 @@ function theme() {
     root.style.setProperty("--vt-x", `${x}px`);
     root.style.setProperty("--vt-y", `${y}px`);
     root.style.setProperty("--vt-r", `${r}px`);
-    start(() => apply(next));
+    root.dataset.vt = "theme";
+    start(() => apply(next)).finished.finally(() => {
+      delete root.dataset.vt;
+    });
   });
 }
 
@@ -1359,3 +1457,4 @@ chat();
 copyEmail();
 greet();
 galleries();
+lightbox();

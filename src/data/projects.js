@@ -40,7 +40,7 @@ export const projects = [
     tags: ["Node.js", "Express", "Groq", "Gemini", "Vercel"],
     links: [
       { kind: "live", href: "https://printscr.vercel.app" },
-      { kind: "source", href: "https://github.com/kkyleee23/PrintScreen" },
+      { kind: "source", href: "https://github.com/kkyleee23/PrintScr" },
     ],
     kind: "web",
     shots: [

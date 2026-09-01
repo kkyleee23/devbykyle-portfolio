@@ -1521,6 +1521,7 @@ function term() {
     hIdx = past.length;
     run(raw);
   });
+  const names = [...new Set([...Object.keys(commands), ...Object.keys(alias)])].sort();
   input.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -1533,6 +1534,26 @@ function term() {
       if (hIdx >= past.length) return;
       hIdx = Math.min(past.length, hIdx + 1);
       input.value = past[hIdx] ?? "";
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      const val = input.value;
+      if (/\s/.test(val.trim())) return;
+      const frag = val.trim().toLowerCase();
+      if (!frag) return;
+      const hits = names.filter((n) => n.startsWith(frag));
+      if (!hits.length) return;
+      if (hits.length === 1) {
+        input.value = `${hits[0]} `;
+      } else {
+        let prefix = hits[0] ?? "";
+        for (const h of hits) {
+          while (!h.startsWith(prefix)) prefix = prefix.slice(0, -1);
+        }
+        input.value = prefix;
+        print(esc(val.trim()), "t-cmd");
+        print(hits.join("   "), "t-dim");
+      }
+      input.setSelectionRange(input.value.length, input.value.length);
     }
   });
   bodyEl.addEventListener("click", (e) => {

@@ -49,7 +49,7 @@
   --ink-2: #b2b2b9;
   --ink-3: #82828c;
 
-  --shell: 1080px;
+  --shell: 67.5rem;
   --gut: 1.25rem;
   --band: 3.5rem;
 
@@ -102,6 +102,7 @@
 html {
   scroll-padding-top: 4rem;
   -webkit-text-size-adjust: 100%;
+  font-size: clamp(1em, calc(1em + (100vw - 1900px) * 0.0035), 1.25em);
 }
 
 body {

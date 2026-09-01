@@ -565,7 +565,23 @@
   <div class="pal-box" role="dialog" aria-modal="true" aria-label="Jump to a section">
     <input type="text" data-pal-input placeholder="Jump to a section, or type a question for Kit" autocomplete="off">
     <ul class="pal-list" data-pal-list role="listbox"></ul>
-    <p class="pal-foot"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move <kbd>&crarr;</kbd> open <kbd>esc</kbd> close</p>
+    <p class="pal-foot"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move <kbd>&crarr;</kbd> open <kbd>esc</kbd> close <span class="pal-foot-sep">&middot;</span> <kbd>&grave;</kbd> terminal</p>
+  </div>
+</div>
+<div class="term" data-term hidden>
+  <div class="term-box" role="dialog" aria-modal="true" aria-label="Terminal">
+    <div class="term-bar">
+      <span class="term-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="term-title">visitor@devbykyle&nbsp;&mdash;&nbsp;bash</span>
+      <button type="button" class="term-x" data-term-close aria-label="Close terminal">&times;</button>
+    </div>
+    <div class="term-body" data-term-body>
+      <div class="term-out" data-term-out></div>
+      <form class="term-line" data-term-form>
+        <span class="term-prompt" aria-hidden="true">visitor@devbykyle:~$</span>
+        <input class="term-in" data-term-in type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type a command">
+      </form>
+    </div>
   </div>
 </div>
 <div class="page-fade" aria-hidden="true"></div>

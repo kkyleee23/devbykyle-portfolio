@@ -772,6 +772,11 @@ function palette() {
       kind: "action",
       go: () => window.open("https://github.com/kkyleee23", "_blank"),
     },
+    {
+      label: "Open terminal",
+      kind: "action",
+      go: () => document.dispatchEvent(new Event("term:open")),
+    },
   ];
 
   let shown = items;
@@ -978,7 +983,7 @@ function greet() {
   console.log(
     [
       "%cNo framework. A few kB of JavaScript, and you are reading most of it.",
-      "If you are hiring: junizkylesarmiento@gmail.com",
+      "Press ` for a terminal. If you are hiring: junizkylesarmiento@gmail.com",
     ].join("\n"),
     "font:13px ui-monospace,monospace;color:#b2b2b9",
   );
@@ -1079,8 +1084,263 @@ function theme() {
   });
 }
 
+function term() {
+  const wrap = document.querySelector<HTMLElement>("[data-term]");
+  const bodyEl = document.querySelector<HTMLElement>("[data-term-body]");
+  const out = document.querySelector<HTMLElement>("[data-term-out]");
+  const form = document.querySelector<HTMLFormElement>("[data-term-form]");
+  const input = document.querySelector<HTMLInputElement>("[data-term-in]");
+  const closeBtn = document.querySelector<HTMLButtonElement>("[data-term-close]");
+  if (!wrap || !bodyEl || !out || !form || !input) return;
+
+  const past: string[] = [];
+  let hIdx = -1;
+  let seeded = false;
+
+  const scroll = () => (bodyEl.scrollTop = bodyEl.scrollHeight);
+  const print = (html: string, cls = "") => {
+    const p = document.createElement("p");
+    if (cls) p.className = cls;
+    p.innerHTML = html;
+    out.appendChild(p);
+    scroll();
+  };
+
+  const sections: Record<string, string> = {
+    home: "top", top: "top", about: "about", me: "about",
+    work: "work", projects: "work", services: "services", hire: "services",
+    stack: "stack", tech: "stack", skills: "stack", tools: "tools",
+    recommend: "recommend", reviews: "recommend", recommendations: "recommend",
+  };
+  const projects = () =>
+    [...document.querySelectorAll<HTMLElement>(".proj")].map((el) => {
+      const links = [...el.querySelectorAll<HTMLAnchorElement>(".proj-links a")];
+      return {
+        name: el.querySelector("h3")?.textContent?.trim() ?? "",
+        status: el.querySelector(".badge")?.textContent?.trim() ?? "",
+        live: links.find((a) => !/github\.com/.test(a.href))?.href,
+        el,
+      };
+    });
+  const jump = (el: Element | null) => {
+    if (!el) return false;
+    close();
+    (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  };
+
+  const commands: Record<string, (arg: string, raw: string) => void> = {
+    help() {
+      print("available commands", "t-head");
+      const rows: [string, string][] = [
+        ["whoami", "who is behind this"],
+        ["about", "the short version"],
+        ["projects", "what I have shipped"],
+        ["open <name>", "jump to a project or section"],
+        ["stack / tools", "the tech and the CLI tools"],
+        ["email", "reach me (and copy the address)"],
+        ["github · resume", "the links"],
+        ["theme [dark|light]", "switch the look"],
+        ["sound [on|off]", "toggle the clicks"],
+        ["date · echo · clear", "the usual"],
+        ["exit", "close this (or press esc)"],
+      ];
+      for (const [c, d] of rows)
+        print(`<span class="t-row"><span class="t-key">${c.padEnd(20, " ")}</span><span class="t-dim">${d}</span></span>`);
+    },
+    whoami() {
+      const name = document.querySelector("h1")?.textContent?.trim() ?? "Juniz Kyle Sarmiento";
+      const handle = document.querySelector(".handle")?.textContent?.trim() ?? "";
+      print(`${esc(name)} ${handle ? `<span class="t-dim">${esc(handle)}</span>` : ""}`);
+      print("Backend-focused full-stack · Grade 12 · Apalit, Pampanga, PH (GMT+8)", "t-dim");
+    },
+    about() {
+      print("I build small tools that solve a real problem — web and mobile, backend first.");
+      print("Vanilla by default; a framework only when it earns its weight.", "t-dim");
+      print('Try <span class="t-key">projects</span>, <span class="t-key">stack</span> or <span class="t-key">email</span>.');
+    },
+    projects() {
+      const list = projects();
+      if (!list.length) return print("no projects on this page.", "t-dim");
+      list.forEach((p, i) => {
+        const url = p.live ? p.live.replace(/^https?:\/\//, "").replace(/\/$/, "") : "";
+        print(
+          `<span class="t-row"><span class="t-key">${String(i + 1).padStart(2, "0")}</span>  ${esc(p.name)}  <span class="t-dim">[${esc(p.status)}]</span>${p.live ? `  <a href="${esc(p.live)}" target="_blank" rel="noopener">${esc(url)}</a>` : ""}</span>`,
+        );
+      });
+      print(`Type <span class="t-key">open ${esc((list[0]?.name ?? "").toLowerCase())}</span> to jump to one.`, "t-dim");
+    },
+    open(arg) {
+      if (!arg) return print("usage: open &lt;project|section&gt;", "t-err");
+      const t = arg.toLowerCase();
+      const pj = projects().find((p) => p.name.toLowerCase().includes(t));
+      if (pj) {
+        print(`opening ${esc(pj.name)}…`, "t-dim");
+        if (pj.live) print(`live: <a href="${esc(pj.live)}" target="_blank" rel="noopener">${esc(pj.live)}</a>`);
+        jump(pj.el);
+        return;
+      }
+      const id = sections[t];
+      if (id && jump(document.getElementById(id))) return print(`opening ${esc(t)}…`, "t-dim");
+      print(`open: no match for '${esc(arg)}'. try 'projects' or 'help'.`, "t-err");
+    },
+    stack() {
+      const n = document.querySelectorAll("#stack .chip").length;
+      print(`opening the tech stack — ${n} tools across languages, frontend, backend, data and tooling.`, "t-dim");
+      jump(document.getElementById("stack"));
+    },
+    tools() {
+      print("Cybernant  ·  phone-number OSINT recon, the read-only half");
+      print("Nightshade ·  the offensive counterpart, key-gated", "t-dim");
+      jump(document.getElementById("tools"));
+    },
+    email() {
+      const em = document.querySelector<HTMLElement>("[data-copy]")?.dataset.copy ?? "";
+      if (!em) return print("no email on this page.", "t-err");
+      navigator.clipboard?.writeText(em).catch(() => {});
+      print(`<a href="mailto:${esc(em)}">${esc(em)}</a> <span class="t-dim">— copied to clipboard.</span>`);
+    },
+    github() {
+      print('opening <a href="https://github.com/kkyleee23" target="_blank" rel="noopener">github.com/kkyleee23</a>…');
+      window.open("https://github.com/kkyleee23", "_blank", "noopener");
+    },
+    resume() {
+      const rz = [...document.querySelectorAll<HTMLAnchorElement>(".hero-cta a")].find((a) =>
+        /resume|cv/i.test(a.textContent ?? ""),
+      );
+      if (rz) {
+        print("opening resume…", "t-dim");
+        window.open(rz.href, "_blank", "noopener");
+      } else {
+        print("resume isn't up yet — it's next on the list. run 'email' and I'll send it.", "t-dim");
+      }
+    },
+    theme(arg) {
+      const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+      const cur = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+      let target = arg ? arg.toLowerCase() : cur === "light" ? "dark" : "light";
+      if (target === "toggle") target = cur === "light" ? "dark" : "light";
+      if (target !== "light" && target !== "dark") return print("usage: theme [dark|light]", "t-err");
+      if (target !== cur) btn?.click();
+      print(`theme → ${target}`, "t-dim");
+    },
+    sound(arg) {
+      const btn = document.querySelector<HTMLButtonElement>("[data-sfx]");
+      const on = btn?.getAttribute("aria-pressed") === "true";
+      let target = arg ? arg.toLowerCase() : on ? "off" : "on";
+      if (target === "toggle") target = on ? "off" : "on";
+      if (target !== "on" && target !== "off") return print("usage: sound [on|off]", "t-err");
+      if ((target === "on") !== on) btn?.click();
+      print(`sound → ${target}`, "t-dim");
+    },
+    date() {
+      print(
+        new Intl.DateTimeFormat("en-GB", {
+          dateStyle: "full",
+          timeStyle: "short",
+          timeZone: "Asia/Manila",
+        }).format(new Date()) + " — Kyle's local time",
+      );
+    },
+    echo(arg) {
+      print(esc(arg));
+    },
+    clear() {
+      out.innerHTML = "";
+    },
+    sudo(arg) {
+      if (/hire/.test(arg)) return print("excellent taste. run `email`. no sudo required.", "t-dim");
+      print("we're all visitors here — no root for you. but it's all client-side, so help yourself.", "t-dim");
+    },
+  };
+  const alias: Record<string, string> = {
+    ls: "projects", cls: "clear", tech: "stack", skills: "stack",
+    contact: "email", mail: "email", cv: "resume", time: "date",
+    quit: "exit", close: "exit", man: "help", "?": "help",
+  };
+
+  const run = (raw: string) => {
+    const line = raw.trim();
+    print(esc(line), "t-cmd");
+    if (!line) return;
+    if (/^rm\s+-rf/.test(line)) return print("nice try. nothing to delete — this whole site rebuilds from a few data files.", "t-dim");
+    const parts = line.split(/\s+/);
+    const word = (parts[0] ?? "").toLowerCase();
+    const key = alias[word] ?? word;
+    const arg = parts.slice(1).join(" ");
+    if (key === "exit") return close();
+    const fn = commands[key];
+    if (fn) fn(arg, line);
+    else print(`command not found: ${esc(word)} — type <span class="t-key">help</span>.`, "t-err");
+  };
+
+  const seed = () => {
+    if (seeded) return;
+    seeded = true;
+    print('devByKyle <span class="t-dim">// a small shell. this whole site is a few kB of JS.</span>', "t-head");
+    print('Type <span class="t-key">help</span> and press enter. <span class="t-dim">esc or `exit` to leave.</span>');
+  };
+  const open = () => {
+    const pal = document.querySelector<HTMLElement>("[data-pal]");
+    if (pal) pal.hidden = true;
+    wrap.hidden = false;
+    seed();
+    input.focus();
+    sfx.open();
+  };
+  const close = () => {
+    if (wrap.hidden) return;
+    wrap.hidden = true;
+    sfx.close();
+  };
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const raw = input.value;
+    if (raw.trim()) {
+      past.push(raw.trim());
+      hIdx = past.length;
+    }
+    run(raw);
+    input.value = "";
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!past.length) return;
+      hIdx = Math.max(0, hIdx - 1);
+      input.value = past[hIdx] ?? "";
+      input.setSelectionRange(input.value.length, input.value.length);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (hIdx >= past.length) return;
+      hIdx = Math.min(past.length, hIdx + 1);
+      input.value = past[hIdx] ?? "";
+    }
+  });
+  bodyEl.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).tagName !== "A") input.focus();
+  });
+  closeBtn?.addEventListener("click", close);
+  wrap.addEventListener("mousedown", (e) => {
+    if (e.target === wrap) close();
+  });
+  document.addEventListener("term:open", open);
+  document.addEventListener("keydown", (e) => {
+    const el = document.activeElement as HTMLElement | null;
+    const typing = !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+    if (e.key === "`" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      wrap.hidden ? open() : close();
+    } else if (e.key === "Escape" && !wrap.hidden) {
+      close();
+    }
+  });
+}
+
 soundToggle();
 theme();
+term();
 toolDetail();
 caseStudies();
 palette();

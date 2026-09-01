@@ -1194,6 +1194,9 @@ function term() {
   const past: string[] = [];
   let hIdx = -1;
   let seeded = false;
+  let pendingAsk: string | null = null;
+  let kitBusy = false;
+  const kitHistory: { role: string; content: string }[] = [];
 
   const scroll = () => (bodyEl.scrollTop = bodyEl.scrollHeight);
   const print = (html: string, cls = "") => {
@@ -1227,10 +1230,61 @@ function term() {
     return true;
   };
 
+  const printKit = (reply: string) => {
+    const lines = reply.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    if (!lines.length) {
+      print("Kit had nothing to add. Try rephrasing, or email Kyle.", "t-dim");
+      return;
+    }
+    lines.forEach((line, i) => {
+      const prefix = i === 0 ? '<span class="t-key">kit</span>  ' : "";
+      print(`${prefix}${inline(line)}`, "t-kit");
+    });
+  };
+
+  const askKit = async (raw: string) => {
+    const q = raw.trim();
+    if (!q) return print("usage: ask <question> — for example, ask what is he strongest at", "t-err");
+    if (kitBusy) return print("Kit is still thinking — one at a time.", "t-dim");
+    kitBusy = true;
+    input.disabled = true;
+    const thinking = document.createElement("p");
+    thinking.className = "t-dim";
+    thinking.textContent = "kit is thinking…";
+    out.appendChild(thinking);
+    scroll();
+    kitHistory.push({ role: "user", content: q });
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: kitHistory.slice(-8) }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
+      if (!res.ok) throw new Error(data.error || "Kit could not answer that.");
+      const reply = String(data.reply ?? "").trim();
+      kitHistory.push({ role: "assistant", content: reply });
+      thinking.remove();
+      printKit(reply);
+      sfx.reply();
+    } catch (err) {
+      thinking.remove();
+      kitHistory.pop();
+      const why = err instanceof Error ? err.message : "Kit could not answer that.";
+      print(`${esc(why)} <span class="t-dim">Email <a href="mailto:junizkylesarmiento@gmail.com">Kyle</a> instead.</span>`, "t-err");
+    } finally {
+      kitBusy = false;
+      input.disabled = false;
+      input.focus();
+      scroll();
+    }
+  };
+
   const commands: Record<string, (arg: string, raw: string) => void> = {
     help() {
       print("available commands", "t-head");
       const rows: [string, string][] = [
+        ["ask <question>", "ask Kit anything about Kyle"],
         ["whoami", "who is behind this"],
         ["about", "the short version"],
         ["projects", "what I have shipped"],
@@ -1302,6 +1356,9 @@ function term() {
       print('opening <a href="https://github.com/kkyleee23" target="_blank" rel="noopener">github.com/kkyleee23</a>…');
       window.open("https://github.com/kkyleee23", "_blank", "noopener");
     },
+    ask(arg) {
+      void askKit(arg);
+    },
     resume() {
       const rz = [...document.querySelectorAll<HTMLAnchorElement>(".hero-cta a")].find((a) =>
         /resume|cv/i.test(a.textContent ?? ""),
@@ -1354,11 +1411,12 @@ function term() {
   const alias: Record<string, string> = {
     ls: "projects", cls: "clear", tech: "stack", skills: "stack",
     contact: "email", mail: "email", cv: "resume", time: "date",
-    quit: "exit", close: "exit", man: "help", "?": "help",
+    quit: "exit", close: "exit", man: "help", "?": "help", kit: "ask",
   };
 
   const run = (raw: string) => {
     const line = raw.trim();
+    pendingAsk = null;
     print(esc(line), "t-cmd");
     if (!line) return;
     if (/^rm\s+-rf/.test(line)) return print("nice try. nothing to delete — this whole site rebuilds from a few data files.", "t-dim");
@@ -1368,15 +1426,20 @@ function term() {
     const arg = parts.slice(1).join(" ");
     if (key === "exit") return close();
     const fn = commands[key];
-    if (fn) fn(arg, line);
-    else print(`command not found: ${esc(word)} — type <span class="t-key">help</span>.`, "t-err");
+    if (fn) return fn(arg, line);
+    if (/\s/.test(line) || line.endsWith("?")) {
+      pendingAsk = line;
+      print(`not a command. ask Kit? <span class="t-dim">press enter &crarr; (or keep typing)</span>`, "t-dim");
+      return;
+    }
+    print(`command not found: ${esc(word)} — type <span class="t-key">help</span> or <span class="t-key">ask</span>.`, "t-err");
   };
 
   const seed = () => {
     if (seeded) return;
     seeded = true;
     print('devByKyle <span class="t-dim">// a small shell. this whole site is a few kB of JS.</span>', "t-head");
-    print('Type <span class="t-key">help</span> and press enter. <span class="t-dim">esc or `exit` to leave.</span>');
+    print('Type <span class="t-key">help</span> for commands, or <span class="t-key">ask</span> Kit a question. <span class="t-dim">esc to leave.</span>');
   };
   const open = () => {
     const pal = document.querySelector<HTMLElement>("[data-pal]");
@@ -1395,12 +1458,18 @@ function term() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const raw = input.value;
-    if (raw.trim()) {
-      past.push(raw.trim());
-      hIdx = past.length;
-    }
-    run(raw);
     input.value = "";
+    if (!raw.trim()) {
+      if (pendingAsk) {
+        const q = pendingAsk;
+        pendingAsk = null;
+        void askKit(q);
+      }
+      return;
+    }
+    past.push(raw.trim());
+    hIdx = past.length;
+    run(raw);
   });
   input.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp") {

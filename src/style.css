@@ -2621,6 +2621,18 @@ html:not(.js) .rot-item {
   color: var(--ink);
   margin-top: 0.5rem;
 }
+.term-out .t-kit {
+  color: var(--ink-2);
+  border-left: 2px solid var(--line-2);
+  padding-left: 0.6rem;
+}
+.term-out .t-kit strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.term-out .t-kit + :not(.t-kit) {
+  margin-top: 0.3rem;
+}
 .term-out a {
   color: var(--ink);
   text-decoration: underline;

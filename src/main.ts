@@ -1615,6 +1615,8 @@ function term() {
     if (e.target === wrap) close();
   });
   document.addEventListener("term:open", open);
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-term-open]"))
+    btn.addEventListener("click", () => (wrap.hidden ? open() : close()));
   document.addEventListener("keydown", (e) => {
     const el = document.activeElement as HTMLElement | null;
     const typing = !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);

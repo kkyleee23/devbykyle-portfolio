@@ -56,6 +56,7 @@ const nav = `
       <a href="#tools">Tools</a>
       <a href="#recommend">Recommend</a>
     </div>
+    <button type="button" class="dock-toggle" data-term-open aria-label="Open terminal" title="Terminal">${icons.terminal}</button>
     <button type="button" class="dock-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to light mode" title="Theme">${icons.moon}${icons.sun}</button>
     <button type="button" class="dock-toggle" data-sfx aria-pressed="false" aria-label="Sound effects" title="Sound effects">${icons.soundOff}${icons.soundOn}</button>
     <a class="btn btn-solid nav-cta" href="mailto:${esc(site.email)}">${icons.mail}<span class="btn-label">Get in touch</span></a>

@@ -21,7 +21,9 @@ export const sun = `<svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="c
 
 export const star = `<svg class="i-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.3 20l1.4-6.3-4.8-4.3 6.4-.6z"/></svg>`;
 
-export const icons = { github, external, link, mail, spark, soundOn, soundOff, bot, moon, sun, star };
+export const terminal = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 4 4-4 4"/><path d="M12 16h7"/></svg>`;
+
+export const icons = { github, external, link, mail, spark, soundOn, soundOff, bot, moon, sun, star, terminal };
 
 export const linkKinds = {
   live: { label: "Visit site", icon: "external", strong: true },

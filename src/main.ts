@@ -1191,6 +1191,32 @@ function term() {
   const closeBtn = document.querySelector<HTMLButtonElement>("[data-term-close]");
   if (!wrap || !bodyEl || !out || !form || !input) return;
 
+  const box = wrap.querySelector<HTMLElement>(".term-box");
+  const botIcon = document.querySelector("[data-kit-toggle] svg")?.outerHTML ?? "";
+  const COLORS: Record<string, string> = {
+    green: "#5fd88f", amber: "#ffc558", cyan: "#63d9dc",
+    blue: "#7aa8ff", pink: "#ef86d0", red: "#ff8a8a",
+  };
+  const applyColor = (name: string) => {
+    if (box) box.dataset.termColor = name;
+    try {
+      localStorage.setItem("term-color", name);
+    } catch {
+    }
+  };
+  const clearColor = () => {
+    if (box) delete box.dataset.termColor;
+    try {
+      localStorage.removeItem("term-color");
+    } catch {
+    }
+  };
+  try {
+    const saved = localStorage.getItem("term-color");
+    if (saved && COLORS[saved]) applyColor(saved);
+  } catch {
+  }
+
   const past: string[] = [];
   let hIdx = -1;
   let seeded = false;
@@ -1255,9 +1281,14 @@ function term() {
       print("Kit had nothing to add. Try rephrasing, or email Kyle.", "t-dim");
       return;
     }
-    lines.forEach((line, i) => {
-      const prefix = i === 0 ? '<span class="t-key">kit</span>  ' : "";
-      print(`${prefix}${inline(line)}`, "t-kit");
+    print(`<span class="t-kit-tag">${botIcon}Kit</span>`, "t-kit t-kit-head");
+    lines.forEach((line) => {
+      const bullet = line.match(/^[-*]\s+(.*)$/);
+      if (bullet) {
+        print(`<span class="t-bul">&#9656;</span>${inline(bullet[1] ?? "")}`, "t-kit t-kit-li");
+        return;
+      }
+      print(inline(line), "t-kit");
     });
   };
 
@@ -1313,6 +1344,7 @@ function term() {
         ["email", "reach me (and copy the address)"],
         ["github · resume", "the links"],
         ["theme [dark|light]", "switch the look"],
+        ["color <name>", "recolor the terminal text"],
         ["sound [on|off]", "toggle the clicks"],
         ["date · echo · clear", "the usual"],
         ["exit", "close this (or press esc)"],
@@ -1382,7 +1414,7 @@ function term() {
       print("what Kyle can build for you", "t-head");
       list.forEach((s) => {
         print(`<span class="t-key">${esc(s.title)}</span>`);
-        if (s.fit) print(esc(s.fit), "t-dim");
+        if (s.fit) print(esc(s.fit), "t-sub");
       });
       print('One capstone at a time — <span class="t-key">ask</span> if a slot is open, or run <span class="t-key">email</span>.', "t-dim");
     },
@@ -1446,6 +1478,25 @@ function term() {
         }).format(new Date()) + " — Kyle's local time",
       );
     },
+    color(arg) {
+      const name = arg.trim().toLowerCase();
+      const swatch = (c: string) => `<span class="term-sw" style="background:${c}"></span>`;
+      if (!name || name === "list") {
+        print("terminal text colors", "t-head");
+        for (const [c, hex] of Object.entries(COLORS))
+          print(`${swatch(hex)}<span class="t-key">${c}</span>`);
+        print('Run <span class="t-key">color green</span>, or <span class="t-key">color reset</span> for the site default.', "t-dim");
+        return;
+      }
+      if (["reset", "default", "mono", "off"].includes(name)) {
+        clearColor();
+        return print("terminal text reset to the site theme.", "t-dim");
+      }
+      const hex = COLORS[name];
+      if (!hex) return print(`no color '${esc(name)}'. run <span class="t-key">color list</span>.`, "t-err");
+      applyColor(name);
+      print(`${swatch(hex)}terminal text set to <span class="t-key">${esc(name)}</span>. it sticks next time too.`, "t-dim");
+    },
     echo(arg) {
       print(esc(arg));
     },
@@ -1461,7 +1512,7 @@ function term() {
     ls: "projects", cls: "clear", tech: "stack", skills: "stack",
     contact: "email", mail: "email", cv: "resume", time: "date",
     quit: "exit", close: "exit", man: "help", "?": "help", kit: "ask",
-    hire: "services", building: "now",
+    hire: "services", building: "now", colour: "color",
   };
 
   const run = (raw: string) => {
@@ -1488,7 +1539,7 @@ function term() {
   const seed = () => {
     if (seeded) return;
     seeded = true;
-    print('devByKyle <span class="t-dim">// a small shell. this whole site is a few kB of JS.</span>', "t-head");
+    print('devByKyle <span class="t-dim">// a small shell. this whole site is a few kB of JS.</span>', "t-banner");
     print('Type <span class="t-key">help</span> for commands, or <span class="t-key">ask</span> Kit a question. <span class="t-dim">esc to leave.</span>');
   };
   const open = () => {

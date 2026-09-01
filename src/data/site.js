@@ -175,8 +175,8 @@ be earned. What a visitor can actually do on this page:
 - YES, this site HAS an interactive terminal. Open it with the backtick key
   (the \` key) or from the command palette by running "Open terminal". Type
   "help" inside it for the commands: ask, whoami, about, projects, open <name>,
-  stack, tools, services, now, email, github, resume, theme, sound, date, echo,
-  clear, exit.
+  stack, tools, services, now, email, github, resume, theme, color, sound,
+  date, echo, clear, exit.
   The "ask <question>" command (and typing any question that is not a command)
   routes to you, Kit — so a visitor can talk to you from inside the terminal.
   It is a real, working feature of the page. If anyone asks whether there is a

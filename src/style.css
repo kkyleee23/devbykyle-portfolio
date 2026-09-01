@@ -2592,8 +2592,8 @@ html:not(.js) .rot-item {
   padding: 0.9rem 1rem 1rem;
   font-family: var(--f-mono);
   font-size: 13px;
-  line-height: 1.5;
-  color: var(--ink-2);
+  line-height: 1.55;
+  color: var(--term-fg, var(--ink-2));
   background: var(--bg);
   cursor: text;
 }
@@ -2603,38 +2603,83 @@ html:not(.js) .rot-item {
   word-break: break-word;
 }
 .term-out .t-cmd {
-  color: var(--ink);
+  color: var(--term-accent, var(--ink));
+  font-weight: 500;
+}
+.term-out .t-cmd:not(:first-child) {
+  margin-top: 0.75rem;
 }
 .term-out .t-cmd::before {
   content: "visitor@devbykyle:~$ ";
-  color: var(--ink-3);
+  color: var(--term-dim, var(--ink-3));
+  font-weight: 400;
 }
 .term-out .t-dim {
-  color: var(--ink-3);
+  color: var(--term-dim, var(--ink-3));
+}
+.term-out .t-sub {
+  padding-left: 1.35rem;
+  color: var(--term-dim, var(--ink-3));
 }
 .term-out .t-err {
-  color: var(--ink-2);
-  border-left: 2px solid var(--line-3);
-  padding-left: 0.5rem;
+  color: var(--term-fg, var(--ink-2));
+  border-left: 2px solid var(--term-accent, var(--line-3));
+  padding-left: 0.55rem;
+  margin-top: 0.15rem;
 }
 .term-out .t-head {
-  color: var(--ink);
-  margin-top: 0.5rem;
+  color: var(--term-accent, var(--ink));
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 11px;
+  margin: 0.75rem 0 0.35rem;
+}
+.term-out .t-head:first-child {
+  margin-top: 0;
+}
+.term-out .t-banner {
+  color: var(--term-accent, var(--ink));
+  font-weight: 600;
 }
 .term-out .t-kit {
-  color: var(--ink-2);
-  border-left: 2px solid var(--line-2);
-  padding-left: 0.6rem;
+  color: var(--term-fg, var(--ink-2));
+  border-left: 2px solid var(--term-accent, var(--line-2));
+  padding: 0.06rem 0 0.06rem 0.7rem;
+  background: color-mix(in srgb, var(--term-accent, var(--ink)) 5%, transparent);
+}
+.term-out .t-cmd + .t-kit {
+  padding-top: 0.3rem;
+}
+.term-out .t-kit:last-of-type {
+  padding-bottom: 0.3rem;
 }
 .term-out .t-kit strong {
-  color: var(--ink);
+  color: var(--term-accent, var(--ink));
   font-weight: 600;
 }
 .term-out .t-kit + :not(.t-kit) {
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
+}
+.term-out .t-kit-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--term-accent, var(--ink));
+}
+.term-out .t-kit-tag svg {
+  width: 14px;
+  height: 14px;
+}
+.term-out .t-kit-li {
+  padding-left: 1.5rem;
+}
+.term-out .t-bul {
+  color: var(--term-accent, var(--ink));
+  margin-right: 0.4rem;
 }
 .term-out a {
-  color: var(--ink);
+  color: var(--term-accent, var(--ink));
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -2642,16 +2687,24 @@ html:not(.js) .rot-item {
   display: block;
 }
 .term-out .t-key {
-  color: var(--ink);
+  color: var(--term-accent, var(--ink));
+}
+.term-sw {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 0.55rem;
+  vertical-align: -1px;
 }
 .term-line {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  padding-top: 0.35rem;
+  padding-top: 0.5rem;
 }
 .term-prompt {
-  color: var(--ink-3);
+  color: var(--term-accent, var(--ink-3));
   flex: none;
   white-space: nowrap;
 }
@@ -2659,14 +2712,56 @@ html:not(.js) .rot-item {
   flex: 1;
   min-width: 0;
   font: inherit;
-  color: var(--ink);
+  color: var(--term-fg, var(--ink));
   background: none;
   border: 0;
   padding: 0;
-  caret-color: var(--ink);
+  caret-color: var(--term-accent, var(--ink));
 }
 .term-in:focus {
   outline: none;
+}
+
+.term-box[data-term-color] {
+  --term-accent: var(--tc);
+  --term-fg: color-mix(in srgb, var(--tc) 82%, var(--bg));
+  --term-dim: color-mix(in srgb, var(--tc) 46%, var(--bg));
+}
+.term-box[data-term-color="green"] {
+  --tc: #5fd88f;
+}
+.term-box[data-term-color="amber"] {
+  --tc: #ffc558;
+}
+.term-box[data-term-color="cyan"] {
+  --tc: #63d9dc;
+}
+.term-box[data-term-color="blue"] {
+  --tc: #7aa8ff;
+}
+.term-box[data-term-color="pink"] {
+  --tc: #ef86d0;
+}
+.term-box[data-term-color="red"] {
+  --tc: #ff8a8a;
+}
+:root[data-theme="light"] .term-box[data-term-color="green"] {
+  --tc: #178a48;
+}
+:root[data-theme="light"] .term-box[data-term-color="amber"] {
+  --tc: #9a6a10;
+}
+:root[data-theme="light"] .term-box[data-term-color="cyan"] {
+  --tc: #12868a;
+}
+:root[data-theme="light"] .term-box[data-term-color="blue"] {
+  --tc: #3f6fd8;
+}
+:root[data-theme="light"] .term-box[data-term-color="pink"] {
+  --tc: #b8479e;
+}
+:root[data-theme="light"] .term-box[data-term-color="red"] {
+  --tc: #cf4a4a;
 }
 @media (max-width: 560px) {
   .term-out .t-cmd::before,

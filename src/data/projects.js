@@ -124,6 +124,11 @@ export const services = [
     fit: "Best fit if you have a front end and nothing behind it.",
   },
   {
+    title: "A website or a mobile app",
+    body: "A whole product, front to back — the pages, the data behind them, and the deploy. I start in plain HTML, CSS and JavaScript and only pull in a framework where it earns its weight, so it stays fast and cheap to run. Ships to the web or to Android.",
+    fit: "Best fit if you want one person to build the whole thing.",
+  },
+  {
     title: "A capstone that has to ship",
     body: "I have built four of these end to end this year. I can take the half nobody on the team wants, usually the database and the server, and get it running before the defence.",
     fit: "One capstone at a time, so the slot may be taken. Ask before you plan around it.",

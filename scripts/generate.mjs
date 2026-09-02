@@ -259,7 +259,7 @@ const stackSection = `
 <section class="band" id="stack">
   <div class="shell">
     ${marker("TECH-STACK")}
-    <p class="legend"><span class="dot"></span> Used in shipped, public code. The rest I am still building fluency in</p>
+    <p class="legend"><span class="dot"></span> Shipped in a real project. The rest I know and reach for when a project calls for it</p>
     <div class="tool-detail" id="tool-detail" data-detail hidden>
       <span class="td-icon" data-td-icon aria-hidden="true"></span>
       <div class="td-in">
@@ -297,7 +297,7 @@ const servicesSection = `
 <section class="band" id="services">
   <div class="shell">
     ${marker("WHAT-I-CAN-BUILD")}
-    <p class="sub">Three shapes of work I have already done end to end. If yours looks like
+    <p class="sub">Four shapes of work I have already done end to end. If yours looks like
       one of these, the fastest thing is to send a paragraph about it.</p>
     <div class="svc">
       ${services

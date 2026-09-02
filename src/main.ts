@@ -249,10 +249,10 @@ function toolDetail() {
       nameEl.textContent = chip.dataset.tool ?? "";
       noteEl.textContent =
         chip.dataset.note ||
-        "Not in a public repo yet. This one is still on the learning pile.";
+        "Studied and comfortable with it — I just have not shipped a product with it yet.";
       usedEl.innerHTML = used.length
         ? `Used in ${used.map((u) => `<span class="td-proj">${esc(u)}</span>`).join("")}`
-        : "No shipped project uses it yet";
+        : "Not in a shipped project yet";
       panel.hidden = false;
       sfx.open();
       panel.scrollIntoView({ block: "nearest", behavior: "smooth" });

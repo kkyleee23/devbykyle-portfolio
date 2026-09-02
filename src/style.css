@@ -2858,7 +2858,7 @@ html:not(.js) .rot-item {
     gap: 2.5rem;
   }
   .svc {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

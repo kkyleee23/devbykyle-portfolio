@@ -159,15 +159,19 @@ Terminal tools (command-line, outside the web work, not yet on GitHub):
 Currently fixing Nora, Planora's assistant, by rebuilding the context it receives
 before it answers.
 
-Stack used in public repos: HTML, CSS, JavaScript, Node.js, Express, PostgreSQL,
-Supabase, Vercel, Git, GitHub, Gemini.
+Stack he has shipped with: HTML, CSS, JavaScript, TypeScript (this whole
+portfolio), Node.js, Express, PostgreSQL, Supabase, Vercel, Git, GitHub, Gemini,
+and for mobile Flutter, Dart, Capacitor and Android Studio (Planora and Agos).
+Python is the language behind his Cybernant and Nightshade command-line tools.
+He builds full products end to end — websites and mobile apps — starting in
+plain HTML/CSS/JavaScript and adding a framework only where it earns its weight.
 LLM integration. He wires existing models into products through their APIs. He
 does not train or build models. Providers he has used or works with: Groq,
 Gemini, OpenAI, Claude, DeepSeek, Kimi, Grok, Ollama. Shipped examples are the
-Groq and Gemini pipeline in PrintScreen and the Nora assistant inside Planora.
-Also works with: TypeScript, React, Next.js, Vue, Tailwind, Flutter, Dart,
-Capacitor, Android Studio, PHP, Laravel, Python, FastAPI, MySQL, MongoDB,
-Firebase, GitHub Actions, Docker, Postman, Figma, VS Code, Java, C#, C++.
+Groq and Gemini pipeline in PrintScr and the Nora assistant inside Planora.
+Studied and comfortable with, not yet shipped in a product: React, Next.js, Vue,
+Tailwind, PHP, Laravel, FastAPI, MySQL, MongoDB, Firebase, GitHub Actions,
+Docker, Postman, Figma, Java, C#, C++.
 
 This site (devbykyle.vercel.app): hand-written HTML and CSS with a small Vite
 build and no framework — the site is itself the argument that a framework should

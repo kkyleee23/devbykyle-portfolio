@@ -49,13 +49,6 @@ export const quickFacts = [
   { k: "Interests", v: "APIs · LLM integration · Offline-first · Civic tech" },
 ];
 
-export const stats = [
-  { n: 4, label: "builds this year" },
-  { n: 3, label: "live in production" },
-  { n: 41, label: "tools in the stack" },
-  { n: 1, label: "capstone at a time" },
-];
-
 export const about = [
   "I came at this backwards. I was building apps and games before I got curious about how websites worked, and then I decided I wanted both instead of picking one. I still reach for plain HTML and JavaScript more often than a framework, because I learned to make things run before I learned to make them look right.",
   "Backend is the half I care about most. The data model, the API, and the pipeline that turns an upload into something a person can use. I learned the front end because a tool nobody can open is not finished, and because on a small project there is usually only one person to build both.",

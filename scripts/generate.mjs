@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import {
-  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon, stats,
+  site, about, timeline, currentFocus, whatIBuild, howIWork, quickFacts, colophon,
 } from "../src/data/site.js";
 import { projects, nowCards, services, terminalTools, terminalShots } from "../src/data/projects.js";
 import { stack } from "../src/data/stack.js";
@@ -74,7 +74,7 @@ const hero = `
         <span class="av-ring" aria-hidden="true"></span>
       </div>
       <div class="id-text">
-        ${site.openToWork ? `<p class="status"><span class="pip" aria-hidden="true"></span> Available for work</p>` : ""}
+        ${site.openToWork ? `<p class="avail rise"><span class="avail-cmd" aria-hidden="true">~$ availability</span><span class="avail-out"><span class="avail-dot" aria-hidden="true"></span>open to work<span class="avail-spec"> — internships &middot; junior roles &middot; freelance</span></span></p>` : ""}
         <h1>${esc(site.name)}</h1>
         <p class="handle">${esc(site.handle)}</p>
       </div>
@@ -98,17 +98,6 @@ const hero = `
       <button type="button" class="btn btn-ghost" data-kit-open>${icons.bot}Ask about me</button>
       ${site.resume ? `<a class="btn btn-ghost" href="${esc(site.resume)}">Resume</a>` : ""}
     </div>
-
-    <dl class="stats rise" data-stats aria-label="At a glance">
-      ${stats
-        .map(
-          (s) => `<div class="stat">
-        <dt class="stat-num" data-count="${s.n}">${s.n}</dt>
-        <dd class="stat-label">${esc(s.label)}</dd>
-      </div>`,
-        )
-        .join("")}
-    </dl>
 
     <div class="panels">
       <section class="panel">

@@ -37,3 +37,6 @@ github/
 scripts/github-readme.mjs
 reference-images/
 *-session.md
+*.txt
+.playwright-mcp/
+!public/robots.txt

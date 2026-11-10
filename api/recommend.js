@@ -9,7 +9,7 @@ const base = (u) => (u || "").replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
 
 const clean = (v, max) =>
   String(v ?? "")
-    .replace(/[ -]/g, " ")
+    .replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, " ")
     .trim()
     .slice(0, max);
 

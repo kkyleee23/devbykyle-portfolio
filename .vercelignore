@@ -4,4 +4,12 @@ github/
 supabase/
 scripts/github-readme.mjs
 .env.example
+.env
+.env.*
 *.md
+*.txt
+.claude/
+.playwright-mcp/
+reference-images/
+db/
+!public/robots.txt

@@ -11,15 +11,26 @@ export function clientIp(req) {
   );
 }
 
+const ALLOWED_HOSTS = ALLOWED.map((a) => new URL(a).hostname);
+const PREVIEW_HOST = /^(devbykyle|devbykyle-portfolio)(-[a-z0-9-]+)?\.vercel\.app$/;
+
 export function sameOrigin(req) {
   const origin = req.headers.origin || "";
   const referer = req.headers.referer || "";
   if (!origin && !referer) return true;
   const dev = process.env.VERCEL_ENV !== "production";
-  const ok = (u) =>
-    ALLOWED.some((a) => u === a || u.startsWith(a + "/")) ||
-    (dev && /^https?:\/\/localhost(:\d+)?/.test(u)) ||
-    /\.vercel\.app/.test(u);
+  const ok = (u) => {
+    let url;
+    try {
+      url = new URL(u);
+    } catch {
+      return false;
+    }
+    const host = url.hostname.toLowerCase();
+    if (dev && (host === "localhost" || host === "127.0.0.1")) return true;
+    if (url.protocol !== "https:") return false;
+    return ALLOWED_HOSTS.includes(host) || PREVIEW_HOST.test(host);
+  };
   if (origin) return ok(origin);
   return ok(referer);
 }

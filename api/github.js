@@ -1,5 +1,5 @@
 const USER = "kkyleee23";
-const REPOS = ["Studs", "Planora-Official", "PrintScreen", "kkyleee23"];
+const REPOS = ["Studs", "Planora-Official", "PrintScr", "devbykyle-portfolio"];
 
 const headers = () => {
   const h = { Accept: "application/vnd.github+json", "User-Agent": "devbykyle-site" };

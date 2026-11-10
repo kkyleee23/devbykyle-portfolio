@@ -9,6 +9,6 @@ export default defineConfig({
     target: "es2022",
     sourcemap: false,
     minify: "esbuild",
-    chunkSizeWarningLimit: 60,
+    chunkSizeWarningLimit: 160,
   },
 });

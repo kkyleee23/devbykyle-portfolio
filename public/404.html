@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<title>Not found · devByKyle</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  @font-face {
+    font-family: "Bricolage Grotesque";
+    src: url("/fonts/bricolage-latin.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("/fonts/dmmono-400-latin.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+  }
+  :root {
+    color-scheme: dark;
+    --bg: #0e0e10;
+    --ink: #fafafa;
+    --ink-2: #b2b2b9;
+    --ink-3: #82828c;
+    --line-2: rgb(255 255 255 / 0.13);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f6;
+      --ink: #121214;
+      --ink-2: #4c4c54;
+      --ink-3: #686871;
+      --line-2: rgb(17 17 19 / 0.14);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 1.25rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 34rem; }
+  .code {
+    margin: 0 0 0.75rem;
+    font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 7vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+  }
+  p {
+    margin: 1rem 0 0;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  a {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line-2);
+    border-radius: 9999px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  a:hover, a:focus-visible { border-color: var(--ink-3); outline: none; }
+</style>
+</head>
+<body>
+<main>
+  <p class="code">visitor@devbykyle:~$ open <span aria-hidden="true">&lt;/&gt;</span> 404</p>
+  <h1>That page is not here.</h1>
+  <p>The link may be old, or the address has a typo. Everything on this site lives on one page, so the way back is short.</p>
+  <a href="/">Back to the Portfolio</a>
+</main>
+</body>
+</html>

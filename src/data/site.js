@@ -17,7 +17,7 @@ export const site = {
   github: "https://github.com/kkyleee23",
   githubHandle: "kkyleee23",
   linkedin: "",
-  resume: "",
+  resume: "/resume.pdf",
   openToWork: true,
   url: "https://devbykyle.vercel.app",
 };

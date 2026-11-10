@@ -1,3 +1,4 @@
+import { planes } from "./planes";
 import "./style.css";
 
 const esc = (s: string) =>
@@ -285,7 +286,7 @@ function reveal() {
         io.unobserve(e.target);
       }
     },
-    { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
+    { rootMargin: "0px 0px -4% 0px", threshold: 0.05 },
   );
   for (const el of items) {
     const peers = [...(el.parentElement?.children ?? [])].filter((c) =>
@@ -294,6 +295,28 @@ function reveal() {
     el.style.transitionDelay = `${Math.min(peers.indexOf(el), 4) * 50}ms`;
     io.observe(el);
   }
+  // A jump scroll (hash link, fast fling, find-in-page) can pass a block
+  // before the observer sees it. Anything already above the viewport is
+  // shown as-is so no band is left blank.
+  let queued = false;
+  const sweep = () => {
+    queued = false;
+    for (const el of items) {
+      if (el.classList.contains("in")) continue;
+      if (el.getBoundingClientRect().bottom < 0) {
+        el.style.transitionDelay = "0ms";
+        el.classList.add("in");
+        io.unobserve(el);
+      }
+    }
+  };
+  const onScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(sweep);
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("load", sweep, { once: true });
 }
 
 function activeNav() {
@@ -467,7 +490,7 @@ function writeCache(key: string, v: unknown) {
 
 async function directGh(): Promise<GhPayload | null> {
   const user = "kkyleee23";
-  const names = ["Studs", "Planora-Official", "PrintScreen"];
+  const names = ["Studs", "Planora-Official", "PrintScr", "devbykyle-portfolio"];
   const [repos, ...lists] = await Promise.all([
     gh<Repo[]>(`https://api.github.com/users/${user}/repos?per_page=100&sort=pushed`, "gh:repos"),
     ...names.map((r) =>
@@ -1156,7 +1179,8 @@ function theme() {
     sync();
   };
 
-  btn.addEventListener("click", (e) => {
+  btn.addEventListener("click", () => {
+    if (root.dataset.vt) return;
     const next = current() === "light" ? "dark" : "light";
     const start = (document as unknown as {
       startViewTransition?: (cb: () => void) => { finished: Promise<void> };
@@ -1166,13 +1190,6 @@ function theme() {
       apply(next);
       return;
     }
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX || rect.left + rect.width / 2;
-    const y = e.clientY || rect.top + rect.height / 2;
-    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    root.style.setProperty("--vt-x", `${x}px`);
-    root.style.setProperty("--vt-y", `${y}px`);
-    root.style.setProperty("--vt-r", `${r}px`);
     root.dataset.vt = "theme";
     start(() => apply(next)).finished.finally(() => {
       delete root.dataset.vt;
@@ -1649,3 +1666,4 @@ copyEmail();
 greet();
 galleries();
 lightbox();
+planes();

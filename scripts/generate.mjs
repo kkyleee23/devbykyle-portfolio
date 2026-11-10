@@ -92,11 +92,14 @@ const hero = `
       <span>${esc(site.role)}</span>
     </p>
 
+    <p class="hero-line">${esc(site.headline)}</p>
+    <p class="lede">${esc(site.lede)}</p>
+
     <div class="hero-cta">
       <a class="btn btn-solid" href="mailto:${esc(site.email)}">${icons.mail}Send Email</a>
       <a class="btn btn-ghost" href="${esc(site.github)}">${icons.github}GitHub</a>
       <button type="button" class="btn btn-ghost" data-kit-open>${icons.bot}Ask about me</button>
-      ${site.resume ? `<a class="btn btn-ghost" href="${esc(site.resume)}">Resume</a>` : ""}
+      ${site.resume ? `<a class="btn btn-ghost" href="${esc(site.resume)}" target="_blank" rel="noopener">Resume</a>` : ""}
     </div>
 
     <div class="panels">
@@ -147,7 +150,7 @@ const aboutSection = `
       <div class="about-prose">
         ${about.map((p) => `<p>${esc(p)}</p>`).join("")}
       </div>
-      <aside class="activity" data-activity data-repos="Studs,Planora-Official,PrintScreen,kkyleee23" data-user="${esc(site.githubHandle)}">
+      <aside class="activity" data-activity data-repos="Studs,Planora-Official,PrintScr,devbykyle-portfolio" data-user="${esc(site.githubHandle)}">
         <p class="act-head"><span>Recent commits</span><a href="${esc(site.github)}">on GitHub</a></p>
         <div class="act-grid" data-act-grid aria-hidden="true"></div>
         <ol class="act-list" data-act-list>
@@ -489,8 +492,9 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(site.name)} &mdash; ${esc(site.role)}</title>
 <meta name="description" content="${esc(site.headline + " " + site.lede)}">
-<meta name="theme-color" content="${BG}">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="${BG}" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f7f6" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
 <link rel="canonical" href="${esc(site.url)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
@@ -500,7 +504,7 @@ const html = `<!doctype html>
 <meta property="og:site_name" content="${esc(site.short)}">
 <meta property="og:locale" content="en_PH">
 <meta property="og:title" content="${esc(site.name)} &mdash; ${esc(site.role)}">
-<meta property="og:description" content="${esc(site.headline + " " + site.lede.split(". ")[0] + ".")}">
+<meta property="og:description" content="${esc(site.headline + " " + site.lede)}">
 <meta property="og:url" content="${esc(site.url)}">
 <meta property="og:image" content="${esc(site.url)}/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -508,10 +512,23 @@ const html = `<!doctype html>
 <meta property="og:image:alt" content="${esc(site.name)}, ${esc(site.role)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(site.name)} &mdash; ${esc(site.role)}">
-<meta name="twitter:description" content="${esc(site.headline)}">
+<meta name="twitter:description" content="${esc(site.headline + " " + site.lede)}">
 <meta name="twitter:image" content="${esc(site.url)}/img/og.png">
+<script type="application/ld+json">${JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  alternateName: site.short,
+  url: site.url,
+  jobTitle: site.role,
+  email: "mailto:" + site.email,
+  sameAs: [site.github],
+  address: { "@type": "PostalAddress", addressLocality: "Apalit", addressRegion: "Pampanga", addressCountry: "PH" },
+  alumniOf: { "@type": "EducationalOrganization", name: site.schoolShort },
+}).replace(/</g, "\u003c")}</script>
 <link rel="preload" href="/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dmmono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/schibsted-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="/src/main.ts"></script>
 </head>
@@ -569,7 +586,10 @@ ${kit}
 </html>
 `;
 
-writeFileSync(join(root, "index.html"), html, "utf8");
+// Sections are assembled out of DOM order, so number the markers on the final page.
+let seq = 0;
+const out = html.replace(/<span class="marker-n" aria-hidden="true">\d+<\/span>/g, () => `<span class="marker-n" aria-hidden="true">${String(++seq).padStart(2, "0")}</span>`);
+writeFileSync(join(root, "index.html"), out, "utf8");
 console.log(
   `index.html - ${(html.length / 1024).toFixed(0)}KB | ${projects.length} projects | ${stack.reduce((a, g) => a + g.tools.length, 0)} tools`,
 );
